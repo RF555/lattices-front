@@ -6,3 +6,4 @@ export * from './Spinner';
 export * from './Modal';
 export * from './Skeleton';
 export * from './Select';
+export * from './Textarea';
