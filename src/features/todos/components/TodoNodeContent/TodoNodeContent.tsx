@@ -1,5 +1,6 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { AlignLeft } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 import { useIsMobile } from '@hooks/useIsMobile';
 import { useTodoUiStore } from '../../stores/todoUiStore';
@@ -35,6 +36,7 @@ export function TodoNodeContent({
   className,
   style,
 }: TodoNodeContentProps) {
+  const { t } = useTranslation('todos');
   const [isEditing, setIsEditing] = useState(false);
   const isMobile = useIsMobile();
   const toggleExpanded = useTodoUiStore((s) => s.toggleExpanded);
@@ -98,7 +100,7 @@ export function TodoNodeContent({
           isCompleted && 'opacity-60',
           className
         )}
-        style={{ paddingLeft: `${indentPx + 8}px`, ...style }}
+        style={{ paddingInlineStart: `${indentPx + 8}px`, ...style }}
         onClick={handleSelect}
       >
         {leadingSlot}
@@ -155,7 +157,7 @@ export function TodoNodeContent({
                 ? 'text-green-600'
                 : 'text-gray-400'
             )}
-            title={`${todo.completedChildCount} of ${todo.childCount} subtasks completed`}
+            title={t('nodeContent.subtaskProgress', { completed: todo.completedChildCount, total: todo.childCount })}
           >
             {todo.completedChildCount}/{todo.childCount}
           </span>
@@ -173,9 +175,9 @@ export function TodoNodeContent({
       {showDeleteConfirm && (
         <ConfirmationDialog
           isOpen
-          title="Delete Task"
-          message="Are you sure you want to delete this task and all subtasks?"
-          confirmLabel="Delete"
+          title={t('nodeContent.deleteTitle')}
+          message={t('nodeContent.deleteMessage')}
+          confirmLabel={t('nodeContent.deleteConfirm')}
           variant="danger"
           onConfirm={handleConfirmDelete}
           onCancel={() => setShowDeleteConfirm(false)}

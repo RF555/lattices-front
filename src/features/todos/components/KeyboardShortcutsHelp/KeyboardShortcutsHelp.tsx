@@ -1,22 +1,24 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal } from '@components/ui/Modal';
 import { cn } from '@lib/utils/cn';
 
-const shortcuts = [
-  { keys: ['\u2191', 'k'], description: 'Move up' },
-  { keys: ['\u2193', 'j'], description: 'Move down' },
-  { keys: ['\u2192', 'l'], description: 'Expand item' },
-  { keys: ['\u2190', 'h'], description: 'Collapse item / go to parent' },
-  { keys: ['Enter', 'Space'], description: 'Toggle complete' },
-  { keys: ['\u2318', 'Backspace'], description: 'Delete item' },
-  { keys: ['\u2318', 'n'], description: 'New task' },
-  { keys: ['Escape'], description: 'Deselect' },
-  { keys: ['Home'], description: 'Go to first' },
-  { keys: ['End'], description: 'Go to last' },
-];
-
 export function KeyboardShortcutsHelp() {
+  const { t } = useTranslation('todos');
   const [isOpen, setIsOpen] = useState(false);
+
+  const shortcuts = [
+    { keys: ['\u2191', 'k'], description: t('shortcuts.moveUp') },
+    { keys: ['\u2193', 'j'], description: t('shortcuts.moveDown') },
+    { keys: ['\u2192', 'l'], description: t('shortcuts.expandItem') },
+    { keys: ['\u2190', 'h'], description: t('shortcuts.collapseItem') },
+    { keys: ['Enter', 'Space'], description: t('shortcuts.toggleComplete') },
+    { keys: ['\u2318', 'Backspace'], description: t('shortcuts.deleteItem') },
+    { keys: ['\u2318', 'n'], description: t('shortcuts.newTask') },
+    { keys: ['Escape'], description: t('shortcuts.deselect') },
+    { keys: ['Home'], description: t('shortcuts.goToFirst') },
+    { keys: ['End'], description: t('shortcuts.goToLast') },
+  ];
 
   return (
     <>
@@ -24,15 +26,15 @@ export function KeyboardShortcutsHelp() {
         type="button"
         onClick={() => setIsOpen(true)}
         className="text-xs text-gray-500 hover:text-gray-700"
-        aria-label="Show keyboard shortcuts"
+        aria-label={t('shortcuts.triggerAriaLabel')}
       >
-        Keyboard shortcuts (?)
+        {t('shortcuts.trigger')}
       </button>
 
       <Modal
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
-        title="Keyboard Shortcuts"
+        title={t('shortcuts.title')}
         className="max-w-sm"
       >
         <div className="space-y-2">
@@ -70,7 +72,7 @@ export function KeyboardShortcutsHelp() {
           onClick={() => setIsOpen(false)}
           className="mt-6 w-full py-2 bg-gray-100 rounded-md text-sm hover:bg-gray-200"
         >
-          Close
+          {t('actions.close', { ns: 'common' })}
         </button>
       </Modal>
     </>

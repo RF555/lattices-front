@@ -1,0 +1,59 @@
+{
+  "brand": {
+    "name": "Lattices",
+    "tagline": "Structure for what matters.",
+    "taglineRegister": "Tasks with a foundation."
+  },
+  "nav": {
+    "signOut": "Sign Out"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "clear": "Clear",
+    "create": "Create",
+    "tryAgain": "Try Again",
+    "reloadPage": "Reload Page",
+    "loading": "Loading..."
+  },
+  "coldStart": {
+    "waking": "Waking up server... this might take a moment.",
+    "ready": "Server ready!"
+  },
+  "error": {
+    "defaultTitle": "Error loading data",
+    "defaultMessage": "Something went wrong. Please try again.",
+    "somethingWentWrong": "Something went wrong",
+    "unexpectedError": "We encountered an unexpected error. Please try again or contact support if the problem persists."
+  },
+  "notifications": {
+    "dismiss": "Dismiss notification",
+    "region": "Notifications"
+  },
+  "apiErrors": {
+    "UNAUTHORIZED": "Please sign in to continue",
+    "INVALID_TOKEN": "Your session has expired. Please sign in again",
+    "FORBIDDEN": "You do not have permission to perform this action",
+    "TASK_NOT_FOUND": "The requested task was not found",
+    "TAG_NOT_FOUND": "The requested tag was not found",
+    "USER_NOT_FOUND": "User profile not found",
+    "VALIDATION_ERROR": "Please check your input and try again",
+    "CIRCULAR_REFERENCE": "This move would create a circular reference",
+    "DUPLICATE_TAG": "A tag with this name already exists",
+    "RATE_LIMIT_EXCEEDED": "Too many requests. Please try again later",
+    "INTERNAL_ERROR": "Something went wrong. Please try again later",
+    "DATABASE_ERROR": "A database error occurred. Please try again later",
+    "NETWORK_ERROR": "Unable to connect to the server",
+    "UNKNOWN": "An unexpected error occurred"
+  },
+  "time": {
+    "justNow": "just now",
+    "minutesAgo": "{{count}}m ago",
+    "hoursAgo": "{{count}}h ago",
+    "daysAgo": "{{count}}d ago"
+  }
+}

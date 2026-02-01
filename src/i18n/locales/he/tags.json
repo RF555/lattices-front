@@ -1,0 +1,32 @@
+{
+  "badge": {
+    "removeTag": "הסרת תגית {{name}}"
+  },
+  "list": {
+    "loading": "טוען תגיות...",
+    "emptyTitle": "אין תגיות עדיין.",
+    "emptyMessage": "תגיות יופיעו כאן ברגע שתיצרו אותן.",
+    "usageCount": "משימות",
+    "deleteTitle": "מחיקת תגית",
+    "deleteMessage": "למחוק את התגית \"{{name}}\"?"
+  },
+  "picker": {
+    "searchPlaceholder": "חיפוש או יצירה...",
+    "placeholder": "הוספת תגיות...",
+    "emptyState": "אין תגיות זמינות. הקלידו כדי ליצור אחת.",
+    "createPrompt": "יצירת תגית \u201c{{name}}\u201d",
+    "creating": "יוצר...",
+    "create": "יצירה",
+    "createTag": "יצירת \u201c{{name}}\u201d"
+  },
+  "editModal": {
+    "title": "עריכת תגית",
+    "nameLabel": "שם",
+    "colorLabel": "צבע",
+    "saveChanges": "שמירת שינויים"
+  },
+  "filter": {
+    "label": "סינון לפי תגית:",
+    "clear": "ניקוי"
+  }
+}

@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
+import { useTranslation } from 'react-i18next';
 import { useTodos } from '../../hooks/useTodos';
 import { useTodoUiStore, useExpandedIds } from '../../stores/todoUiStore';
 import { filterTodoTree, sortTodoTree } from '../../utils/treeUtils';
@@ -8,6 +9,7 @@ import { TodoTreeEmpty } from './TodoTreeEmpty';
 import { TodoTreeLoading } from './TodoTreeLoading';
 
 export function TodoTree() {
+  const { t } = useTranslation('todos');
   const { data: todos, isLoading, error } = useTodos();
   const expandedIds = useExpandedIds();
   // Fix M2: Use useShallow to prevent re-renders
@@ -61,7 +63,7 @@ export function TodoTree() {
   if (error) {
     return (
       <div className="p-4 text-red-600 bg-red-50 rounded-md">
-        Failed to load todos. Please try again.
+        {t('tree.error')}
       </div>
     );
   }
@@ -71,7 +73,7 @@ export function TodoTree() {
   }
 
   return (
-    <div className="space-y-1" role="tree" aria-label="Task list">
+    <div className="space-y-1" role="tree" aria-label={t('tree.ariaLabel')}>
       {filteredTodos.map((todo) => (
         <TodoNode
           key={todo.id}

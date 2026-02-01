@@ -2,11 +2,17 @@
  * Tests for Auth Schemas
  *
  * Tests Zod validation schemas for login and registration forms.
+ * Schemas are now factory functions that accept a translation function.
  */
 
 import { describe, it, expect } from 'vitest';
-import { loginSchema, registerSchema } from './authSchemas';
+import i18n from '@i18n/i18n';
+import { createLoginSchema, createRegisterSchema } from './authSchemas';
 import type { LoginFormData, RegisterFormData } from './authSchemas';
+
+const t = i18n.getFixedT('en', 'auth');
+const loginSchema = createLoginSchema(t);
+const registerSchema = createRegisterSchema(t);
 
 describe('loginSchema', () => {
   it('should validate correct login data', () => {

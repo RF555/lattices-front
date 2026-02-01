@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { ApiException, ERROR_MESSAGES } from './errors';
+import { ApiException, ERROR_MESSAGES, getErrorMessage } from './errors';
 import type { ApiError } from './types';
 
 describe('ApiException', () => {
@@ -124,8 +124,7 @@ describe('ERROR_MESSAGES', () => {
     expect(ERROR_MESSAGES.NETWORK_ERROR).toBe('Unable to connect to the server');
   });
 
-  it('should have the correct number of error codes', () => {
-    const keys = Object.keys(ERROR_MESSAGES);
-    expect(keys.length).toBe(13);
+  it('should return fallback for unknown error codes', () => {
+    expect(getErrorMessage('NONEXISTENT_CODE')).toBe('An unexpected error occurred');
   });
 });

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Pencil } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
 import { useIsMobile } from '@hooks/useIsMobile';
@@ -16,6 +17,7 @@ interface TodoDetailPanelProps {
 }
 
 export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
+  const { t } = useTranslation('todos');
   const isMobile = useIsMobile();
   const [description, setDescription] = useState(todo.description ?? '');
   const [isEditing, setIsEditing] = useState(false);
@@ -94,10 +96,10 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   return (
     <div
       className="border-t border-gray-100 bg-gray-50/50 shadow-panel animate-in slide-in-from-top-1 fade-in duration-200"
-      style={{ paddingLeft: `${(isMobile ? Math.min(indentPx, 80) : indentPx) + 8}px` }}
+      style={{ paddingInlineStart: `${(isMobile ? Math.min(indentPx, 80) : indentPx) + 8}px` }}
       onClick={handleContainerClick}
     >
-      <div className="py-3 pr-3 sm:pr-4 space-y-3">
+      <div className="py-3 pe-3 sm:pe-4 space-y-3">
         {/* Breadcrumb */}
         <TodoBreadcrumb todoId={todo.id} />
 
@@ -110,16 +112,16 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
                 value={description}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
-                placeholder="Add a description..."
+                placeholder={t('detail.descriptionPlaceholder')}
                 className="text-sm bg-white"
                 rows={3}
               />
               <div className="flex items-center gap-2">
                 <Button size="sm" onClick={handleSave} disabled={!isDirty}>
-                  Save
+                  {t('actions.save', { ns: 'common' })}
                 </Button>
                 <Button size="sm" variant="ghost" onClick={handleCancel}>
-                  Cancel
+                  {t('actions.cancel', { ns: 'common' })}
                 </Button>
               </div>
             </>
@@ -127,14 +129,14 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
             <div className="flex items-start gap-2">
               <p className="text-sm text-gray-600 whitespace-pre-wrap flex-1 min-h-[1.25rem]">
                 {todo.description || (
-                  <span className="text-gray-400 italic">No description</span>
+                  <span className="text-gray-400 italic">{t('detail.noDescription')}</span>
                 )}
               </p>
               <button
                 type="button"
                 onClick={handleEdit}
                 className="p-1 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
-                aria-label="Edit description"
+                aria-label={t('detail.editDescription')}
               >
                 <Pencil className="w-3.5 h-3.5" />
               </button>
@@ -144,7 +146,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
 
         {/* Tags section */}
         <div className="space-y-1">
-          <label className="block text-xs font-medium text-gray-500">Tags</label>
+          <label className="block text-xs font-medium text-gray-500">{t('detail.tags')}</label>
           <TagPicker
             selectedIds={todo.tags?.map((t) => t.id) ?? []}
             onSelect={(tagId) =>
@@ -159,14 +161,14 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
         {/* Timestamps section */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-gray-400">
           <span title={formatDateFull(todo.createdAt)}>
-            Created {formatDate(todo.createdAt)}
+            {t('detail.created', { date: formatDate(todo.createdAt) })}
           </span>
           <span title={formatDateFull(todo.updatedAt)}>
-            Updated {formatDate(todo.updatedAt)}
+            {t('detail.updated', { date: formatDate(todo.updatedAt) })}
           </span>
           {todo.completedAt && (
             <span title={formatDateFull(todo.completedAt)}>
-              Completed {formatDate(todo.completedAt)}
+              {t('detail.completed', { date: formatDate(todo.completedAt) })}
             </span>
           )}
         </div>

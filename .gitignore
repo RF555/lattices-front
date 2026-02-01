@@ -15,7 +15,7 @@ coverage
 
 # TypeScript build artifacts
 *.tsbuildinfo
-*.d.ts
+/*.d.ts
 
 # Editor directories and files
 .vscode/*

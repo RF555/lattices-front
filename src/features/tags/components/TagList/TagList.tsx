@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTags, useDeleteTag } from '../../hooks/useTags';
 import { Button } from '@components/ui/Button';
 import { TagBadge } from '../TagBadge';
@@ -7,20 +8,21 @@ import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import type { Tag } from '../../types/tag';
 
 export function TagList() {
+  const { t } = useTranslation('tags');
   const { data: tags = [], isLoading } = useTags();
   const deleteMutation = useDeleteTag();
   const [editingTag, setEditingTag] = useState<Tag | null>(null);
   const [deletingTagId, setDeletingTagId] = useState<string | null>(null);
 
   if (isLoading) {
-    return <div className="animate-pulse">Loading tags...</div>;
+    return <div className="animate-pulse">{t('list.loading')}</div>;
   }
 
   if (tags.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500">
-        <p>No tags yet.</p>
-        <p className="text-sm">Tags will appear here once you create them.</p>
+        <p>{t('list.emptyTitle')}</p>
+        <p className="text-sm">{t('list.emptyMessage')}</p>
       </div>
     );
   }
@@ -38,14 +40,14 @@ export function TagList() {
 
           <div className="flex items-center gap-2">
             <span className="hidden sm:inline text-xs text-gray-400">
-              {tag.usageCount || 0} tasks
+              {tag.usageCount || 0} {t('list.usageCount')}
             </span>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setEditingTag(tag)}
             >
-              Edit
+              {t('actions.edit', { ns: 'common' })}
             </Button>
             <Button
               variant="ghost"
@@ -53,7 +55,7 @@ export function TagList() {
               onClick={() => setDeletingTagId(tag.id)}
               disabled={deleteMutation.isPending}
             >
-              Delete
+              {t('actions.delete', { ns: 'common' })}
             </Button>
           </div>
         </div>
@@ -69,9 +71,9 @@ export function TagList() {
       {deletingTagId && (
         <ConfirmationDialog
           isOpen
-          title="Delete Tag"
-          message={`Delete tag "${tags.find((t) => t.id === deletingTagId)?.name}"?`}
-          confirmLabel="Delete"
+          title={t('list.deleteTitle')}
+          message={t('list.deleteMessage', { name: tags.find((tg) => tg.id === deletingTagId)?.name })}
+          confirmLabel={t('actions.delete', { ns: 'common' })}
           variant="danger"
           onConfirm={() => {
             deleteMutation.mutate(deletingTagId);

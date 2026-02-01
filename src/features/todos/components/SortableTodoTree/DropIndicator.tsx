@@ -15,7 +15,7 @@ export function DropIndicator({ position, depth, isActive }: DropIndicatorProps)
     return (
       <div
         className="absolute inset-0 rounded-md border-2 border-dashed border-primary bg-primary/5 pointer-events-none"
-        style={{ marginLeft: `${indentPx + 24}px` }}
+        style={{ marginInlineStart: `${indentPx + 24}px` }}
       />
     );
   }
@@ -23,15 +23,15 @@ export function DropIndicator({ position, depth, isActive }: DropIndicatorProps)
   return (
     <div
       className={cn(
-        'absolute left-0 right-0 h-0.5 bg-primary',
+        'absolute start-0 end-0 h-0.5 bg-primary',
         position === 'above' ? '-top-0.5' : '-bottom-0.5'
       )}
-      style={{ marginLeft: `${indentPx}px` }}
+      style={{ marginInlineStart: `${indentPx}px` }}
     >
       <div
         className={cn(
           'absolute w-2 h-2 rounded-full bg-primary',
-          '-left-1 -top-[3px]'
+          '-start-1 -top-[3px]'
         )}
       />
     </div>

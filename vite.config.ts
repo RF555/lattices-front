@@ -24,6 +24,7 @@ export default defineConfig(({ mode }) => ({
       '@stores': path.resolve(__dirname, './src/stores'),
       // Use @app-types to avoid collision with npm's @types scope (fixes L6)
       '@app-types': path.resolve(__dirname, './src/types'),
+      '@i18n': path.resolve(__dirname, './src/i18n'),
     },
   },
   server: {

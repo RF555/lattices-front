@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { wakeUpBackend } from '@lib/api/wakeUp';
 
 type BannerState = 'hidden' | 'waking' | 'ready';
 
 export function ColdStartBanner() {
+  const { t } = useTranslation();
   const [bannerState, setBannerState] = useState<BannerState>('hidden');
 
   useEffect(() => {
@@ -49,13 +51,13 @@ export function ColdStartBanner() {
       <div className="bg-amber-100 text-amber-800 px-4 py-2 text-center text-sm">
         {bannerState === 'waking' ? (
           <>
-            <span className="inline-block animate-pulse mr-2">&#x23F3;</span>
-            Waking up server... this might take a moment.
+            <span className="inline-block animate-pulse me-2">&#x23F3;</span>
+            {t('coldStart.waking')}
           </>
         ) : (
           <>
-            <span className="mr-2">&#x2713;</span>
-            Server ready!
+            <span className="me-2">&#x2713;</span>
+            {t('coldStart.ready')}
           </>
         )}
       </div>

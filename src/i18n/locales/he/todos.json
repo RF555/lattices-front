@@ -1,0 +1,81 @@
+{
+  "dashboard": {
+    "title": "המשימות שלי",
+    "subtitle": "מבנה למה שחשוב."
+  },
+  "createForm": {
+    "placeholderSubtask": "הוספת תת-משימה...",
+    "placeholderTask": "הוספת משימה...",
+    "add": "הוספה",
+    "descriptionPlaceholder": "הוספת תיאור (אופציונלי)...",
+    "removeDescription": "הסרת תיאור",
+    "removeTags": "הסרת תגיות",
+    "addDescription": "+ הוספת תיאור",
+    "addTags": "+ הוספת תגיות",
+    "subtaskInfo": "מוסיף כתת-משימה לפריט הנבחר"
+  },
+  "toolbar": {
+    "taskCount_one": "משימה {{count}}",
+    "taskCount_other": "{{count}} משימות",
+    "showCompleted": "הצגת הושלמו",
+    "sortManual": "סדר ידני",
+    "sortDate": "תאריך יצירה",
+    "sortAlpha": "סדר אלפביתי",
+    "searchPlaceholder": "חיפוש משימות...",
+    "expandAll": "הרחבת הכל",
+    "collapseAll": "כיווץ הכל",
+    "hideFilters": "הסתרת מסננים",
+    "showFilters": "הצגת מסננים",
+    "sortAscending": "מיון עולה",
+    "sortDescending": "מיון יורד"
+  },
+  "tree": {
+    "error": "טעינת המשימות נכשלה. אנא נסו שוב.",
+    "ariaLabel": "רשימת משימות"
+  },
+  "empty": {
+    "filteredTitle": "אין משימות תואמות",
+    "filteredMessage": "נסו להתאים את המסננים",
+    "defaultTitle": "אין משימות עדיין",
+    "defaultMessage": "משימות עם בסיס. צרו את המשימה הראשונה שלכם כדי לבנות את ה-Lattice שלכם."
+  },
+  "actions": {
+    "editTask": "עריכת משימה",
+    "deleteTask": "מחיקת משימה",
+    "collapse": "כיווץ",
+    "expand": "הרחבה"
+  },
+  "nodeContent": {
+    "deleteTitle": "מחיקת משימה",
+    "deleteMessage": "האם אתם בטוחים שברצונכם למחוק משימה זו וכל תתי-המשימות?",
+    "deleteConfirm": "מחיקה",
+    "subtaskProgress": "{{completed}} מתוך {{total}} תתי-משימות הושלמו"
+  },
+  "detail": {
+    "descriptionPlaceholder": "הוספת תיאור...",
+    "noDescription": "אין תיאור",
+    "editDescription": "עריכת תיאור",
+    "tags": "תגיות",
+    "created": "נוצר {{date}}",
+    "updated": "עודכן {{date}}",
+    "completed": "הושלם {{date}}"
+  },
+  "shortcuts": {
+    "title": "קיצורי מקלדת",
+    "trigger": "קיצורי מקלדת (?)",
+    "triggerAriaLabel": "הצגת קיצורי מקלדת",
+    "moveUp": "הזזה למעלה",
+    "moveDown": "הזזה למטה",
+    "expandItem": "הרחבת פריט",
+    "collapseItem": "כיווץ פריט / מעבר להורה",
+    "toggleComplete": "החלפת מצב השלמה",
+    "deleteItem": "מחיקת פריט",
+    "newTask": "משימה חדשה",
+    "deselect": "ביטול בחירה",
+    "goToFirst": "מעבר לראשון",
+    "goToLast": "מעבר לאחרון"
+  },
+  "breadcrumb": {
+    "ariaLabel": "נתיב ניווט"
+  }
+}

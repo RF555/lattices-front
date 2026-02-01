@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { ChevronsDown, ChevronsUp, SlidersHorizontal, Search, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { useTodos } from '../../hooks/useTodos';
 import { countTodos } from '../../utils/treeUtils';
@@ -7,6 +8,7 @@ import { TagFilter } from '../TagFilter';
 import type { Todo } from '../../types/todo';
 
 export function TodoToolbar() {
+  const { t } = useTranslation('todos');
   const { data: todos } = useTodos();
   const {
     showCompleted,
@@ -61,7 +63,7 @@ export function TodoToolbar() {
       <div className="hidden sm:flex items-center justify-between px-4 py-3">
         <div className="flex items-center gap-4">
           <span className="text-sm text-gray-600">
-            {totalCount} {totalCount === 1 ? 'task' : 'tasks'}
+            {t('toolbar.taskCount', { count: totalCount })}
           </span>
 
           <label className="flex items-center gap-2 text-sm text-gray-600">
@@ -71,7 +73,7 @@ export function TodoToolbar() {
               onChange={(e) => setShowCompleted(e.target.checked)}
               className="rounded border-gray-300 text-primary focus:ring-primary"
             />
-            Show completed
+            {t('toolbar.showCompleted')}
           </label>
         </div>
 
@@ -83,14 +85,14 @@ export function TodoToolbar() {
               onChange={(e) => setSortBy(e.target.value as 'position' | 'createdAt' | 'title')}
               className="text-sm rounded-md border border-gray-300 px-2 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
             >
-              <option value="position">Manual order</option>
-              <option value="createdAt">Date created</option>
-              <option value="title">Alphabetical</option>
+              <option value="position">{t('toolbar.sortManual')}</option>
+              <option value="createdAt">{t('toolbar.sortDate')}</option>
+              <option value="title">{t('toolbar.sortAlpha')}</option>
             </select>
             <button
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
               className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title={`Sort ${sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+              title={sortOrder === 'asc' ? t('toolbar.sortDescending') : t('toolbar.sortAscending')}
             >
               <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
                 {sortOrder === 'asc' ? (
@@ -118,7 +120,7 @@ export function TodoToolbar() {
             type="search"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            placeholder="Search tasks..."
+            placeholder={t('toolbar.searchPlaceholder')}
             className="text-sm rounded-md border border-gray-300 px-3 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1"
           />
 
@@ -126,14 +128,14 @@ export function TodoToolbar() {
             <button
               onClick={() => expandAll(allIds)}
               className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title="Expand all"
+              title={t('toolbar.expandAll')}
             >
               <ChevronsDown className="w-4 h-4" />
             </button>
             <button
               onClick={() => collapseAll()}
               className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title="Collapse all"
+              title={t('toolbar.collapseAll')}
             >
               <ChevronsUp className="w-4 h-4" />
             </button>
@@ -149,13 +151,13 @@ export function TodoToolbar() {
       {/* ── Mobile toolbar (<sm) ── */}
       <div className="flex sm:hidden items-center justify-between px-3 py-2.5">
         <span className="text-sm text-gray-600">
-          {totalCount} {totalCount === 1 ? 'task' : 'tasks'}
+          {t('toolbar.taskCount', { count: totalCount })}
         </span>
 
         <button
           onClick={toggleToolbar}
           className="relative p-2 text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100"
-          aria-label={toolbarExpanded ? 'Hide filters' : 'Show filters'}
+          aria-label={toolbarExpanded ? t('toolbar.hideFilters') : t('toolbar.showFilters')}
         >
           {toolbarExpanded ? (
             <X className="w-5 h-5" />
@@ -164,7 +166,7 @@ export function TodoToolbar() {
           )}
           {/* Active filter indicator dot */}
           {hasActiveFilters && !toolbarExpanded && (
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
+            <span className="absolute top-1.5 end-1.5 w-2 h-2 bg-primary rounded-full" />
           )}
         </button>
       </div>
@@ -174,13 +176,13 @@ export function TodoToolbar() {
         <div className="sm:hidden px-3 pb-3 space-y-3 animate-in slide-in-from-top-1 fade-in duration-200">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute start-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="search"
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
-              placeholder="Search tasks..."
-              className="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1"
+              placeholder={t('toolbar.searchPlaceholder')}
+              className="w-full text-sm rounded-md border border-gray-300 ps-8 pe-3 py-2 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1"
             />
           </div>
 
@@ -192,7 +194,7 @@ export function TodoToolbar() {
               onChange={(e) => setShowCompleted(e.target.checked)}
               className="rounded border-gray-300 text-primary focus:ring-primary"
             />
-            Show completed
+            {t('toolbar.showCompleted')}
           </label>
 
           {/* Sort + expand/collapse row */}
@@ -202,14 +204,14 @@ export function TodoToolbar() {
               onChange={(e) => setSortBy(e.target.value as 'position' | 'createdAt' | 'title')}
               className="flex-1 text-sm rounded-md border border-gray-300 px-2 py-2 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
             >
-              <option value="position">Manual order</option>
-              <option value="createdAt">Date created</option>
-              <option value="title">Alphabetical</option>
+              <option value="position">{t('toolbar.sortManual')}</option>
+              <option value="createdAt">{t('toolbar.sortDate')}</option>
+              <option value="title">{t('toolbar.sortAlpha')}</option>
             </select>
             <button
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
               className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title={`Sort ${sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+              title={sortOrder === 'asc' ? t('toolbar.sortDescending') : t('toolbar.sortAscending')}
             >
               <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
                 {sortOrder === 'asc' ? (
@@ -234,14 +236,14 @@ export function TodoToolbar() {
             <button
               onClick={() => expandAll(allIds)}
               className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title="Expand all"
+              title={t('toolbar.expandAll')}
             >
               <ChevronsDown className="w-4 h-4" />
             </button>
             <button
               onClick={() => collapseAll()}
               className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title="Collapse all"
+              title={t('toolbar.collapseAll')}
             >
               <ChevronsUp className="w-4 h-4" />
             </button>

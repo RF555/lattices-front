@@ -1,0 +1,32 @@
+{
+  "badge": {
+    "removeTag": "Remove {{name}} tag"
+  },
+  "list": {
+    "loading": "Loading tags...",
+    "emptyTitle": "No tags yet.",
+    "emptyMessage": "Tags will appear here once you create them.",
+    "usageCount": "tasks",
+    "deleteTitle": "Delete Tag",
+    "deleteMessage": "Delete tag \"{{name}}\"?"
+  },
+  "picker": {
+    "searchPlaceholder": "Search or create...",
+    "placeholder": "Add tags...",
+    "emptyState": "No tags available. Type to create one.",
+    "createPrompt": "Create tag \u201c{{name}}\u201d",
+    "creating": "Creating...",
+    "create": "Create",
+    "createTag": "Create \u201c{{name}}\u201d"
+  },
+  "editModal": {
+    "title": "Edit Tag",
+    "nameLabel": "Name",
+    "colorLabel": "Color",
+    "saveChanges": "Save Changes"
+  },
+  "filter": {
+    "label": "Filter by tag:",
+    "clear": "Clear"
+  }
+}
