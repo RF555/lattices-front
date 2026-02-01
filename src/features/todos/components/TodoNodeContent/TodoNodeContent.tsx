@@ -7,6 +7,7 @@ import { TodoCheckbox } from '../TodoTree/TodoCheckbox';
 import { TodoExpandButton } from '../TodoTree/TodoExpandButton';
 import { TodoActions } from '../TodoTree/TodoActions';
 import { TodoInlineEdit } from '../TodoTree/TodoInlineEdit';
+import { TagBadge } from '@features/tags/components/TagBadge';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import { TodoDetailPanel } from '../TodoDetailPanel';
 import type { Todo } from '../../types/todo';
@@ -128,6 +129,15 @@ export function TodoNodeContent({
           >
             {todo.title}
           </span>
+        )}
+
+        {/* Tag badges (read-only display in tree row) */}
+        {!isEditing && todo.tags?.length > 0 && (
+          <div className="flex items-center gap-1 shrink-0">
+            {todo.tags.map((tag) => (
+              <TagBadge key={tag.id} tag={tag} />
+            ))}
+          </div>
         )}
 
         {todo.description != null && (

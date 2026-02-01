@@ -18,7 +18,7 @@ vi.mock('@lib/auth', () => ({
     refreshToken: vi.fn(),
     getSession: vi.fn(),
   },
-  type: {} as any,
+  type: {} as unknown,
 }));
 
 vi.mock('@lib/api/client', () => ({
@@ -86,11 +86,11 @@ describe('authStore', () => {
 
     it('should set loading state during login', async () => {
       const { authProvider } = await import('@lib/auth');
-      let resolveLogin: (value: any) => void;
+      let resolveLogin: (value: { user: User; tokens: AuthTokens }) => void;
       const loginPromise = new Promise((resolve) => {
         resolveLogin = resolve;
       });
-      vi.mocked(authProvider.login).mockReturnValue(loginPromise as any);
+      vi.mocked(authProvider.login).mockReturnValue(loginPromise as Promise<{ user: User; tokens: AuthTokens }>);
 
       const store = useAuthStore.getState();
       const loginCall = store.login({ email: 'test@example.com', password: 'password' });

@@ -142,12 +142,12 @@ Todos are stored flat on the server and assembled into a tree on the client usin
 - Virtual scrolling for large lists (@tanstack/react-virtual)
 - Keyboard navigation (arrow keys, vim bindings, Home/End)
 - Filtering by completion status, tags, and search query
-- Sorting by position or creation date
-- Inline detail panel showing editable description and timestamps (created, updated, completed)
+- Sorting by position, creation date, or alphabetical
+- Inline detail panel showing editable description, tag picker, and timestamps (created, updated, completed)
 
 ### Tags
 
-Color-coded tags for organizing todos. Features inline tag creation, a tag picker with search, and tag-based filtering in the toolbar.
+Color-coded tags for organizing todos. Features inline tag creation, a tag picker with search, tag selection during todo creation, and tag-based filtering in the toolbar.
 
 ## Key Patterns
 

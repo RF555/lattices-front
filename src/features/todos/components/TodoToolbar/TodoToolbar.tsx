@@ -13,6 +13,10 @@ export function TodoToolbar() {
     setShowCompleted,
     searchQuery,
     setSearchQuery,
+    sortBy,
+    setSortBy,
+    sortOrder,
+    setSortOrder,
     expandAll,
     collapseAll,
   } = useTodoUiStore();
@@ -62,6 +66,44 @@ export function TodoToolbar() {
       </div>
 
       <div className="flex items-center gap-3">
+        {/* Sort controls */}
+        <div className="flex items-center gap-1">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'position' | 'createdAt' | 'title')}
+            className="text-sm rounded-md border border-gray-300 px-2 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
+          >
+            <option value="position">Manual order</option>
+            <option value="createdAt">Date created</option>
+            <option value="title">Alphabetical</option>
+          </select>
+          <button
+            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+            className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+            title={`Sort ${sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+          >
+            <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+              {sortOrder === 'asc' ? (
+                <path
+                  d="M8 3v10M4 7l4-4 4 4"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              ) : (
+                <path
+                  d="M8 13V3M4 9l4 4 4-4"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              )}
+            </svg>
+          </button>
+        </div>
+
         <input
           type="search"
           value={localSearch}

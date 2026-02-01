@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useTodos } from '../../hooks/useTodos';
 import { useTodoUiStore, useExpandedIds } from '../../stores/todoUiStore';
-import { filterTodoTree } from '../../utils/treeUtils';
+import { filterTodoTree, sortTodoTree } from '../../utils/treeUtils';
 import { TodoNode } from './TodoNode';
 import { TodoTreeEmpty } from './TodoTreeEmpty';
 import { TodoTreeLoading } from './TodoTreeLoading';
@@ -11,11 +11,13 @@ export function TodoTree() {
   const { data: todos, isLoading, error } = useTodos();
   const expandedIds = useExpandedIds();
   // Fix M2: Use useShallow to prevent re-renders
-  const { searchQuery, filterTagIds, showCompleted } = useTodoUiStore(
+  const { searchQuery, filterTagIds, showCompleted, sortBy, sortOrder } = useTodoUiStore(
     useShallow((s) => ({
       searchQuery: s.searchQuery,
       filterTagIds: s.filterTagIds,
       showCompleted: s.showCompleted,
+      sortBy: s.sortBy,
+      sortOrder: s.sortOrder,
     }))
   );
 
@@ -41,12 +43,16 @@ export function TodoTree() {
         result,
         (todo) =>
           todo.title.toLowerCase().includes(query) ||
-          (todo.description?.toLowerCase().includes(query) ?? false)
+          (todo.description?.toLowerCase().includes(query) ?? false) ||
+          (todo.tags?.some((t) => t.name.toLowerCase().includes(query)) ?? false)
       );
     }
 
+    // Apply sorting
+    result = sortTodoTree(result, sortBy, sortOrder);
+
     return result;
-  }, [todos, showCompleted, filterTagIds, searchQuery]);
+  }, [todos, showCompleted, filterTagIds, searchQuery, sortBy, sortOrder]);
 
   if (isLoading) {
     return <TodoTreeLoading />;
