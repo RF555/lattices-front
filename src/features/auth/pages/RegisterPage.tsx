@@ -7,7 +7,7 @@ export default function RegisterPage() {
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900">Lattices</h1>
           <p className="mt-2 text-sm text-gray-600">
-            Create an account to get started
+            Tasks with a foundation.
           </p>
         </div>
 

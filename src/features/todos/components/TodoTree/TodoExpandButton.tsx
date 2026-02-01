@@ -1,3 +1,4 @@
+import { ChevronRight } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 
 interface TodoExpandButtonProps {
@@ -29,22 +30,12 @@ export function TodoExpandButton({
       )}
       aria-label={isExpanded ? 'Collapse' : 'Expand'}
     >
-      <svg
+      <ChevronRight
         className={cn(
           'w-3 h-3 transition-transform',
           isExpanded && 'rotate-90'
         )}
-        viewBox="0 0 12 12"
-        fill="none"
-      >
-        <path
-          d="M4 2l4 4-4 4"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      />
     </button>
   );
 }

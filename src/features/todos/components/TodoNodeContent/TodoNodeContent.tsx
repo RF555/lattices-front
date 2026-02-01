@@ -1,4 +1,5 @@
 import { useState, useCallback, type ReactNode } from 'react';
+import { AlignLeft } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { useToggleTodo, useDeleteTodo, useUpdateTodo } from '../../hooks/useTodos';
@@ -86,8 +87,11 @@ export function TodoNodeContent({
       <div
         className={cn(
           'group flex items-center gap-2 px-2 py-1.5 rounded-md',
-          'hover:bg-gray-50 transition-colors',
-          isSelected && 'bg-blue-50 hover:bg-blue-100',
+          'hover:bg-gray-50 transition-all',
+          depth === 0
+            ? 'shadow-node hover:shadow-node-hover'
+            : 'shadow-none hover:shadow-node',
+          isSelected && 'bg-blue-50 hover:bg-blue-100 shadow-node-selected',
           isCompleted && 'opacity-60',
           className
         )}
@@ -127,19 +131,7 @@ export function TodoNodeContent({
         )}
 
         {todo.description != null && (
-          <svg
-            className="w-3.5 h-3.5 text-gray-300 shrink-0"
-            viewBox="0 0 16 16"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            aria-hidden="true"
-          >
-            <line x1="2" y1="4" x2="14" y2="4" />
-            <line x1="2" y1="8" x2="14" y2="8" />
-            <line x1="2" y1="12" x2="10" y2="12" />
-          </svg>
+          <AlignLeft className="w-3.5 h-3.5 text-gray-300 shrink-0" aria-hidden="true" />
         )}
 
         {todo.childCount > 0 && (

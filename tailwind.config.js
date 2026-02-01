@@ -8,6 +8,20 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          '"Inter Variable"',
+          'ui-sans-serif',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
+          'sans-serif',
+        ],
+      },
       colors: {
         primary: {
           DEFAULT: '#6366f1',
@@ -23,6 +37,20 @@ export default {
           900: '#312e81',
           950: '#1e1b4b',
         },
+        lattice: {
+          line: '#e5e7eb',
+          'line-hover': '#9ca3af',
+        },
+        surface: {
+          DEFAULT: '#ffffff',
+          muted: '#f9fafb',
+        },
+      },
+      boxShadow: {
+        node: '0 1px 2px 0 rgba(0, 0, 0, 0.04)',
+        'node-hover': '0 2px 6px 0 rgba(0, 0, 0, 0.08)',
+        'node-selected': '0 2px 8px 0 rgba(99, 102, 241, 0.12)',
+        panel: '0 4px 12px 0 rgba(0, 0, 0, 0.06)',
       },
     },
   },

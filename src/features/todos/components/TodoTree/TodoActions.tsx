@@ -1,3 +1,4 @@
+import { Pencil, Trash2 } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 
 interface TodoActionsProps {
@@ -21,15 +22,7 @@ export function TodoActions({ onEdit, onDelete, isDeleting }: TodoActionsProps) 
         )}
         aria-label="Edit task"
       >
-        <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M11.5 2.5l2 2L5 13H3v-2l8.5-8.5z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <Pencil className="w-4 h-4" />
       </button>
 
       <button
@@ -46,15 +39,7 @@ export function TodoActions({ onEdit, onDelete, isDeleting }: TodoActionsProps) 
         )}
         aria-label="Delete task"
       >
-        <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M5 3V2a1 1 0 011-1h4a1 1 0 011 1v1m-8 1h12M6 14h4a1 1 0 001-1V5H5v8a1 1 0 001 1z"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
+        <Trash2 className="w-4 h-4" />
       </button>
     </div>
   );

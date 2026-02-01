@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 
 interface TagBadgeProps {
@@ -43,14 +44,7 @@ export function TagBadge({
           className="ml-0.5 hover:bg-black/10 rounded-full p-0.5"
           aria-label={`Remove ${tag.name} tag`}
         >
-          <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none">
-            <path
-              d="M3 3l6 6M9 3l-6 6"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-            />
-          </svg>
+          <X className="w-3 h-3" />
         </button>
       )}
     </span>

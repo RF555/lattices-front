@@ -149,3 +149,32 @@ export function filterTodoTree(
 
   return filterNodes(todos);
 }
+
+/**
+ * Returns the ancestor chain from root down to (but not including) the given todo.
+ * Each entry is { id, title } for breadcrumb rendering.
+ */
+export function getAncestorPath(
+  tree: Todo[],
+  targetId: string
+): { id: string; title: string }[] {
+  const path: { id: string; title: string }[] = [];
+
+  const search = (nodes: Todo[], ancestors: { id: string; title: string }[]): boolean => {
+    for (const node of nodes) {
+      if (node.id === targetId) {
+        path.push(...ancestors);
+        return true;
+      }
+      if (node.children?.length) {
+        if (search(node.children, [...ancestors, { id: node.id, title: node.title }])) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  search(tree, []);
+  return path;
+}

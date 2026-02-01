@@ -1,4 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
+import { ChevronsDown, ChevronsUp } from 'lucide-react';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { useTodos } from '../../hooks/useTodos';
 import { countTodos } from '../../utils/treeUtils';
@@ -75,28 +76,14 @@ export function TodoToolbar() {
             className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
             title="Expand all"
           >
-            <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M3 6l5 5 5-5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+            <ChevronsDown className="w-4 h-4" />
           </button>
           <button
             onClick={() => collapseAll()}
             className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
             title="Collapse all"
           >
-            <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-              <path
-                d="M3 10l5-5 5 5"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
+            <ChevronsUp className="w-4 h-4" />
           </button>
         </div>
       </div>

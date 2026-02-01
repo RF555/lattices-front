@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 import { TodoNodeContent } from '../TodoNodeContent';
 import type { Todo } from '../../types/todo';
@@ -10,6 +11,7 @@ interface SortableTodoNodeProps {
   depth: number;
   isExpanded: boolean;
   hasChildren: boolean;
+  activeBranchDepths: number[];
 }
 
 /**
@@ -22,6 +24,7 @@ export const SortableTodoNode = memo(function SortableTodoNode({
   depth,
   isExpanded,
   hasChildren,
+  activeBranchDepths,
 }: SortableTodoNodeProps) {
   const {
     attributes,
@@ -51,7 +54,16 @@ export const SortableTodoNode = memo(function SortableTodoNode({
       style={style}
       role="treeitem"
       aria-expanded={hasChildren ? isExpanded : undefined}
+      className="relative"
     >
+      {activeBranchDepths.map((d) => (
+        <div
+          key={d}
+          className="absolute top-0 bottom-0 w-px bg-lattice-line pointer-events-none"
+          style={{ left: `${d * 24 + 8}px` }}
+          aria-hidden="true"
+        />
+      ))}
       <TodoNodeContent
         todo={todo}
         depth={depth}
@@ -73,14 +85,7 @@ export const SortableTodoNode = memo(function SortableTodoNode({
             )}
             aria-label="Drag to reorder"
           >
-            <svg className="w-4 h-4" viewBox="0 0 16 16" fill="currentColor">
-              <circle cx="5" cy="4" r="1.5" />
-              <circle cx="11" cy="4" r="1.5" />
-              <circle cx="5" cy="8" r="1.5" />
-              <circle cx="11" cy="8" r="1.5" />
-              <circle cx="5" cy="12" r="1.5" />
-              <circle cx="11" cy="12" r="1.5" />
-            </svg>
+            <GripVertical className="w-4 h-4" />
           </button>
         }
       />

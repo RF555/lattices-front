@@ -27,14 +27,23 @@ export const TodoNode = memo(function TodoNode({
       />
 
       {hasChildren && isExpanded && (
-        <div role="group">
-          {todo.children!.map((child) => (
-            <TodoNode
+        <div
+          role="group"
+          className="lattice-branch"
+          style={{ '--branch-x': `${(depth + 1) * 24 + 8}px` } as React.CSSProperties}
+        >
+          {todo.children!.map((child, index) => (
+            <div
               key={child.id}
-              todo={child}
-              depth={depth + 1}
-              isExpanded={expandedIds.has(child.id)}
-            />
+              className={`lattice-connector${index === todo.children!.length - 1 ? ' lattice-branch-last' : ''}`}
+              style={{ '--branch-x': `${(depth + 1) * 24 + 8}px` } as React.CSSProperties}
+            >
+              <TodoNode
+                todo={child}
+                depth={depth + 1}
+                isExpanded={expandedIds.has(child.id)}
+              />
+            </div>
           ))}
         </div>
       )}

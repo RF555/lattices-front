@@ -8,6 +8,7 @@ import { SortableTodoNode } from './SortableTodoNode';
 import { TodoTreeEmpty } from '../TodoTree/TodoTreeEmpty';
 import { TodoTreeLoading } from '../TodoTree/TodoTreeLoading';
 import { DragOverlayContent } from './DragOverlayContent';
+import type { Todo } from '../../types/todo';
 
 export function SortableTodoTree() {
   const { data: todos, isLoading, error } = useTodos();
@@ -21,6 +22,11 @@ export function SortableTodoTree() {
   }, [todos, expandedIds]);
 
   const itemIds = useMemo(() => flatItems.map((item) => item.id), [flatItems]);
+
+  // Compute which depth levels have continuing branch lines for each item
+  const branchLinesMap = useMemo(() => {
+    return computeBranchLines(flatItems);
+  }, [flatItems]);
 
   // Build a parent lookup map for O(1) ancestor traversal
   const parentMap = useMemo(() => {
@@ -115,12 +121,71 @@ export function SortableTodoTree() {
               depth={todo.depth ?? 0}
               isExpanded={expandedIds.has(todo.id)}
               hasChildren={!!todo.children?.length}
+              activeBranchDepths={branchLinesMap.get(todo.id) ?? []}
             />
           ))}
         </div>
       </SortableContext>
     </TreeDndContext>
   );
+}
+
+/**
+ * For each item in the flat list, compute which depth levels still have
+ * a sibling below (i.e. the vertical branch line should continue).
+ */
+function computeBranchLines(flatItems: Todo[]): Map<string, number[]> {
+  const result = new Map<string, number[]>();
+  // For each depth level, track the index of the last item at that depth
+  // that shares a parent with subsequent items
+  const lastAtDepth = new Map<number, number>();
+
+  // Walk backwards to find, for each depth, where the last sibling is
+  for (let i = flatItems.length - 1; i >= 0; i--) {
+    const depth = flatItems[i].depth ?? 0;
+    if (!lastAtDepth.has(depth)) {
+      lastAtDepth.set(depth, i);
+    }
+    // Reset deeper depths when we step back to a shallower item
+    for (const [d] of lastAtDepth) {
+      if (d > depth) lastAtDepth.delete(d);
+    }
+  }
+
+  // Now walk forward: for each item, track active depth levels
+  // A depth level is "active" if there's another item at that depth
+  // (same parent) further down in the list
+  const activeDepths = new Set<number>();
+
+  for (let i = 0; i < flatItems.length; i++) {
+    const item = flatItems[i];
+    const depth = item.depth ?? 0;
+
+    // Remove depths deeper than current (we've stepped out of that subtree)
+    for (const d of activeDepths) {
+      if (d >= depth) activeDepths.delete(d);
+    }
+
+    // Check if there's a next sibling at this depth (same parent)
+    let hasNextSibling = false;
+    for (let j = i + 1; j < flatItems.length; j++) {
+      const nextDepth = flatItems[j].depth ?? 0;
+      if (nextDepth < depth) break; // stepped out of parent scope
+      if (nextDepth === depth) {
+        hasNextSibling = true;
+        break;
+      }
+    }
+
+    if (hasNextSibling) {
+      activeDepths.add(depth);
+    }
+
+    // Store a copy of active depths for this item
+    result.set(item.id, [...activeDepths]);
+  }
+
+  return result;
 }
 
 /**

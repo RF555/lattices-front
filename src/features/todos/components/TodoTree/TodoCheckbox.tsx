@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 
 interface TodoCheckboxProps {
@@ -27,17 +28,7 @@ export function TodoCheckbox({ checked, onChange, disabled }: TodoCheckboxProps)
         disabled && 'opacity-50 cursor-not-allowed'
       )}
     >
-      {checked && (
-        <svg className="w-3 h-3" viewBox="0 0 12 12" fill="none">
-          <path
-            d="M2 6l3 3 5-5"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      )}
+      {checked && <Check className="w-3 h-3" strokeWidth={2.5} />}
     </button>
   );
 }

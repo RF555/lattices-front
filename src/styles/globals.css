@@ -1,3 +1,61 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+}
+
+@layer components {
+  /* Lattice branch lines: vertical line running down from parent to children */
+  .lattice-branch {
+    position: relative;
+  }
+
+  .lattice-branch::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--branch-x, 20px);
+    width: 1px;
+    background-color: theme('colors.lattice.line');
+    pointer-events: none;
+  }
+
+  /* Horizontal connector from vertical line to child item */
+  .lattice-connector {
+    position: relative;
+  }
+
+  .lattice-connector::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: var(--branch-x, 20px);
+    width: 12px;
+    height: 1px;
+    background-color: theme('colors.lattice.line');
+    pointer-events: none;
+  }
+
+  /* Last child: truncate the vertical line at the connector midpoint */
+  .lattice-branch-last::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    bottom: 0;
+    left: var(--branch-x, 20px);
+    width: 1px;
+    background-color: theme('colors.surface.DEFAULT');
+    pointer-events: none;
+  }
+}
