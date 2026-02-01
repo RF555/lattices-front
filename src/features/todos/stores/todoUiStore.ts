@@ -6,7 +6,7 @@ interface TodoUiState {
   expandedIds: Set<string>;
   selectedId: string | null;
   showCompleted: boolean;
-  sortBy: 'position' | 'createdAt';
+  sortBy: 'position' | 'createdAt' | 'title';
   sortOrder: 'asc' | 'desc';
   searchQuery: string;
   filterTagIds: string[];

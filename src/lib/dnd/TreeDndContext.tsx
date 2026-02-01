@@ -29,7 +29,7 @@ export function TreeDndContext<T extends TreeNode>({
   renderOverlay,
 }: TreeDndContextProps<T>) {
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [_overId, setOverId] = useState<string | null>(null);
+  const [, setOverId] = useState<string | null>(null);
   const sensors = useDndSensors();
 
   const activeItem = activeId

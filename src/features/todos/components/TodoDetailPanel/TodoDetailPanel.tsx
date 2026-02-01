@@ -4,6 +4,8 @@ import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
 import { useUpdateTodo } from '../../hooks/useTodos';
+import { TagPicker } from '@features/tags/components/TagPicker';
+import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { formatDate, formatDateFull } from '@lib/utils/formatDate';
 import type { Todo } from '../../types/todo';
 
@@ -20,6 +22,8 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
 
   const updateMutation = useUpdateTodo();
   const updateMutate = updateMutation.mutate;
+  const addTagMutation = useAddTagToTodo();
+  const removeTagMutation = useRemoveTagFromTodo();
 
   // Sync from server when not editing
   useEffect(() => {
@@ -134,6 +138,20 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
               </button>
             </div>
           )}
+        </div>
+
+        {/* Tags section */}
+        <div className="space-y-1">
+          <label className="block text-xs font-medium text-gray-500">Tags</label>
+          <TagPicker
+            selectedIds={todo.tags?.map((t) => t.id) ?? []}
+            onSelect={(tagId) =>
+              addTagMutation.mutate({ todoId: todo.id, tagId })
+            }
+            onDeselect={(tagId) =>
+              removeTagMutation.mutate({ todoId: todo.id, tagId })
+            }
+          />
         </div>
 
         {/* Timestamps section */}

@@ -178,3 +178,37 @@ export function getAncestorPath(
   search(tree, []);
   return path;
 }
+
+/**
+ * Sorts a todo tree recursively by the given field and direction.
+ * Creates new arrays (immutable) but reuses todo node references.
+ */
+export function sortTodoTree(
+  todos: Todo[],
+  sortBy: 'position' | 'createdAt' | 'title',
+  sortOrder: 'asc' | 'desc'
+): Todo[] {
+  const direction = sortOrder === 'asc' ? 1 : -1;
+
+  const compareFn = (a: Todo, b: Todo): number => {
+    switch (sortBy) {
+      case 'position':
+        return (a.position - b.position) * direction;
+      case 'createdAt':
+        return (a.createdAt.localeCompare(b.createdAt)) * direction;
+      case 'title':
+        return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }) * direction;
+    }
+  };
+
+  const sortNodes = (nodes: Todo[]): Todo[] => {
+    const sorted = [...nodes].sort(compareFn);
+    return sorted.map((node) =>
+      node.children?.length
+        ? { ...node, children: sortNodes(node.children) }
+        : node
+    );
+  };
+
+  return sortNodes(todos);
+}
