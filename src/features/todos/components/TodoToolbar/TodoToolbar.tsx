@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { ChevronsDown, ChevronsUp } from 'lucide-react';
+import { ChevronsDown, ChevronsUp, SlidersHorizontal, Search, X } from 'lucide-react';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { useTodos } from '../../hooks/useTodos';
 import { countTodos } from '../../utils/treeUtils';
@@ -19,6 +19,9 @@ export function TodoToolbar() {
     setSortOrder,
     expandAll,
     collapseAll,
+    filterTagIds,
+    toolbarExpanded,
+    toggleToolbar,
   } = useTodoUiStore();
 
   // Fix M11: Debounce search input (300ms)
@@ -46,93 +49,208 @@ export function TodoToolbar() {
     return ids;
   }, [todos]);
 
+  const hasActiveFilters =
+    searchQuery.length > 0 ||
+    filterTagIds.length > 0 ||
+    !showCompleted ||
+    sortBy !== 'position';
+
   return (
     <div className="space-y-0 border-b border-gray-200">
-    <div className="flex items-center justify-between px-4 py-3">
-      <div className="flex items-center gap-4">
+      {/* ── Desktop toolbar (sm+) ── */}
+      <div className="hidden sm:flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-gray-600">
+            {totalCount} {totalCount === 1 ? 'task' : 'tasks'}
+          </span>
+
+          <label className="flex items-center gap-2 text-sm text-gray-600">
+            <input
+              type="checkbox"
+              checked={showCompleted}
+              onChange={(e) => setShowCompleted(e.target.checked)}
+              className="rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            Show completed
+          </label>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {/* Sort controls */}
+          <div className="flex items-center gap-1">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'position' | 'createdAt' | 'title')}
+              className="text-sm rounded-md border border-gray-300 px-2 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
+            >
+              <option value="position">Manual order</option>
+              <option value="createdAt">Date created</option>
+              <option value="title">Alphabetical</option>
+            </select>
+            <button
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+              title={`Sort ${sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+            >
+              <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                {sortOrder === 'asc' ? (
+                  <path
+                    d="M8 3v10M4 7l4-4 4 4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                ) : (
+                  <path
+                    d="M8 13V3M4 9l4 4 4-4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                )}
+              </svg>
+            </button>
+          </div>
+
+          <input
+            type="search"
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            placeholder="Search tasks..."
+            className="text-sm rounded-md border border-gray-300 px-3 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1"
+          />
+
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => expandAll(allIds)}
+              className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+              title="Expand all"
+            >
+              <ChevronsDown className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => collapseAll()}
+              className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+              title="Collapse all"
+            >
+              <ChevronsUp className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop tag filter row */}
+      <div className="hidden sm:block px-4 pb-3">
+        <TagFilter />
+      </div>
+
+      {/* ── Mobile toolbar (<sm) ── */}
+      <div className="flex sm:hidden items-center justify-between px-3 py-2.5">
         <span className="text-sm text-gray-600">
           {totalCount} {totalCount === 1 ? 'task' : 'tasks'}
         </span>
 
-        <label className="flex items-center gap-2 text-sm text-gray-600">
-          <input
-            type="checkbox"
-            checked={showCompleted}
-            onChange={(e) => setShowCompleted(e.target.checked)}
-            className="rounded border-gray-300 text-primary focus:ring-primary"
-          />
-          Show completed
-        </label>
+        <button
+          onClick={toggleToolbar}
+          className="relative p-2 text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100"
+          aria-label={toolbarExpanded ? 'Hide filters' : 'Show filters'}
+        >
+          {toolbarExpanded ? (
+            <X className="w-5 h-5" />
+          ) : (
+            <SlidersHorizontal className="w-5 h-5" />
+          )}
+          {/* Active filter indicator dot */}
+          {hasActiveFilters && !toolbarExpanded && (
+            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
+          )}
+        </button>
       </div>
 
-      <div className="flex items-center gap-3">
-        {/* Sort controls */}
-        <div className="flex items-center gap-1">
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'position' | 'createdAt' | 'title')}
-            className="text-sm rounded-md border border-gray-300 px-2 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
-          >
-            <option value="position">Manual order</option>
-            <option value="createdAt">Date created</option>
-            <option value="title">Alphabetical</option>
-          </select>
-          <button
-            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-            className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-            title={`Sort ${sortOrder === 'asc' ? 'descending' : 'ascending'}`}
-          >
-            <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-              {sortOrder === 'asc' ? (
-                <path
-                  d="M8 3v10M4 7l4-4 4 4"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              ) : (
-                <path
-                  d="M8 13V3M4 9l4 4 4-4"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              )}
-            </svg>
-          </button>
-        </div>
+      {/* Mobile expanded panel */}
+      {toolbarExpanded && (
+        <div className="sm:hidden px-3 pb-3 space-y-3 animate-in slide-in-from-top-1 fade-in duration-200">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="search"
+              value={localSearch}
+              onChange={(e) => setLocalSearch(e.target.value)}
+              placeholder="Search tasks..."
+              className="w-full text-sm rounded-md border border-gray-300 pl-8 pr-3 py-2 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1"
+            />
+          </div>
 
-        <input
-          type="search"
-          value={localSearch}
-          onChange={(e) => setLocalSearch(e.target.value)}
-          placeholder="Search tasks..."
-          className="text-sm rounded-md border border-gray-300 px-3 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1"
-        />
+          {/* Show completed */}
+          <label className="flex items-center gap-2 text-sm text-gray-600">
+            <input
+              type="checkbox"
+              checked={showCompleted}
+              onChange={(e) => setShowCompleted(e.target.checked)}
+              className="rounded border-gray-300 text-primary focus:ring-primary"
+            />
+            Show completed
+          </label>
 
-        <div className="flex items-center gap-1">
-          <button
-            onClick={() => expandAll(allIds)}
-            className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-            title="Expand all"
-          >
-            <ChevronsDown className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => collapseAll()}
-            className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-            title="Collapse all"
-          >
-            <ChevronsUp className="w-4 h-4" />
-          </button>
+          {/* Sort + expand/collapse row */}
+          <div className="flex items-center gap-2">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as 'position' | 'createdAt' | 'title')}
+              className="flex-1 text-sm rounded-md border border-gray-300 px-2 py-2 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
+            >
+              <option value="position">Manual order</option>
+              <option value="createdAt">Date created</option>
+              <option value="title">Alphabetical</option>
+            </select>
+            <button
+              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+              title={`Sort ${sortOrder === 'asc' ? 'descending' : 'ascending'}`}
+            >
+              <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                {sortOrder === 'asc' ? (
+                  <path
+                    d="M8 3v10M4 7l4-4 4 4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                ) : (
+                  <path
+                    d="M8 13V3M4 9l4 4 4-4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                )}
+              </svg>
+            </button>
+            <button
+              onClick={() => expandAll(allIds)}
+              className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+              title="Expand all"
+            >
+              <ChevronsDown className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => collapseAll()}
+              className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+              title="Collapse all"
+            >
+              <ChevronsUp className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Tag filter */}
+          <TagFilter />
         </div>
-      </div>
-    </div>
-    <div className="px-4 pb-3">
-      <TagFilter />
-    </div>
+      )}
     </div>
   );
 }

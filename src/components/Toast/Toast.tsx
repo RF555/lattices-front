@@ -34,7 +34,7 @@ export function Toast({ toast }: ToastProps) {
     <div
       className={cn(
         'flex items-center gap-3 px-4 py-3 rounded-lg border shadow-lg',
-        'min-w-[300px] max-w-md',
+        'w-full sm:w-auto sm:min-w-[300px] max-w-md',
         'animate-in slide-in-from-right',
         isExiting && 'opacity-0 transition-opacity duration-150',
         styles[toast.type]

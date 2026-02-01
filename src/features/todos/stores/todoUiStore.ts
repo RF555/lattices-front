@@ -10,6 +10,7 @@ interface TodoUiState {
   sortOrder: 'asc' | 'desc';
   searchQuery: string;
   filterTagIds: string[];
+  toolbarExpanded: boolean;
 }
 
 interface TodoUiActions {
@@ -24,6 +25,7 @@ interface TodoUiActions {
   setSearchQuery: (query: string) => void;
   setFilterTagIds: (ids: string[]) => void;
   clearFilters: () => void;
+  toggleToolbar: () => void;
 }
 
 type TodoUiStore = TodoUiState & TodoUiActions;
@@ -36,6 +38,7 @@ const initialState: TodoUiState = {
   sortOrder: 'asc',
   searchQuery: '',
   filterTagIds: [],
+  toolbarExpanded: false,
 };
 
 export const useTodoUiStore = create<TodoUiStore>()(
@@ -82,6 +85,7 @@ export const useTodoUiStore = create<TodoUiStore>()(
           searchQuery: '',
           filterTagIds: [],
         }),
+      toggleToolbar: () => set((state) => ({ toolbarExpanded: !state.toolbarExpanded })),
     }),
     {
       name: 'todo-ui-storage',

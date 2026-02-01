@@ -41,10 +41,16 @@
     position: absolute;
     top: 50%;
     left: var(--branch-x, 20px);
-    width: 12px;
+    width: 8px;
     height: 1px;
     background-color: theme('colors.lattice.line');
     pointer-events: none;
+  }
+
+  @media (min-width: 640px) {
+    .lattice-connector::before {
+      width: 12px;
+    }
   }
 
   /* Last child: truncate the vertical line at the connector midpoint */
@@ -57,5 +63,16 @@
     width: 1px;
     background-color: theme('colors.surface.DEFAULT');
     pointer-events: none;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar while keeping scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }

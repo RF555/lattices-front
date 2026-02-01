@@ -30,14 +30,14 @@ export function TagList() {
       {tags.map((tag) => (
         <div
           key={tag.id}
-          className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200"
+          className="flex items-center justify-between p-2 sm:p-3 gap-2 bg-white rounded-lg border border-gray-200"
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <TagBadge tag={tag} size="md" />
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400">
+            <span className="hidden sm:inline text-xs text-gray-400">
               {tag.usageCount || 0} tasks
             </span>
             <Button

@@ -1,6 +1,7 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { AlignLeft } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
+import { useIsMobile } from '@hooks/useIsMobile';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { useToggleTodo, useDeleteTodo, useUpdateTodo } from '../../hooks/useTodos';
 import { TodoCheckbox } from '../TodoTree/TodoCheckbox';
@@ -35,6 +36,7 @@ export function TodoNodeContent({
   style,
 }: TodoNodeContentProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const isMobile = useIsMobile();
   const toggleExpanded = useTodoUiStore((s) => s.toggleExpanded);
   const setSelectedId = useTodoUiStore((s) => s.setSelectedId);
   const selectedId = useTodoUiStore((s) => s.selectedId);
@@ -81,13 +83,13 @@ export function TodoNodeContent({
     toggleExpanded(todo.id);
   }, [toggleExpanded, todo.id]);
 
-  const indentPx = depth * 24;
+  const indentPx = isMobile ? Math.min(depth * 16, 80) : depth * 24;
 
   return (
     <>
       <div
         className={cn(
-          'group flex items-center gap-2 px-2 py-1.5 rounded-md',
+          'group flex items-center gap-1.5 sm:gap-2 px-2 py-2 sm:py-1.5 rounded-md',
           'hover:bg-gray-50 transition-all',
           depth === 0
             ? 'shadow-node hover:shadow-node-hover'
@@ -122,7 +124,7 @@ export function TodoNodeContent({
         ) : (
           <span
             className={cn(
-              'flex-1 text-sm',
+              'flex-1 text-sm truncate',
               isCompleted && 'line-through text-gray-500'
             )}
             onDoubleClick={() => setIsEditing(true)}
@@ -131,13 +133,32 @@ export function TodoNodeContent({
           </span>
         )}
 
-        {/* Tag badges (read-only display in tree row) */}
+        {/* Tag badges: full badges on desktop, colored dots on mobile */}
         {!isEditing && todo.tags?.length > 0 && (
-          <div className="flex items-center gap-1 shrink-0">
-            {todo.tags.map((tag) => (
-              <TagBadge key={tag.id} tag={tag} />
-            ))}
-          </div>
+          <>
+            {/* Desktop: full tag badges */}
+            <div className="hidden sm:flex items-center gap-1 shrink-0">
+              {todo.tags.map((tag) => (
+                <TagBadge key={tag.id} tag={tag} />
+              ))}
+            </div>
+            {/* Mobile: small colored dots (max 3 + overflow) */}
+            <div className="flex sm:hidden items-center gap-0.5 shrink-0">
+              {todo.tags.slice(0, 3).map((tag) => (
+                <span
+                  key={tag.id}
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: tag.colorHex }}
+                  title={tag.name}
+                />
+              ))}
+              {todo.tags.length > 3 && (
+                <span className="text-[10px] text-gray-400 ml-0.5">
+                  +{todo.tags.length - 3}
+                </span>
+              )}
+            </div>
+          </>
         )}
 
         {todo.description != null && (
