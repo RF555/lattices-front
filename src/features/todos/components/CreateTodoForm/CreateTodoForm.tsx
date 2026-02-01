@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCreateTodo } from '../../hooks/useTodos';
 import { useSelectedTodoId } from '../../stores/todoUiStore';
 import { useAddTagToTodo } from '@features/tags/hooks/useTags';
@@ -8,6 +9,7 @@ import { Input } from '@components/ui/Input';
 import { Textarea } from '@components/ui/Textarea';
 
 export function CreateTodoForm() {
+  const { t } = useTranslation('todos');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [showDescription, setShowDescription] = useState(false);
@@ -81,7 +83,7 @@ export function CreateTodoForm() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={selectedId ? 'Add subtask...' : 'Add task...'}
+          placeholder={selectedId ? t('createForm.placeholderSubtask') : t('createForm.placeholderTask')}
           className="flex-1"
         />
         <Button
@@ -89,7 +91,7 @@ export function CreateTodoForm() {
           disabled={!title.trim() || createMutation.isPending}
           isLoading={createMutation.isPending}
         >
-          Add
+          {t('createForm.add')}
         </Button>
       </div>
 
@@ -98,7 +100,7 @@ export function CreateTodoForm() {
           <Textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Add a description (optional)..."
+            placeholder={t('createForm.descriptionPlaceholder')}
             className="text-sm"
             rows={2}
           />
@@ -107,7 +109,7 @@ export function CreateTodoForm() {
             onClick={handleToggleDescription}
             className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
           >
-            Remove description
+            {t('createForm.removeDescription')}
           </button>
         </div>
       )}
@@ -124,7 +126,7 @@ export function CreateTodoForm() {
             onClick={handleToggleTags}
             className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
           >
-            Remove tags
+            {t('createForm.removeTags')}
           </button>
         </div>
       )}
@@ -136,7 +138,7 @@ export function CreateTodoForm() {
             onClick={handleToggleDescription}
             className="text-xs text-gray-400 hover:text-gray-600 transition-colors py-1"
           >
-            + Add description
+            {t('createForm.addDescription')}
           </button>
         )}
 
@@ -146,13 +148,13 @@ export function CreateTodoForm() {
             onClick={handleToggleTags}
             className="text-xs text-gray-400 hover:text-gray-600 transition-colors py-1"
           >
-            + Add tags
+            {t('createForm.addTags')}
           </button>
         )}
 
         {selectedId && (
           <p className="text-xs text-gray-500">
-            Adding as subtask to selected item
+            {t('createForm.subtaskInfo')}
           </p>
         )}
       </div>

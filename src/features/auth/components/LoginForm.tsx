@@ -1,12 +1,14 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useLocation, Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../stores/authStore';
-import { loginSchema, type LoginFormData } from '../schemas/authSchemas';
+import { createLoginSchema, type LoginFormData } from '../schemas/authSchemas';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 
 export function LoginForm() {
+  const { t } = useTranslation('auth');
   const navigate = useNavigate();
   const location = useLocation();
   const login = useAuthStore((state) => state.login);
@@ -19,7 +21,7 @@ export function LoginForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(createLoginSchema(t)),
   });
 
   const from = location.state?.from?.pathname || '/app';
@@ -38,14 +40,14 @@ export function LoginForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email
+          {t('login.email')}
         </label>
         <Input
           id="email"
           type="email"
           {...register('email')}
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder={t('login.emailPlaceholder')}
           error={!!errors.email}
         />
         {errors.email && (
@@ -55,14 +57,14 @@ export function LoginForm() {
 
       <div>
         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-          Password
+          {t('login.password')}
         </label>
         <Input
           id="password"
           type="password"
           {...register('password')}
           autoComplete="current-password"
-          placeholder="••••••••"
+          placeholder={t('login.passwordPlaceholder')}
           error={!!errors.password}
         />
         {errors.password && (
@@ -77,13 +79,13 @@ export function LoginForm() {
       )}
 
       <Button type="submit" isLoading={isLoading} className="w-full">
-        Sign In
+        {t('login.signIn')}
       </Button>
 
       <p className="text-center text-sm text-gray-600">
-        Don&apos;t have an account?{' '}
+        {t('login.noAccount')}
         <Link to="/auth/register" className="text-primary hover:underline">
-          Sign up
+          {t('login.signUpLink')}
         </Link>
       </p>
     </form>

@@ -1,0 +1,59 @@
+{
+  "brand": {
+    "name": "Lattices",
+    "tagline": "מבנה למה שחשוב.",
+    "taglineRegister": "משימות עם בסיס."
+  },
+  "nav": {
+    "signOut": "התנתקות"
+  },
+  "actions": {
+    "save": "שמירה",
+    "cancel": "ביטול",
+    "confirm": "אישור",
+    "delete": "מחיקה",
+    "edit": "עריכה",
+    "close": "סגירה",
+    "clear": "ניקוי",
+    "create": "יצירה",
+    "tryAgain": "ניסיון חוזר",
+    "reloadPage": "טעינה מחדש",
+    "loading": "טוען..."
+  },
+  "coldStart": {
+    "waking": "מעיר את השרת... זה עשוי לקחת רגע.",
+    "ready": "השרת מוכן!"
+  },
+  "error": {
+    "defaultTitle": "שגיאה בטעינת נתונים",
+    "defaultMessage": "משהו השתבש. אנא נסו שוב.",
+    "somethingWentWrong": "משהו השתבש",
+    "unexpectedError": "נתקלנו בשגיאה בלתי צפויה. אנא נסו שוב או פנו לתמיכה אם הבעיה נמשכת."
+  },
+  "notifications": {
+    "dismiss": "סגירת התראה",
+    "region": "התראות"
+  },
+  "apiErrors": {
+    "UNAUTHORIZED": "אנא התחברו כדי להמשיך",
+    "INVALID_TOKEN": "פג תוקף החיבור. אנא התחברו מחדש",
+    "FORBIDDEN": "אין לכם הרשאה לבצע פעולה זו",
+    "TASK_NOT_FOUND": "המשימה המבוקשת לא נמצאה",
+    "TAG_NOT_FOUND": "התגית המבוקשת לא נמצאה",
+    "USER_NOT_FOUND": "פרופיל המשתמש לא נמצא",
+    "VALIDATION_ERROR": "אנא בדקו את הקלט ונסו שוב",
+    "CIRCULAR_REFERENCE": "העברה זו תיצור הפניה מעגלית",
+    "DUPLICATE_TAG": "תגית בשם זה כבר קיימת",
+    "RATE_LIMIT_EXCEEDED": "יותר מדי בקשות. אנא נסו שוב מאוחר יותר",
+    "INTERNAL_ERROR": "משהו השתבש. אנא נסו שוב מאוחר יותר",
+    "DATABASE_ERROR": "אירעה שגיאת מסד נתונים. אנא נסו שוב מאוחר יותר",
+    "NETWORK_ERROR": "לא ניתן להתחבר לשרת",
+    "UNKNOWN": "אירעה שגיאה בלתי צפויה"
+  },
+  "time": {
+    "justNow": "עכשיו",
+    "minutesAgo": "לפני {{count}} דק׳",
+    "hoursAgo": "לפני {{count}} שע׳",
+    "daysAgo": "לפני {{count}} ימים"
+  }
+}

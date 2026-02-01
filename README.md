@@ -13,6 +13,7 @@ Hierarchical task management application built with React, TypeScript, and Vite.
 | Client State | Zustand 5 |
 | Forms | React Hook Form + Zod |
 | Styling | Tailwind CSS 3 + tailwind-merge |
+| i18n | react-i18next + i18next |
 | Drag & Drop | dnd-kit |
 | Virtualization | @tanstack/react-virtual |
 | Testing | Vitest + React Testing Library + MSW |
@@ -36,7 +37,11 @@ src/
 │   ├── auth/               # Authentication (login, register, session)
 │   ├── todos/              # Todo CRUD, tree rendering, drag-and-drop
 │   └── tags/               # Tag management and filtering
-├── hooks/                  # Shared hooks (useAnnounce, useFocusTrap, useReducedMotion)
+├── hooks/                  # Shared hooks (useAnnounce, useDirection, useFocusTrap, useReducedMotion)
+├── i18n/                   # Internationalization
+│   ├── i18n.ts             # i18next configuration
+│   ├── i18next.d.ts        # Type-safe translation keys
+│   └── locales/            # Translation files (en/, he/)
 ├── lib/                    # Core libraries
 │   ├── api/                # HTTP client, query keys, error handling
 │   ├── auth/               # Auth provider abstraction (JWT / Supabase)
@@ -149,11 +154,15 @@ Todos are stored flat on the server and assembled into a tree on the client usin
 
 Color-coded tags for organizing todos. Features inline tag creation, a tag picker with search, tag selection during todo creation, and tag-based filtering in the toolbar.
 
+### Internationalization (i18n)
+
+The app supports English (default) and Hebrew (RTL) using `react-i18next`. Translations are organized by feature namespace (`common`, `auth`, `todos`, `tags`) in `src/i18n/locales/`. The `useDirection` hook sets the document `dir` and `lang` attributes reactively on language change. CSS logical properties (`ps-*`/`pe-*`/`ms-*`/`me-*`/`inset-inline-start`) are used throughout for direction-agnostic layouts. A language switcher (EN/עב) is available in the header and on auth pages. Language preference persists in localStorage.
+
 ## Key Patterns
 
 - **Feature-based architecture** following Bulletproof React conventions
 - **Flat Fetch, Client Assembly** — API returns flat lists, client builds tree structures
-- **Path aliases** — `@features/*`, `@components/*`, `@lib/*`, `@hooks/*`, `@stores/*`
+- **Path aliases** — `@features/*`, `@components/*`, `@lib/*`, `@hooks/*`, `@stores/*`, `@i18n/*`
 - **Barrel exports** — Each module exposes a clean public API via `index.ts`
 - **Optimistic updates** — Mutations update the UI immediately, rolling back on failure
 

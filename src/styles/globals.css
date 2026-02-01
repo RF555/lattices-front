@@ -25,7 +25,7 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    left: var(--branch-x, 20px);
+    inset-inline-start: var(--branch-x, 20px);
     width: 1px;
     background-color: theme('colors.lattice.line');
     pointer-events: none;
@@ -40,7 +40,7 @@
     content: '';
     position: absolute;
     top: 50%;
-    left: var(--branch-x, 20px);
+    inset-inline-start: var(--branch-x, 20px);
     width: 8px;
     height: 1px;
     background-color: theme('colors.lattice.line');
@@ -59,7 +59,7 @@
     position: absolute;
     top: 50%;
     bottom: 0;
-    left: var(--branch-x, 20px);
+    inset-inline-start: var(--branch-x, 20px);
     width: 1px;
     background-color: theme('colors.surface.DEFAULT');
     pointer-events: none;

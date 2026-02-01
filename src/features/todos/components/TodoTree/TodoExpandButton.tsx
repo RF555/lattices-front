@@ -1,4 +1,5 @@
 import { ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 
 interface TodoExpandButtonProps {
@@ -12,6 +13,8 @@ export function TodoExpandButton({
   isExpanded,
   onToggle,
 }: TodoExpandButtonProps) {
+  const { t } = useTranslation('todos');
+
   if (!hasChildren) {
     return <div className="w-5 sm:w-4" />;
   }
@@ -28,11 +31,11 @@ export function TodoExpandButton({
         'text-gray-400 hover:text-gray-600',
         'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 rounded'
       )}
-      aria-label={isExpanded ? 'Collapse' : 'Expand'}
+      aria-label={isExpanded ? t('actions.collapse') : t('actions.expand')}
     >
       <ChevronRight
         className={cn(
-          'w-3 h-3 transition-transform',
+          'w-3 h-3 transition-transform rtl:-scale-x-100',
           isExpanded && 'rotate-90'
         )}
       />

@@ -1,12 +1,14 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, Link } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../stores/authStore';
-import { registerSchema, type RegisterFormData } from '../schemas/authSchemas';
+import { createRegisterSchema, type RegisterFormData } from '../schemas/authSchemas';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 
 export function RegisterForm() {
+  const { t } = useTranslation('auth');
   const navigate = useNavigate();
   const registerUser = useAuthStore((state) => state.register);
   const isLoading = useAuthStore((state) => state.isLoading);
@@ -18,7 +20,7 @@ export function RegisterForm() {
     handleSubmit,
     formState: { errors },
   } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+    resolver: zodResolver(createRegisterSchema(t)),
   });
 
   const onSubmit = async (data: RegisterFormData) => {
@@ -39,27 +41,27 @@ export function RegisterForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Name (optional)
+          {t('register.name')}
         </label>
         <Input
           id="name"
           type="text"
           {...register('name')}
           autoComplete="name"
-          placeholder="John Doe"
+          placeholder={t('register.namePlaceholder')}
         />
       </div>
 
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email
+          {t('register.email')}
         </label>
         <Input
           id="email"
           type="email"
           {...register('email')}
           autoComplete="email"
-          placeholder="you@example.com"
+          placeholder={t('register.emailPlaceholder')}
           error={!!errors.email}
         />
         {errors.email && (
@@ -69,14 +71,14 @@ export function RegisterForm() {
 
       <div>
         <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-          Password
+          {t('register.password')}
         </label>
         <Input
           id="password"
           type="password"
           {...register('password')}
           autoComplete="new-password"
-          placeholder="••••••••"
+          placeholder={t('register.passwordPlaceholder')}
           error={!!errors.password}
         />
         {errors.password && (
@@ -86,14 +88,14 @@ export function RegisterForm() {
 
       <div>
         <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-          Confirm Password
+          {t('register.confirmPassword')}
         </label>
         <Input
           id="confirmPassword"
           type="password"
           {...register('confirmPassword')}
           autoComplete="new-password"
-          placeholder="••••••••"
+          placeholder={t('register.confirmPasswordPlaceholder')}
           error={!!errors.confirmPassword}
         />
         {errors.confirmPassword && (
@@ -108,13 +110,13 @@ export function RegisterForm() {
       )}
 
       <Button type="submit" isLoading={isLoading} className="w-full">
-        Create Account
+        {t('register.createAccount')}
       </Button>
 
       <p className="text-center text-sm text-gray-600">
-        Already have an account?{' '}
+        {t('register.hasAccount')}
         <Link to="/auth/login" className="text-primary hover:underline">
-          Sign in
+          {t('register.signInLink')}
         </Link>
       </p>
     </form>

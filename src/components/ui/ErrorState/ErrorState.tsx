@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Button } from '@components/ui/Button';
 
 interface ErrorStateProps {
@@ -7,10 +8,14 @@ interface ErrorStateProps {
 }
 
 export function ErrorState({
-  title = 'Error loading data',
-  message = 'Something went wrong. Please try again.',
+  title,
+  message,
   onRetry,
 }: ErrorStateProps) {
+  const { t } = useTranslation();
+  const resolvedTitle = title ?? t('error.defaultTitle');
+  const resolvedMessage = message ?? t('error.defaultMessage');
+
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4">
       <div className="text-red-400 mb-4">
@@ -30,13 +35,13 @@ export function ErrorState({
           />
         </svg>
       </div>
-      <h3 className="text-lg font-medium text-gray-900 mb-1">{title}</h3>
+      <h3 className="text-lg font-medium text-gray-900 mb-1">{resolvedTitle}</h3>
       <p className="text-sm text-gray-500 text-center mb-4 max-w-sm">
-        {message}
+        {resolvedMessage}
       </p>
       {onRetry && (
         <Button onClick={onRetry} size="sm">
-          Try Again
+          {t('actions.tryAgain')}
         </Button>
       )}
     </div>

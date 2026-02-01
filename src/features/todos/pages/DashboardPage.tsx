@@ -1,14 +1,16 @@
+import { useTranslation } from 'react-i18next';
 import { TodoTree } from '../components/TodoTree';
 import { CreateTodoForm } from '../components/CreateTodoForm';
 import { TodoToolbar } from '../components/TodoToolbar';
 
 export default function DashboardPage() {
+  const { t } = useTranslation('todos');
   return (
     <div className="max-w-4xl mx-auto py-4 sm:py-6 px-4">
       <div className="mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">My Tasks</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{t('dashboard.title')}</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Structure for what matters.
+          {t('dashboard.subtitle')}
         </p>
       </div>
 

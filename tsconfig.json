@@ -23,7 +23,8 @@
       "@lib/*": ["./src/lib/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@stores/*": ["./src/stores/*"],
-      "@app-types/*": ["./src/types/*"]
+      "@app-types/*": ["./src/types/*"],
+      "@i18n/*": ["./src/i18n/*"]
     }
   },
   "include": ["src"],

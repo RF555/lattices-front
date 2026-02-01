@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { useTranslation } from 'react-i18next';
 import { TreeDndContext, type DragEndEvent } from '@lib/dnd/TreeDndContext';
 import { useTodos, useMoveTodo } from '../../hooks/useTodos';
 import { useTodoUiStore } from '../../stores/todoUiStore';
@@ -11,6 +12,7 @@ import { DragOverlayContent } from './DragOverlayContent';
 import type { Todo } from '../../types/todo';
 
 export function SortableTodoTree() {
+  const { t } = useTranslation('todos');
   const { data: todos, isLoading, error } = useTodos();
   const moveMutation = useMoveTodo();
   const expandedIds = useTodoUiStore((state) => state.expandedIds);
@@ -91,7 +93,7 @@ export function SortableTodoTree() {
   if (error) {
     return (
       <div className="p-4 text-red-600 bg-red-50 rounded-md">
-        Failed to load todos. Please try again.
+        {t('tree.error')}
       </div>
     );
   }

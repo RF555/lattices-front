@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 import { useTags, useCreateTag } from '../../hooks/useTags';
 import { TagBadge } from '../TagBadge';
@@ -11,6 +12,7 @@ interface TagPickerProps {
 }
 
 export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps) {
+  const { t } = useTranslation('tags');
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [isCreating, setIsCreating] = useState(false);
@@ -95,7 +97,7 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search or create..."
+            placeholder={t('picker.searchPlaceholder')}
             className="flex-1 min-w-[100px] outline-none text-sm"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && search && !exactMatch) {
@@ -106,7 +108,7 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
           />
         )}
         {!isOpen && selectedTags.length === 0 && (
-          <span className="text-gray-400 text-sm">Add tags...</span>
+          <span className="text-gray-400 text-sm">{t('picker.placeholder')}</span>
         )}
       </div>
 
@@ -142,7 +144,7 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
               {isCreating ? (
                 <div className="space-y-2">
                   <p className="text-xs text-gray-500">
-                    Create tag &ldquo;{search}&rdquo;
+                    {t('picker.createPrompt', { name: search })}
                   </p>
                   <div className="flex gap-1">
                     {TAG_COLORS.map((color) => (
@@ -165,14 +167,14 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
                       onClick={handleCreateTag}
                       disabled={createMutation.isPending}
                     >
-                      {createMutation.isPending ? 'Creating...' : 'Create'}
+                      {createMutation.isPending ? t('picker.creating') : t('picker.create')}
                     </button>
                     <button
                       type="button"
                       className="text-sm px-2 py-1 border rounded hover:bg-gray-50"
                       onClick={() => setIsCreating(false)}
                     >
-                      Cancel
+                      {t('actions.cancel', { ns: 'common' })}
                     </button>
                   </div>
                 </div>
@@ -190,7 +192,7 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
                       strokeLinecap="round"
                     />
                   </svg>
-                  Create &ldquo;{search}&rdquo;
+                  {t('picker.createTag', { name: search })}
                 </button>
               )}
             </div>
@@ -199,7 +201,7 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
           {/* Empty State */}
           {availableTags.length === 0 && !search && (
             <div className="p-4 text-center text-sm text-gray-500">
-              No tags available. Type to create one.
+              {t('picker.emptyState')}
             </div>
           )}
         </div>

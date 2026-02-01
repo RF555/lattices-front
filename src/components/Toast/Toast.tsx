@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useToastStore, type Toast as ToastType } from '@stores/toastStore';
 import { cn } from '@lib/utils/cn';
 
@@ -22,6 +23,7 @@ const styles = {
 };
 
 export function Toast({ toast }: ToastProps) {
+  const { t } = useTranslation();
   const [isExiting, setIsExiting] = useState(false);
   const removeToast = useToastStore((state) => state.removeToast);
 
@@ -47,7 +49,7 @@ export function Toast({ toast }: ToastProps) {
         type="button"
         onClick={handleDismiss}
         className="flex-shrink-0 p-1 rounded hover:bg-black/5"
-        aria-label="Dismiss notification"
+        aria-label={t('notifications.dismiss')}
       >
         <X className="w-4 h-4" />
       </button>

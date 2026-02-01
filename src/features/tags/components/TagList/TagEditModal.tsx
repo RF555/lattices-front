@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUpdateTag } from '../../hooks/useTags';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
@@ -12,6 +13,7 @@ interface TagEditModalProps {
 }
 
 export function TagEditModal({ tag, onClose }: TagEditModalProps) {
+  const { t } = useTranslation('tags');
   const [name, setName] = useState(tag.name);
   const [color, setColor] = useState(tag.colorHex);
 
@@ -37,12 +39,12 @@ export function TagEditModal({ tag, onClose }: TagEditModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-        <h2 className="text-lg font-semibold mb-4">Edit Tag</h2>
+        <h2 className="text-lg font-semibold mb-4">{t('editModal.title')}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Name
+              {t('editModal.nameLabel')}
             </label>
             <Input
               value={name}
@@ -53,7 +55,7 @@ export function TagEditModal({ tag, onClose }: TagEditModalProps) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Color
+              {t('editModal.colorLabel')}
             </label>
             <div className="flex gap-2">
               {TAG_COLORS.map((c) => (
@@ -73,13 +75,13 @@ export function TagEditModal({ tag, onClose }: TagEditModalProps) {
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="secondary" onClick={onClose}>
-              Cancel
+              {t('actions.cancel', { ns: 'common' })}
             </Button>
             <Button
               type="submit"
               isLoading={updateMutation.isPending}
             >
-              Save Changes
+              {t('editModal.saveChanges')}
             </Button>
           </div>
         </form>

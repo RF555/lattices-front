@@ -1,3 +1,4 @@
+import i18n from '@i18n/i18n';
 import type { ApiError } from './types';
 
 export class ApiException extends Error {
@@ -29,18 +30,25 @@ export class ApiException extends Error {
   }
 }
 
-export const ERROR_MESSAGES: Record<string, string> = {
-  UNAUTHORIZED: 'Please sign in to continue',
-  INVALID_TOKEN: 'Your session has expired. Please sign in again',
-  FORBIDDEN: 'You do not have permission to perform this action',
-  TASK_NOT_FOUND: 'The requested task was not found',
-  TAG_NOT_FOUND: 'The requested tag was not found',
-  USER_NOT_FOUND: 'User profile not found',
-  VALIDATION_ERROR: 'Please check your input and try again',
-  CIRCULAR_REFERENCE: 'This move would create a circular reference',
-  DUPLICATE_TAG: 'A tag with this name already exists',
-  RATE_LIMIT_EXCEEDED: 'Too many requests. Please try again later',
-  INTERNAL_ERROR: 'Something went wrong. Please try again later',
-  DATABASE_ERROR: 'A database error occurred. Please try again later',
-  NETWORK_ERROR: 'Unable to connect to the server',
-};
+/**
+ * Get a localized error message for an API error code.
+ * Falls back to the generic UNKNOWN message if the code is not found.
+ */
+export function getErrorMessage(code: string): string {
+  const key = `apiErrors.${code}` as const;
+  const translated = i18n.t(key as 'apiErrors.UNKNOWN');
+  // If i18next returns the key itself, the code wasn't found -- use UNKNOWN fallback
+  if (translated === key) {
+    return i18n.t('apiErrors.UNKNOWN');
+  }
+  return translated;
+}
+
+/**
+ * @deprecated Use `getErrorMessage(code)` instead. Kept for backward compatibility.
+ */
+export const ERROR_MESSAGES = new Proxy({} as Record<string, string>, {
+  get(_target, prop: string) {
+    return getErrorMessage(prop);
+  },
+});

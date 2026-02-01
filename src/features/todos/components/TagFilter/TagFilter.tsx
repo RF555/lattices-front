@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { useTags } from '@features/tags/hooks/useTags';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { TagBadge } from '@features/tags/components/TagBadge';
 import { cn } from '@lib/utils/cn';
 
 export function TagFilter() {
+  const { t } = useTranslation('tags');
   const { data: tags = [] } = useTags();
   const filterTagIds = useTodoUiStore((s) => s.filterTagIds);
   const setFilterTagIds = useTodoUiStore((s) => s.setFilterTagIds);
@@ -19,7 +21,7 @@ export function TagFilter() {
 
   return (
     <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide sm:flex-wrap sm:overflow-x-visible">
-      <span className="text-xs text-gray-500 shrink-0">Filter by tag:</span>
+      <span className="text-xs text-gray-500 shrink-0">{t('filter.label')}</span>
       {tags.map((tag) => (
         <button
           key={tag.id}
@@ -39,7 +41,7 @@ export function TagFilter() {
           onClick={() => setFilterTagIds([])}
           className="text-xs text-gray-500 hover:text-gray-700 shrink-0"
         >
-          Clear
+          {t('filter.clear')}
         </button>
       )}
     </div>
