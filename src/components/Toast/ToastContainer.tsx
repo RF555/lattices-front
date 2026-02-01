@@ -8,7 +8,7 @@ export function ToastContainer() {
 
   return (
     <div
-      className="fixed bottom-4 right-4 z-50 space-y-2"
+      className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-auto z-50 space-y-2"
       role="region"
       aria-label="Notifications"
     >

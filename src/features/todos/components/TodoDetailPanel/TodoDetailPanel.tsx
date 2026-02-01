@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Pencil } from 'lucide-react';
 import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
+import { useIsMobile } from '@hooks/useIsMobile';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
 import { useUpdateTodo } from '../../hooks/useTodos';
 import { TagPicker } from '@features/tags/components/TagPicker';
@@ -15,6 +16,7 @@ interface TodoDetailPanelProps {
 }
 
 export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
+  const isMobile = useIsMobile();
   const [description, setDescription] = useState(todo.description ?? '');
   const [isEditing, setIsEditing] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
@@ -92,10 +94,10 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   return (
     <div
       className="border-t border-gray-100 bg-gray-50/50 shadow-panel animate-in slide-in-from-top-1 fade-in duration-200"
-      style={{ paddingLeft: `${indentPx + 8}px` }}
+      style={{ paddingLeft: `${(isMobile ? Math.min(indentPx, 80) : indentPx) + 8}px` }}
       onClick={handleContainerClick}
     >
-      <div className="py-3 pr-4 space-y-3">
+      <div className="py-3 pr-3 sm:pr-4 space-y-3">
         {/* Breadcrumb */}
         <TodoBreadcrumb todoId={todo.id} />
 
@@ -155,7 +157,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
         </div>
 
         {/* Timestamps section */}
-        <div className="flex items-center gap-4 text-xs text-gray-400">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-gray-400">
           <span title={formatDateFull(todo.createdAt)}>
             Created {formatDate(todo.createdAt)}
           </span>

@@ -134,7 +134,7 @@ export function CreateTodoForm() {
           <button
             type="button"
             onClick={handleToggleDescription}
-            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-xs text-gray-400 hover:text-gray-600 transition-colors py-1"
           >
             + Add description
           </button>
@@ -144,7 +144,7 @@ export function CreateTodoForm() {
           <button
             type="button"
             onClick={handleToggleTags}
-            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-xs text-gray-400 hover:text-gray-600 transition-colors py-1"
           >
             + Add tags
           </button>

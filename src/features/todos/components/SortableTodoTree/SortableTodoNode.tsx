@@ -3,6 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
+import { useIsMobile } from '@hooks/useIsMobile';
 import { TodoNodeContent } from '../TodoNodeContent';
 import type { Todo } from '../../types/todo';
 
@@ -26,6 +27,8 @@ export const SortableTodoNode = memo(function SortableTodoNode({
   hasChildren,
   activeBranchDepths,
 }: SortableTodoNodeProps) {
+  const isMobile = useIsMobile();
+
   const {
     attributes,
     listeners,
@@ -60,7 +63,7 @@ export const SortableTodoNode = memo(function SortableTodoNode({
         <div
           key={d}
           className="absolute top-0 bottom-0 w-px bg-lattice-line pointer-events-none"
-          style={{ left: `${d * 24 + 8}px` }}
+          style={{ left: `${(isMobile ? Math.min(d * 16, 80) : d * 24) + 8}px` }}
           aria-hidden="true"
         />
       ))}
@@ -79,8 +82,8 @@ export const SortableTodoNode = memo(function SortableTodoNode({
             {...listeners}
             className={cn(
               'cursor-grab active:cursor-grabbing',
-              'p-0.5 text-gray-400 hover:text-gray-600',
-              'opacity-0 group-hover:opacity-100 transition-opacity',
+              'p-1 sm:p-0.5 text-gray-400 hover:text-gray-600',
+              'sm:opacity-0 sm:group-hover:opacity-100 transition-opacity',
               'focus:outline-none focus:ring-2 focus:ring-primary rounded'
             )}
             aria-label="Drag to reorder"

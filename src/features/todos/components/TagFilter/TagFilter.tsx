@@ -18,15 +18,15 @@ export function TagFilter() {
   if (tags.length === 0) return null;
 
   return (
-    <div className="flex items-center gap-2 flex-wrap">
-      <span className="text-xs text-gray-500">Filter by tag:</span>
+    <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide sm:flex-wrap sm:overflow-x-visible">
+      <span className="text-xs text-gray-500 shrink-0">Filter by tag:</span>
       {tags.map((tag) => (
         <button
           key={tag.id}
           type="button"
           onClick={() => toggleTag(tag.id)}
           className={cn(
-            'rounded-full transition-opacity',
+            'rounded-full transition-opacity shrink-0',
             !filterTagIds.includes(tag.id) && 'opacity-50 hover:opacity-75'
           )}
         >
@@ -37,7 +37,7 @@ export function TagFilter() {
         <button
           type="button"
           onClick={() => setFilterTagIds([])}
-          className="text-xs text-gray-500 hover:text-gray-700"
+          className="text-xs text-gray-500 hover:text-gray-700 shrink-0"
         >
           Clear
         </button>

@@ -1,6 +1,7 @@
 import { useState, useCallback, type ReactNode } from 'react';
 import { AlignLeft } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
+import { useIsMobile } from '@hooks/useIsMobile';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { useToggleTodo, useDeleteTodo, useUpdateTodo } from '../../hooks/useTodos';
 import { TodoCheckbox } from '../TodoTree/TodoCheckbox';
@@ -35,6 +36,7 @@ export function TodoNodeContent({
   style,
 }: TodoNodeContentProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const isMobile = useIsMobile();
   const toggleExpanded = useTodoUiStore((s) => s.toggleExpanded);
   const setSelectedId = useTodoUiStore((s) => s.setSelectedId);
   const selectedId = useTodoUiStore((s) => s.selectedId);
@@ -81,13 +83,13 @@ export function TodoNodeContent({
     toggleExpanded(todo.id);
   }, [toggleExpanded, todo.id]);
 
-  const indentPx = depth * 24;
+  const indentPx = isMobile ? Math.min(depth * 16, 80) : depth * 24;
 
   return (
     <>
       <div
         className={cn(
-          'group flex items-center gap-2 px-2 py-1.5 rounded-md',
+          'group flex items-center gap-1.5 sm:gap-2 px-2 py-2 sm:py-1.5 rounded-md',
           'hover:bg-gray-50 transition-all',
           depth === 0
             ? 'shadow-node hover:shadow-node-hover'
@@ -120,23 +122,24 @@ export function TodoNodeContent({
             onCancel={() => setIsEditing(false)}
           />
         ) : (
-          <span
-            className={cn(
-              'flex-1 text-sm',
-              isCompleted && 'line-through text-gray-500'
+          <div className="flex-1 min-w-0 flex flex-wrap items-center gap-1 justify-between">
+            <span
+              className={cn(
+                'text-sm truncate',
+                isCompleted && 'line-through text-gray-500'
+              )}
+              onDoubleClick={() => setIsEditing(true)}
+            >
+              {todo.title}
+            </span>
+            {/* Tag badges (read-only display in tree row) */}
+            {todo.tags?.length > 0 && (
+              <div className="flex items-center gap-1 shrink-0">
+                {todo.tags.map((tag) => (
+                  <TagBadge key={tag.id} tag={tag} />
+                ))}
+              </div>
             )}
-            onDoubleClick={() => setIsEditing(true)}
-          >
-            {todo.title}
-          </span>
-        )}
-
-        {/* Tag badges (read-only display in tree row) */}
-        {!isEditing && todo.tags?.length > 0 && (
-          <div className="flex items-center gap-1 shrink-0">
-            {todo.tags.map((tag) => (
-              <TagBadge key={tag.id} tag={tag} />
-            ))}
           </div>
         )}
 

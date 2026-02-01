@@ -9,7 +9,7 @@ interface TodoActionsProps {
 
 export function TodoActions({ onEdit, onDelete, isDeleting }: TodoActionsProps) {
   return (
-    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+    <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
       <button
         type="button"
         onClick={(e) => {
@@ -17,7 +17,7 @@ export function TodoActions({ onEdit, onDelete, isDeleting }: TodoActionsProps) 
           onEdit();
         }}
         className={cn(
-          'p-1 text-gray-400 hover:text-gray-600',
+          'p-1.5 sm:p-1 text-gray-400 hover:text-gray-600',
           'focus:outline-none focus:ring-2 focus:ring-primary rounded'
         )}
         aria-label="Edit task"
@@ -33,7 +33,7 @@ export function TodoActions({ onEdit, onDelete, isDeleting }: TodoActionsProps) 
         }}
         disabled={isDeleting}
         className={cn(
-          'p-1 text-gray-400 hover:text-red-600',
+          'p-1.5 sm:p-1 text-gray-400 hover:text-red-600',
           'focus:outline-none focus:ring-2 focus:ring-red-500 rounded',
           isDeleting && 'opacity-50 cursor-not-allowed'
         )}
