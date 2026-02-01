@@ -17,24 +17,35 @@ interface MockTodo {
   updated_at: string;
 }
 
+function daysAgo(days: number): string {
+  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
+}
+function hoursAgo(hours: number): string {
+  return new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
+}
+
 let mockTodos: MockTodo[] = [
   {
     id: '1', title: 'First task', is_completed: false,
-    parent_id: null, position: 0, description: null, completed_at: null,
+    parent_id: null, position: 0,
+    description: 'This is the first task with a detailed description. It has subtasks below.',
+    completed_at: null,
     child_count: 1, completed_child_count: 0, tags: [],
-    created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+    created_at: daysAgo(3), updated_at: hoursAgo(1),
   },
   {
     id: '2', title: 'Second task', is_completed: false,
     parent_id: null, position: 1, description: null, completed_at: null,
     child_count: 0, completed_child_count: 0, tags: [],
-    created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+    created_at: daysAgo(1), updated_at: daysAgo(1),
   },
   {
     id: '3', title: 'Subtask', is_completed: false,
-    parent_id: '1', position: 0, description: null, completed_at: null,
+    parent_id: '1', position: 0,
+    description: 'A subtask with its own description for testing nested detail panels.',
+    completed_at: null,
     child_count: 0, completed_child_count: 0, tags: [],
-    created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+    created_at: daysAgo(7), updated_at: daysAgo(2),
   },
 ];
 

@@ -26,7 +26,7 @@ src/
 │   ├── providers/          # AuthProvider, QueryProvider
 │   └── routes/             # Route definitions, guards
 ├── components/             # Shared UI components
-│   ├── ui/                 # Atoms: Button, Input, Modal, Skeleton, Select...
+│   ├── ui/                 # Atoms: Button, Input, Textarea, Modal, Skeleton, Select...
 │   ├── layout/             # MainLayout, PageLoader
 │   ├── feedback/           # ConfirmationDialog
 │   ├── Toast/              # Toast notification system
@@ -41,7 +41,7 @@ src/
 │   ├── api/                # HTTP client, query keys, error handling
 │   ├── auth/               # Auth provider abstraction (JWT / Supabase)
 │   ├── dnd/                # dnd-kit configuration and context
-│   └── utils/              # cn() utility
+│   └── utils/              # cn(), formatDate utilities
 ├── stores/                 # Global Zustand stores (toastStore)
 ├── mocks/                  # MSW handlers for dev/test
 ├── styles/                 # Global CSS
@@ -143,6 +143,7 @@ Todos are stored flat on the server and assembled into a tree on the client usin
 - Keyboard navigation (arrow keys, vim bindings, Home/End)
 - Filtering by completion status, tags, and search query
 - Sorting by position or creation date
+- Inline detail panel showing editable description and timestamps (created, updated, completed)
 
 ### Tags
 

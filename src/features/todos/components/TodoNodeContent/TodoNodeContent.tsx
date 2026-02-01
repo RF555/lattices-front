@@ -7,6 +7,7 @@ import { TodoExpandButton } from '../TodoTree/TodoExpandButton';
 import { TodoActions } from '../TodoTree/TodoActions';
 import { TodoInlineEdit } from '../TodoTree/TodoInlineEdit';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
+import { TodoDetailPanel } from '../TodoDetailPanel';
 import type { Todo } from '../../types/todo';
 
 interface TodoNodeContentProps {
@@ -125,6 +126,22 @@ export function TodoNodeContent({
           </span>
         )}
 
+        {todo.description != null && (
+          <svg
+            className="w-3.5 h-3.5 text-gray-300 shrink-0"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            aria-hidden="true"
+          >
+            <line x1="2" y1="4" x2="14" y2="4" />
+            <line x1="2" y1="8" x2="14" y2="8" />
+            <line x1="2" y1="12" x2="10" y2="12" />
+          </svg>
+        )}
+
         {todo.childCount > 0 && (
           <span
             className={cn(
@@ -145,6 +162,8 @@ export function TodoNodeContent({
           isDeleting={deleteMutation.isPending}
         />
       </div>
+
+      {isSelected && <TodoDetailPanel todo={todo} indentPx={indentPx} />}
 
       {showDeleteConfirm && (
         <ConfirmationDialog
