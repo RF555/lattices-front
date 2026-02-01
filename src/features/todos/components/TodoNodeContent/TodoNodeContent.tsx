@@ -122,43 +122,25 @@ export function TodoNodeContent({
             onCancel={() => setIsEditing(false)}
           />
         ) : (
-          <span
-            className={cn(
-              'flex-1 text-sm truncate',
-              isCompleted && 'line-through text-gray-500'
-            )}
-            onDoubleClick={() => setIsEditing(true)}
-          >
-            {todo.title}
-          </span>
-        )}
-
-        {/* Tag badges: full badges on desktop, colored dots on mobile */}
-        {!isEditing && todo.tags?.length > 0 && (
-          <>
-            {/* Desktop: full tag badges */}
-            <div className="hidden sm:flex items-center gap-1 shrink-0">
-              {todo.tags.map((tag) => (
-                <TagBadge key={tag.id} tag={tag} />
-              ))}
-            </div>
-            {/* Mobile: small colored dots (max 3 + overflow) */}
-            <div className="flex sm:hidden items-center gap-0.5 shrink-0">
-              {todo.tags.slice(0, 3).map((tag) => (
-                <span
-                  key={tag.id}
-                  className="w-2 h-2 rounded-full"
-                  style={{ backgroundColor: tag.colorHex }}
-                  title={tag.name}
-                />
-              ))}
-              {todo.tags.length > 3 && (
-                <span className="text-[10px] text-gray-400 ml-0.5">
-                  +{todo.tags.length - 3}
-                </span>
+          <div className="flex-1 min-w-0 flex flex-wrap items-center gap-1 justify-between">
+            <span
+              className={cn(
+                'text-sm truncate',
+                isCompleted && 'line-through text-gray-500'
               )}
-            </div>
-          </>
+              onDoubleClick={() => setIsEditing(true)}
+            >
+              {todo.title}
+            </span>
+            {/* Tag badges (read-only display in tree row) */}
+            {todo.tags?.length > 0 && (
+              <div className="flex items-center gap-1 shrink-0">
+                {todo.tags.map((tag) => (
+                  <TagBadge key={tag.id} tag={tag} />
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
         {todo.description != null && (
