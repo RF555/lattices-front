@@ -1,0 +1,97 @@
+import { useEffect, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { queryKeys } from '@lib/api/queryKeys';
+import { realtimeManager } from '@lib/realtime';
+import { useAuthStore } from '@features/auth/stores/authStore';
+import { useNotificationUiStore } from '../stores/notificationUiStore';
+import { useToastStore } from '@stores/toastStore';
+
+/**
+ * Subscribe to Supabase Realtime for notification delivery.
+ *
+ * On INSERT to `notification_recipients` for the current user:
+ * - Directly increments the unread count cache (instant badge update)
+ * - Invalidates notification list (lazy refetch when panel is open)
+ * - Optionally shows a toast notification
+ *
+ * Connection handling:
+ * - On reconnect, invalidates all notification queries to catch missed events
+ * - On channel error, increases unread count polling as fallback (30s)
+ * - On recovery, restores normal polling interval (60s)
+ *
+ * Call this once at a high level (e.g., MainLayout) so the subscription
+ * persists across page navigations.
+ */
+export function useNotificationRealtime() {
+  const user = useAuthStore((state) => state.user);
+  const queryClient = useQueryClient();
+
+  // Use ref to avoid stale closure in Supabase callback
+  const showToastRef = useRef(useNotificationUiStore.getState().showToastOnNew);
+  // Track whether we've connected before to distinguish reconnect from first connect
+  const hasConnectedRef = useRef(false);
+
+  useEffect(() => {
+    const unsub = useNotificationUiStore.subscribe((state) => {
+      showToastRef.current = state.showToastOnNew;
+    });
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    realtimeManager.initialize();
+
+    realtimeManager.subscribeToNotifications(user.id, {
+      onNewNotification: () => {
+        // Direct cache update: increment unread count for instant badge
+        queryClient.setQueryData<number>(
+          queryKeys.notifications.totalUnreadCount(),
+          (old) => (old ?? 0) + 1
+        );
+
+        // Invalidate notification list to pick up the new item
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.notifications.lists(),
+        });
+
+        // Show toast if enabled
+        if (showToastRef.current) {
+          useToastStore.getState().addToast({
+            type: 'info',
+            message: 'New notification received',
+            duration: 5000,
+          });
+        }
+      },
+
+      onSubscriptionStatus: (status) => {
+        if (status === 'SUBSCRIBED') {
+          if (hasConnectedRef.current) {
+            // Reconnection — invalidate all notification queries to catch missed events
+            queryClient.invalidateQueries({
+              queryKey: queryKeys.notifications.all,
+            });
+          }
+          hasConnectedRef.current = true;
+
+          // Restore normal polling interval for unread count
+          queryClient.setQueryDefaults(queryKeys.notifications.totalUnreadCount(), {
+            refetchInterval: 60_000,
+          });
+        } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          // Increase polling frequency as fallback when Realtime is down
+          queryClient.setQueryDefaults(queryKeys.notifications.totalUnreadCount(), {
+            refetchInterval: 30_000,
+          });
+        }
+      },
+    });
+
+    return () => {
+      hasConnectedRef.current = false;
+      realtimeManager.unsubscribeFromNotifications(user.id);
+    };
+  }, [user?.id, queryClient]);
+}

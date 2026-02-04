@@ -19,6 +19,9 @@ const GroupDetailPage = lazy(() => import('@features/workspaces/pages/GroupDetai
 const AcceptInvitationPage = lazy(
   () => import('@features/workspaces/pages/AcceptInvitationPage')
 );
+const NotificationPreferencesPage = lazy(
+  () => import('@features/notifications/pages/NotificationPreferencesPage')
+);
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -113,6 +116,14 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageLoader />}>
                 <GroupDetailPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'settings/notifications',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <NotificationPreferencesPage />
               </Suspense>
             ),
           },

@@ -50,8 +50,14 @@ export const queryKeys = {
   // Notifications
   notifications: {
     all: ['notifications'] as const,
-    list: (filters?: object) => [...queryKeys.notifications.all, 'list', filters] as const,
-    unreadCount: () => [...queryKeys.notifications.all, 'unread-count'] as const,
+    lists: () => [...queryKeys.notifications.all, 'list'] as const,
+    list: (filters?: Record<string, unknown>) =>
+      [...queryKeys.notifications.lists(), filters] as const,
+    unreadCount: (workspaceId?: string) =>
+      [...queryKeys.notifications.all, 'unread-count', workspaceId] as const,
+    totalUnreadCount: () =>
+      [...queryKeys.notifications.all, 'total-unread-count'] as const,
     preferences: () => [...queryKeys.notifications.all, 'preferences'] as const,
+    types: () => [...queryKeys.notifications.all, 'types'] as const,
   },
 } as const;

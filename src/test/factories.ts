@@ -12,7 +12,7 @@
 import type { Workspace, WorkspaceMember, Invitation, WorkspaceRole } from '@/features/workspaces/types/workspace';
 import type { ActivityEntry } from '@/features/workspaces/types/activity';
 import type { Group, GroupMember } from '@/features/workspaces/types/group';
-import type { Notification, NotificationPreferences } from '@/features/notifications/types/notification';
+import type { Notification, NotificationPreference } from '@/features/notifications/types/notification';
 
 // Helper functions for timestamps
 function daysAgo(days: number): string {
@@ -95,20 +95,26 @@ export function createMockInvitation(overrides?: Partial<Invitation>): Invitatio
  * Creates a mock notification with default values that can be overridden
  */
 export function createMockNotification(overrides?: Partial<Notification>): Notification {
-  const id = `notif-${notificationIdCounter++}`;
-  const types = ['workspace_invitation', 'task_assigned', 'task_completed', 'task_commented', 'member_added'];
+  const id = `notif-${notificationIdCounter}`;
+  const notificationId = `notif-id-${notificationIdCounter++}`;
+  const types = ['task.completed', 'task.updated', 'member.added', 'invitation.received', 'task.created'];
   const type = overrides?.type || types[(notificationIdCounter - 1) % types.length];
 
   return {
     id,
+    notificationId,
     type,
-    actorName: 'Test Actor',
-    actorAvatarUrl: null,
-    entityType: 'workspace',
+    workspaceId: 'ws-1',
+    actorId: 'user-1',
+    entityType: 'todo',
     entityId: 'entity-1',
-    message: `Test notification message ${notificationIdCounter}`,
+    metadata: {
+      actorName: 'Test Actor',
+      actorAvatarUrl: null,
+      entityTitle: 'Test Task',
+    },
     isRead: false,
-    isSeen: false,
+    readAt: null,
     createdAt: minutesAgo(30),
     ...overrides,
   };
@@ -174,17 +180,20 @@ export function createMockActivityEntry(overrides?: Partial<ActivityEntry>): Act
 }
 
 /**
- * Creates mock notification preferences with default values that can be overridden
+ * Creates a mock notification preference with default values that can be overridden
  */
-export function createMockNotificationPreferences(
-  overrides?: Partial<NotificationPreferences>
-): NotificationPreferences {
+let notificationPreferenceIdCounter = 1;
+
+export function createMockNotificationPreference(
+  overrides?: Partial<NotificationPreference>
+): NotificationPreference {
+  const id = `pref-${notificationPreferenceIdCounter++}`;
   return {
-    workspace_invitation: { inApp: true, email: true },
-    task_assigned: { inApp: true, email: true },
-    task_completed: { inApp: true, email: false },
-    task_commented: { inApp: true, email: false },
-    member_added: { inApp: true, email: false },
+    id,
+    channel: 'in_app',
+    enabled: true,
+    workspaceId: null,
+    notificationType: 'task.completed',
     ...overrides,
   };
 }
@@ -201,4 +210,5 @@ export function resetFactoryCounters(): void {
   groupIdCounter = 1;
   groupMemberIdCounter = 1;
   notificationIdCounter = 1;
+  notificationPreferenceIdCounter = 1;
 }

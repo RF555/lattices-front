@@ -1,21 +1,59 @@
 {
   "title": "Notifications",
-  "empty": "No notifications",
+  "empty": "No notifications yet",
+  "allCaughtUp": "All caught up!",
   "markAllRead": "Mark all as read",
   "seeAll": "See all notifications",
   "unreadCount": "{{count}} unread",
+  "loadMore": "Load more",
+  "filterAll": "All",
+  "filterUnread": "Unread",
+  "newNotification": "New notification",
+  "dismiss": "Dismiss",
+  "unknownActor": "Someone",
+  "unknownEntity": "an item",
+  "unknownWorkspace": "a workspace",
+
+  "type": {
+    "task.completed": "{{actorName}} completed \"{{entityTitle}}\"",
+    "task.updated": "{{actorName}} updated \"{{entityTitle}}\"",
+    "task.created": "{{actorName}} created \"{{entityTitle}}\"",
+    "task.deleted": "{{actorName}} deleted \"{{entityTitle}}\"",
+    "member.added": "{{actorName}} added you to \"{{workspaceName}}\"",
+    "member.removed": "You were removed from \"{{workspaceName}}\"",
+    "member.role_changed": "Your role in \"{{workspaceName}}\" was changed to {{newRole}}",
+    "invitation.received": "{{actorName}} invited you to join \"{{workspaceName}}\"",
+    "invitation.accepted": "{{actorName}} accepted your invitation to \"{{workspaceName}}\"",
+    "group.member_added": "{{actorName}} added you to group \"{{groupName}}\""
+  },
+
   "preferences": {
     "title": "Notification Preferences",
     "type": "Notification Type",
     "inApp": "In-App",
     "email": "Email",
-    "save": "Save Preferences"
+    "comingSoon": "Coming soon",
+    "mandatory": "Always on",
+    "save": "Save Preferences",
+    "taskNotifications": "Task Notifications",
+    "workspaceNotifications": "Workspace Notifications",
+    "invitationNotifications": "Invitation Notifications",
+    "groupNotifications": "Group Notifications",
+    "general": "General",
+    "showToast": "Show toast notifications",
+    "showToastDescription": "Display a brief toast when new notifications arrive"
   },
-  "types": {
-    "task_assigned": "Task assigned",
-    "task_completed": "Task completed",
-    "member_invited": "Member invited",
-    "member_joined": "Member joined",
-    "workspace_updated": "Workspace updated"
+
+  "typeLabel": {
+    "task.completed": "Task completed",
+    "task.updated": "Task updated",
+    "task.created": "Task created",
+    "task.deleted": "Task deleted",
+    "member.added": "Added to workspace",
+    "member.removed": "Removed from workspace",
+    "member.role_changed": "Role changed",
+    "invitation.received": "Invitation received",
+    "invitation.accepted": "Invitation accepted",
+    "group.member_added": "Added to group"
   }
 }

@@ -48,6 +48,7 @@ src/
 │   ├── api/                # HTTP client, query keys, error handling
 │   ├── auth/               # Auth provider abstraction (JWT / Supabase)
 │   ├── dnd/                # dnd-kit configuration and context
+│   ├── realtime/           # Supabase Realtime manager (workspace, presence, notifications)
 │   └── utils/              # cn(), formatDate utilities
 ├── stores/                 # Global Zustand stores (toastStore)
 ├── mocks/                  # MSW handlers for dev/test
@@ -127,6 +128,7 @@ React Router 7 with lazy-loaded pages and route guards:
 - `/app/workspaces/:id/activity` — Workspace activity feed
 - `/app/workspaces/:id/groups` — User groups
 - `/app/workspaces/:id/groups/:groupId` — Group detail
+- `/app/settings/notifications` — Notification preferences
 - `/` — Redirects to `/app`
 
 ### Authentication
@@ -145,6 +147,7 @@ The API client intercepts 401 responses, refreshes the token, and retries the or
   - `authStore` — User session, tokens, auth actions
   - `todoUiStore` — Expanded nodes, filters, sort, search
   - `workspaceUiStore` — Active workspace ID, sidebar state
+  - `notificationUiStore` — Panel open/close, filter (all/unread), toast preference (persisted)
   - `toastStore` — Toast notifications
 
 ### Todo Tree
@@ -178,15 +181,17 @@ Multi-user collaboration through workspaces. Each workspace scopes todos, tags, 
 
 ### Notifications
 
-In-app notification system with:
+In-app notification center for workspace events (task changes, member updates, invitation actions) with real-time delivery via Supabase Realtime:
 
-- **Notification bell** — Header icon with unread count badge
-- **Notification panel** — Dropdown list with mark-as-read, navigation to entity, and "mark all as read"
-- **Notification preferences** — Per-type toggles for in-app and email channels
+- **Notification bell** — Header icon with unread count badge (99+ cap), keyboard shortcut (`N` to toggle)
+- **Notification panel** — Dropdown with All/Unread filter tabs, cursor-based pagination, click-through navigation to entity, mark as read/unread, dismiss, and "mark all as read". Mobile-responsive (full-screen overlay on small screens, dropdown on desktop)
+- **Notification preferences** — Category-based layout (Task, Workspace, Invitation, Group) with per-type toggle switches. Mandatory notification types (member changes, invitations) are always-on. Configurable toast preference for new notifications
+- **Real-time delivery** — Supabase Realtime Postgres Changes on `notification_recipients` table with instant unread count update, lazy list refetch, and optional toast notification. Fallback polling (30s) on connection error, full query invalidation on reconnect
+- **Entity navigation** — Clicking a notification navigates to the relevant entity (todo, workspace settings, group) and selects the item in the UI
 
 ### Internationalization (i18n)
 
-The app supports English (default) and Hebrew (RTL) using `react-i18next`. Translations are organized by feature namespace (`common`, `auth`, `todos`, `tags`) in `src/i18n/locales/`. The `useDirection` hook sets the document `dir` and `lang` attributes reactively on language change. CSS logical properties (`ps-*`/`pe-*`/`ms-*`/`me-*`/`inset-inline-start`) are used throughout for direction-agnostic layouts. A language switcher (EN/עב) is available in the header and on auth pages. Language preference persists in localStorage.
+The app supports English (default) and Hebrew (RTL) using `react-i18next`. Translations are organized by feature namespace (`common`, `auth`, `todos`, `tags`, `notifications`) in `src/i18n/locales/`. The `useDirection` hook sets the document `dir` and `lang` attributes reactively on language change. CSS logical properties (`ps-*`/`pe-*`/`ms-*`/`me-*`/`inset-inline-start`) are used throughout for direction-agnostic layouts. A language switcher (EN/עב) is available in the header and on auth pages. Language preference persists in localStorage.
 
 ## Key Patterns
 
@@ -198,7 +203,7 @@ The app supports English (default) and Hebrew (RTL) using `react-i18next`. Trans
 
 ## Testing
 
-612 tests across 37 test files using Vitest + React Testing Library + MSW.
+702 tests across 41 test files using Vitest + React Testing Library + MSW.
 
 ```bash
 pnpm test          # Watch mode
@@ -215,7 +220,9 @@ pnpm test:coverage # With coverage report
 - API clients (todoApi, tagApi, workspaceApi, ApiClient)
 - React Query hooks with optimistic updates (useTodos, useTags)
 - Zustand stores (todoUiStore, workspaceUiStore, authStore, toastStore)
-- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, CreateWorkspaceDialog, Modal, Input, etc.)
+- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, CreateWorkspaceDialog, NotificationBell, NotificationPanel, NotificationItem, NotificationPreferences, Modal, Input, etc.)
+- Notification hooks (useNotifications, useUnreadCount, useMarkAsRead, useMarkAllAsRead, useDeleteNotification, useNotificationPreferences, useUpdateNotificationPreferences, useNotificationTypes)
+- Notification utilities (formatNotificationMessage, getEntityRoute, getActorInitials)
 - Utility hooks (useWorkspacePermission, useIsMobile, useDirection, useAnnounce)
 - Validation schemas (authSchemas, workspaceSchemas)
 - MSW handler integration tests

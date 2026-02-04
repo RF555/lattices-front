@@ -54,6 +54,7 @@ export const useAuthStore = create<AuthStore>()(
 
           try {
             const newTokens = await authProvider.refreshToken(currentTokens.refreshToken);
+            realtimeManager.setAuth(newTokens.accessToken);
             set({ tokens: newTokens });
             return newTokens.accessToken;
           } catch {
@@ -68,6 +69,7 @@ export const useAuthStore = create<AuthStore>()(
           const session = await authProvider.getSession();
 
           if (session) {
+            realtimeManager.setAuth(session.tokens.accessToken);
             set({
               user: session.user,
               tokens: session.tokens,
@@ -88,6 +90,7 @@ export const useAuthStore = create<AuthStore>()(
 
         try {
           const { user, tokens } = await authProvider.login(credentials);
+          realtimeManager.setAuth(tokens.accessToken);
           set({ user, tokens, isLoading: false });
         } catch (error) {
           set({
@@ -103,6 +106,7 @@ export const useAuthStore = create<AuthStore>()(
 
         try {
           const { user, tokens } = await authProvider.register(credentials);
+          realtimeManager.setAuth(tokens.accessToken);
           set({ user, tokens, isLoading: false });
         } catch (error) {
           set({

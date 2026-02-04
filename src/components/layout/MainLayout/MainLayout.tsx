@@ -7,6 +7,7 @@ import { WorkspaceSwitcher } from '@features/workspaces/components/WorkspaceSwit
 import { CreateWorkspaceDialog } from '@features/workspaces/components/CreateWorkspaceDialog/CreateWorkspaceDialog';
 import { InvitationBanner } from '@features/workspaces/components/InvitationBanner/InvitationBanner';
 import { NotificationBell } from '@features/notifications/components/NotificationBell/NotificationBell';
+import { useNotificationRealtime } from '@features/notifications/hooks/useNotificationRealtime';
 import { Button } from '@components/ui/Button';
 import { LanguageSwitcher } from '@components/ui/LanguageSwitcher';
 
@@ -15,6 +16,9 @@ export function MainLayout() {
   const user = useAuthStore((state) => state.user);
   const logout = useAuthStore((state) => state.logout);
   const [showCreateWorkspace, setShowCreateWorkspace] = useState(false);
+
+  // Establish Supabase Realtime subscription for notifications
+  useNotificationRealtime();
 
   return (
     <div className="min-h-screen bg-gray-50">

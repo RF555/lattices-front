@@ -14,7 +14,7 @@ import {
   createMockGroup,
   createMockGroupMember,
   createMockActivityEntry,
-  createMockNotificationPreferences,
+  createMockNotificationPreference,
   resetFactoryCounters,
 } from './factories';
 
@@ -115,29 +115,36 @@ describe('Factory Functions', () => {
       const notification = createMockNotification();
 
       expect(notification).toHaveProperty('id');
+      expect(notification).toHaveProperty('notificationId');
       expect(notification).toHaveProperty('type');
-      expect(notification).toHaveProperty('actorName');
-      expect(notification).toHaveProperty('actorAvatarUrl');
+      expect(notification).toHaveProperty('workspaceId');
+      expect(notification).toHaveProperty('actorId');
       expect(notification).toHaveProperty('entityType');
       expect(notification).toHaveProperty('entityId');
-      expect(notification).toHaveProperty('message');
+      expect(notification).toHaveProperty('metadata');
       expect(notification).toHaveProperty('isRead');
-      expect(notification).toHaveProperty('isSeen');
+      expect(notification).toHaveProperty('readAt');
       expect(notification).toHaveProperty('createdAt');
+
+      // Check metadata structure
+      expect(notification.metadata).toHaveProperty('actorName');
+      expect(notification.metadata).toHaveProperty('actorAvatarUrl');
+      expect(notification.metadata).toHaveProperty('entityTitle');
     });
 
     it('should default to unread', () => {
       const notification = createMockNotification();
 
       expect(notification.isRead).toBe(false);
-      expect(notification.isSeen).toBe(false);
+      expect(notification.readAt).toBe(null);
     });
 
     it('should allow overriding read status', () => {
-      const notification = createMockNotification({ isRead: true, isSeen: true });
+      const readAt = new Date().toISOString();
+      const notification = createMockNotification({ isRead: true, readAt });
 
       expect(notification.isRead).toBe(true);
-      expect(notification.isSeen).toBe(true);
+      expect(notification.readAt).toBe(readAt);
     });
   });
 
@@ -219,26 +226,37 @@ describe('Factory Functions', () => {
     });
   });
 
-  describe('createMockNotificationPreferences', () => {
-    it('should create notification preferences with default values', () => {
-      const prefs = createMockNotificationPreferences();
+  describe('createMockNotificationPreference', () => {
+    it('should create a notification preference with default values', () => {
+      const pref = createMockNotificationPreference();
 
-      expect(prefs).toHaveProperty('workspace_invitation');
-      expect(prefs).toHaveProperty('task_assigned');
-      expect(prefs).toHaveProperty('task_completed');
-      expect(prefs).toHaveProperty('task_commented');
-      expect(prefs).toHaveProperty('member_added');
+      expect(pref).toHaveProperty('id');
+      expect(pref).toHaveProperty('channel');
+      expect(pref).toHaveProperty('enabled');
+      expect(pref).toHaveProperty('workspaceId');
+      expect(pref).toHaveProperty('notificationType');
 
-      expect(prefs.workspace_invitation).toEqual({ inApp: true, email: true });
-      expect(prefs.task_assigned).toEqual({ inApp: true, email: true });
+      expect(pref.channel).toBe('in_app');
+      expect(pref.enabled).toBe(true);
     });
 
     it('should allow overriding preferences', () => {
-      const prefs = createMockNotificationPreferences({
-        task_completed: { inApp: false, email: false },
+      const pref = createMockNotificationPreference({
+        channel: 'email',
+        enabled: false,
+        notificationType: 'task.updated',
       });
 
-      expect(prefs.task_completed).toEqual({ inApp: false, email: false });
+      expect(pref.channel).toBe('email');
+      expect(pref.enabled).toBe(false);
+      expect(pref.notificationType).toBe('task.updated');
+    });
+
+    it('should generate unique IDs', () => {
+      const pref1 = createMockNotificationPreference();
+      const pref2 = createMockNotificationPreference();
+
+      expect(pref1.id).not.toBe(pref2.id);
     });
   });
 

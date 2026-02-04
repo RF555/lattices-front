@@ -18,6 +18,11 @@ export interface RealtimeCallbacks {
   onActivityChange?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
 }
 
+export interface NotificationRealtimeCallbacks {
+  onNewNotification?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
+  onSubscriptionStatus?: (status: 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED') => void;
+}
+
 export interface PresenceUser {
   userId: string;
   displayName: string;
@@ -65,6 +70,20 @@ class RealtimeManager {
         params: { eventsPerSecond: 10 },
       },
     });
+  }
+
+  // ── Auth ─────────────────────────────────────────────────────────
+
+  /**
+   * Set the access token on the Supabase Realtime client.
+   * Required for RLS policies (e.g., `notification_recipients` filters by `auth.uid()`).
+   * Call after login, session restore, and token refresh.
+   */
+  setAuth(accessToken: string): void {
+    if (!this.client) {
+      this.initialize();
+    }
+    this.client?.realtime.setAuth(accessToken);
   }
 
   // ── Connection ────────────────────────────────────────────────────
@@ -237,6 +256,56 @@ class RealtimeManager {
     if (!channel) return;
 
     await channel.track(data);
+  }
+
+  // ── Notifications (User-scoped) ─────────────────────────────────
+
+  subscribeToNotifications(
+    userId: string,
+    callbacks: NotificationRealtimeCallbacks
+  ): void {
+    if (!this.client) {
+      this.initialize();
+      if (!this.client) return;
+    }
+
+    const channelName = `notifications:${userId}`;
+    if (this.channels.has(channelName)) return;
+
+    const channel = this.client.channel(channelName);
+
+    if (callbacks.onNewNotification) {
+      channel.on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notification_recipients',
+          filter: `recipient_id=eq.${userId}`,
+        },
+        callbacks.onNewNotification
+      );
+    }
+
+    channel.subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        this.setStatus('connected');
+      } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        this.setStatus('disconnected');
+      }
+      callbacks.onSubscriptionStatus?.(status as 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED');
+    });
+
+    this.channels.set(channelName, channel);
+  }
+
+  unsubscribeFromNotifications(userId: string): void {
+    const channelName = `notifications:${userId}`;
+    const channel = this.channels.get(channelName);
+    if (channel) {
+      this.client?.removeChannel(channel);
+      this.channels.delete(channelName);
+    }
   }
 
   // ── Cleanup ───────────────────────────────────────────────────────
