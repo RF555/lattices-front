@@ -1,0 +1,21 @@
+{
+  "title": "Notifications",
+  "empty": "No notifications",
+  "markAllRead": "Mark all as read",
+  "seeAll": "See all notifications",
+  "unreadCount": "{{count}} unread",
+  "preferences": {
+    "title": "Notification Preferences",
+    "type": "Notification Type",
+    "inApp": "In-App",
+    "email": "Email",
+    "save": "Save Preferences"
+  },
+  "types": {
+    "task_assigned": "Task assigned",
+    "task_completed": "Task completed",
+    "member_invited": "Member invited",
+    "member_joined": "Member joined",
+    "workspace_updated": "Workspace updated"
+  }
+}

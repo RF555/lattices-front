@@ -3,10 +3,10 @@ import { queryKeys } from '@lib/api/queryKeys';
 import { tagApi } from '../api/tagApi';
 import type { Tag, CreateTagInput, UpdateTagInput } from '../types/tag';
 
-export function useTags() {
+export function useTags(workspaceId?: string) {
   return useQuery({
-    queryKey: queryKeys.tags.lists(),
-    queryFn: () => tagApi.getAll(),
+    queryKey: queryKeys.tags.list({ workspaceId }),
+    queryFn: () => tagApi.getAll(workspaceId),
   });
 }
 

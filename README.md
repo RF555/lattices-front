@@ -36,7 +36,9 @@ src/
 ├── features/               # Feature modules
 │   ├── auth/               # Authentication (login, register, session)
 │   ├── todos/              # Todo CRUD, tree rendering, drag-and-drop
-│   └── tags/               # Tag management and filtering
+│   ├── tags/               # Tag management and filtering
+│   ├── workspaces/         # Multi-user workspaces, members, invitations, groups, activity
+│   └── notifications/      # In-app notifications and preferences
 ├── hooks/                  # Shared hooks (useAnnounce, useDirection, useFocusTrap, useReducedMotion)
 ├── i18n/                   # Internationalization
 │   ├── i18n.ts             # i18next configuration
@@ -118,7 +120,13 @@ ANALYZE=true pnpm build
 React Router 7 with lazy-loaded pages and route guards:
 
 - `/auth/login`, `/auth/register` — Public routes (redirect to `/app` if authenticated)
-- `/app` — Protected route (redirect to `/auth/login` if unauthenticated)
+- `/invite` — Accept workspace invitation (public, token-based)
+- `/app` — Protected dashboard (redirect to `/auth/login` if unauthenticated)
+- `/app/workspaces/:id/settings` — Workspace settings (Admin+)
+- `/app/workspaces/:id/members` — Member management
+- `/app/workspaces/:id/activity` — Workspace activity feed
+- `/app/workspaces/:id/groups` — User groups
+- `/app/workspaces/:id/groups/:groupId` — Group detail
 - `/` — Redirects to `/app`
 
 ### Authentication
@@ -136,6 +144,7 @@ The API client intercepts 401 responses, refreshes the token, and retries the or
 - **Client state**: Zustand stores with `persist` middleware for localStorage
   - `authStore` — User session, tokens, auth actions
   - `todoUiStore` — Expanded nodes, filters, sort, search
+  - `workspaceUiStore` — Active workspace ID, sidebar state
   - `toastStore` — Toast notifications
 
 ### Todo Tree
@@ -154,6 +163,27 @@ Todos are stored flat on the server and assembled into a tree on the client usin
 
 Color-coded tags for organizing todos. Features inline tag creation, a tag picker with search, tag selection during todo creation, and tag-based filtering in the toolbar.
 
+### Workspaces
+
+Multi-user collaboration through workspaces. Each workspace scopes todos, tags, and activity. Features:
+
+- **Workspace switching** — Header dropdown to switch between workspaces with role badges (Owner/Admin/Member/Viewer)
+- **Member management** — Invite members by email, assign roles, transfer ownership, remove members
+- **Invitations** — Email-based invitations with accept/revoke flow and pending invitation banner
+- **Activity feed** — Timeline of workspace actions (todo CRUD, member changes) with actor info and timestamps
+- **User groups** — Organize workspace members into groups with group-level management
+- **Permission system** — Role-based access control (Owner > Admin > Member > Viewer) via `useWorkspacePermission` hook
+- **Real-time collaboration** — Supabase Realtime for live updates, online presence indicators, "someone is viewing" indicators, and conflict notifications
+- **Workspace sidebar** — Collapsible navigation for workspace sections (Todos, Tags, Members, Activity, Groups, Settings)
+
+### Notifications
+
+In-app notification system with:
+
+- **Notification bell** — Header icon with unread count badge
+- **Notification panel** — Dropdown list with mark-as-read, navigation to entity, and "mark all as read"
+- **Notification preferences** — Per-type toggles for in-app and email channels
+
 ### Internationalization (i18n)
 
 The app supports English (default) and Hebrew (RTL) using `react-i18next`. Translations are organized by feature namespace (`common`, `auth`, `todos`, `tags`) in `src/i18n/locales/`. The `useDirection` hook sets the document `dir` and `lang` attributes reactively on language change. CSS logical properties (`ps-*`/`pe-*`/`ms-*`/`me-*`/`inset-inline-start`) are used throughout for direction-agnostic layouts. A language switcher (EN/עב) is available in the header and on auth pages. Language preference persists in localStorage.
@@ -165,6 +195,30 @@ The app supports English (default) and Hebrew (RTL) using `react-i18next`. Trans
 - **Path aliases** — `@features/*`, `@components/*`, `@lib/*`, `@hooks/*`, `@stores/*`, `@i18n/*`
 - **Barrel exports** — Each module exposes a clean public API via `index.ts`
 - **Optimistic updates** — Mutations update the UI immediately, rolling back on failure
+
+## Testing
+
+612 tests across 37 test files using Vitest + React Testing Library + MSW.
+
+```bash
+pnpm test          # Watch mode
+pnpm test:run      # Single run
+pnpm test:coverage # With coverage report
+```
+
+**Test infrastructure:**
+- MSW v2 handlers mock all API endpoints (auth, todos, tags, workspaces, notifications)
+- Factory functions in `src/test/factories.ts` for generating test data
+- Custom render wrapper in `src/test/test-utils.tsx` (QueryClientProvider + MemoryRouter)
+
+**Coverage areas:**
+- API clients (todoApi, tagApi, workspaceApi, ApiClient)
+- React Query hooks with optimistic updates (useTodos, useTags)
+- Zustand stores (todoUiStore, workspaceUiStore, authStore, toastStore)
+- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, CreateWorkspaceDialog, Modal, Input, etc.)
+- Utility hooks (useWorkspacePermission, useIsMobile, useDirection, useAnnounce)
+- Validation schemas (authSchemas, workspaceSchemas)
+- MSW handler integration tests
 
 ## Deployment
 

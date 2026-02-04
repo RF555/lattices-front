@@ -21,4 +21,37 @@ export const queryKeys = {
     list: (filters?: object) => [...queryKeys.tags.lists(), filters] as const,
     detail: (id: string) => [...queryKeys.tags.all, 'detail', id] as const,
   },
+
+  // Workspaces
+  workspaces: {
+    all: ['workspaces'] as const,
+    lists: () => [...queryKeys.workspaces.all, 'list'] as const,
+    detail: (id: string) => [...queryKeys.workspaces.all, 'detail', id] as const,
+    members: (workspaceId: string) =>
+      [...queryKeys.workspaces.all, workspaceId, 'members'] as const,
+    invitations: (workspaceId: string) =>
+      [...queryKeys.workspaces.all, workspaceId, 'invitations'] as const,
+    activity: (workspaceId: string) =>
+      [...queryKeys.workspaces.all, workspaceId, 'activity'] as const,
+    groups: (workspaceId: string) =>
+      [...queryKeys.workspaces.all, workspaceId, 'groups'] as const,
+    groupDetail: (workspaceId: string, groupId: string) =>
+      [...queryKeys.workspaces.groups(workspaceId), groupId] as const,
+    groupMembers: (workspaceId: string, groupId: string) =>
+      [...queryKeys.workspaces.groupDetail(workspaceId, groupId), 'members'] as const,
+  },
+
+  // Invitations (user-scoped)
+  invitations: {
+    all: ['invitations'] as const,
+    pending: () => [...queryKeys.invitations.all, 'pending'] as const,
+  },
+
+  // Notifications
+  notifications: {
+    all: ['notifications'] as const,
+    list: (filters?: object) => [...queryKeys.notifications.all, 'list', filters] as const,
+    unreadCount: () => [...queryKeys.notifications.all, 'unread-count'] as const,
+    preferences: () => [...queryKeys.notifications.all, 'preferences'] as const,
+  },
 } as const;

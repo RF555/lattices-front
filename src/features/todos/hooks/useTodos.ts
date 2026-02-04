@@ -4,18 +4,20 @@ import { todoApi } from '../api/todoApi';
 import { buildTodoTree } from '../utils/treeUtils';
 import type { Todo, CreateTodoInput, UpdateTodoInput, TodoFilters } from '../types/todo';
 
-export function useTodos(filters?: TodoFilters) {
+export function useTodos(filters?: TodoFilters, workspaceId?: string) {
+  const filterKey = { ...(filters || {}), workspaceId };
   return useQuery({
-    queryKey: queryKeys.todos.list(filters || {}),
-    queryFn: () => todoApi.getAll(filters),
+    queryKey: queryKeys.todos.list(filterKey),
+    queryFn: () => todoApi.getAll(filters, workspaceId),
     select: (data) => buildTodoTree(data),
   });
 }
 
-export function useFlatTodos(filters?: TodoFilters) {
+export function useFlatTodos(filters?: TodoFilters, workspaceId?: string) {
+  const filterKey = { ...(filters || {}), workspaceId };
   return useQuery({
-    queryKey: queryKeys.todos.list(filters || {}),
-    queryFn: () => todoApi.getAll(filters),
+    queryKey: queryKeys.todos.list(filterKey),
+    queryFn: () => todoApi.getAll(filters, workspaceId),
   });
 }
 
@@ -27,11 +29,11 @@ export function useTodo(id: string) {
   });
 }
 
-export function useCreateTodo() {
+export function useCreateTodo(workspaceId?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateTodoInput) => todoApi.create(input),
+    mutationFn: (input: CreateTodoInput) => todoApi.create(input, workspaceId),
 
     onMutate: async (newTodo) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.todos.lists() });

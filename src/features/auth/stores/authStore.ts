@@ -8,6 +8,7 @@ import {
   type RegisterCredentials,
 } from '@lib/auth';
 import { apiClient } from '@lib/api/client';
+import { realtimeManager } from '@lib/realtime';
 
 interface AuthState {
   user: User | null;
@@ -116,6 +117,7 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true });
 
         try {
+          realtimeManager.cleanup();
           await authProvider.logout();
         } finally {
           apiClient.setTokenGetter(() => null);

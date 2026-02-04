@@ -1,30 +1,40 @@
 import { memo } from 'react';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { TodoNodeContent } from '../TodoNodeContent';
+import { ViewingIndicator } from '@features/workspaces/components/ViewingIndicator/ViewingIndicator';
 import type { Todo } from '../../types/todo';
+import type { PresenceUser } from '@lib/realtime';
 
 interface TodoNodeProps {
   todo: Todo;
   depth: number;
   isExpanded: boolean;
+  viewingTask?: Map<string, PresenceUser[]>;
 }
 
 export const TodoNode = memo(function TodoNode({
   todo,
   depth,
   isExpanded,
+  viewingTask,
 }: TodoNodeProps) {
   const expandedIds = useTodoUiStore((s) => s.expandedIds);
   const hasChildren = !!todo.children?.length;
+  const viewers = viewingTask?.get(todo.id) || [];
 
   return (
     <div role="treeitem" aria-expanded={hasChildren ? isExpanded : undefined}>
-      <TodoNodeContent
-        todo={todo}
-        depth={depth}
-        isExpanded={isExpanded}
-        hasChildren={hasChildren}
-      />
+      <div className="flex items-center gap-1">
+        <div className="flex-1 min-w-0">
+          <TodoNodeContent
+            todo={todo}
+            depth={depth}
+            isExpanded={isExpanded}
+            hasChildren={hasChildren}
+          />
+        </div>
+        {viewers.length > 0 && <ViewingIndicator viewers={viewers} className="shrink-0 mr-2" />}
+      </div>
 
       {hasChildren && isExpanded && (
         <div
@@ -42,6 +52,7 @@ export const TodoNode = memo(function TodoNode({
                 todo={child}
                 depth={depth + 1}
                 isExpanded={expandedIds.has(child.id)}
+                viewingTask={viewingTask}
               />
             </div>
           ))}

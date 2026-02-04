@@ -40,12 +40,13 @@ function mapTodo(raw: ApiTodo): Todo {
 }
 
 export const todoApi = {
-  async getAll(filters?: TodoFilters): Promise<Todo[]> {
+  async getAll(filters?: TodoFilters, workspaceId?: string): Promise<Todo[]> {
     const params: Record<string, string | boolean | undefined> = {};
 
     if (filters?.includeCompleted !== undefined)
       params.include_completed = filters.includeCompleted;
     if (filters?.tagId) params.tag_id = filters.tagId;
+    if (workspaceId) params.workspace_id = workspaceId;
 
     const response = await apiClient.get<ListResponse<ApiTodo>>('/todos', { params });
     return response.data.map(mapTodo);
@@ -56,12 +57,15 @@ export const todoApi = {
     return mapTodo(response.data);
   },
 
-  async create(input: CreateTodoInput): Promise<Todo> {
-    const response = await apiClient.post<SingleResponse<ApiTodo>>('/todos', {
+  async create(input: CreateTodoInput, workspaceId?: string): Promise<Todo> {
+    const body: Record<string, unknown> = {
       title: input.title,
       description: input.description,
       parent_id: input.parentId,
-    });
+    };
+    if (workspaceId) body.workspace_id = workspaceId;
+
+    const response = await apiClient.post<SingleResponse<ApiTodo>>('/todos', body);
     return mapTodo(response.data);
   },
 

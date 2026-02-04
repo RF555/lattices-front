@@ -9,6 +9,16 @@ import { lazy, Suspense } from 'react';
 const LoginPage = lazy(() => import('@features/auth/pages/LoginPage'));
 const RegisterPage = lazy(() => import('@features/auth/pages/RegisterPage'));
 const DashboardPage = lazy(() => import('@features/todos/pages/DashboardPage'));
+const WorkspaceSettingsPage = lazy(
+  () => import('@features/workspaces/pages/WorkspaceSettingsPage')
+);
+const MembersPage = lazy(() => import('@features/workspaces/pages/MembersPage'));
+const ActivityPage = lazy(() => import('@features/workspaces/pages/ActivityPage'));
+const GroupsPage = lazy(() => import('@features/workspaces/pages/GroupsPage'));
+const GroupDetailPage = lazy(() => import('@features/workspaces/pages/GroupDetailPage'));
+const AcceptInvitationPage = lazy(
+  () => import('@features/workspaces/pages/AcceptInvitationPage')
+);
 
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -44,6 +54,14 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: '/invite',
+    element: (
+      <Suspense fallback={<PageLoader />}>
+        <AcceptInvitationPage />
+      </Suspense>
+    ),
+  },
+  {
     path: '/app',
     element: <ProtectedRoute />,
     children: [
@@ -55,6 +73,46 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageLoader />}>
                 <DashboardPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'workspaces/:id/settings',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <WorkspaceSettingsPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'workspaces/:id/members',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <MembersPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'workspaces/:id/activity',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <ActivityPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'workspaces/:id/groups',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <GroupsPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'workspaces/:id/groups/:groupId',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <GroupDetailPage />
               </Suspense>
             ),
           },
