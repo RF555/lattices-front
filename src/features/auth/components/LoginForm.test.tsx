@@ -18,7 +18,15 @@ vi.mock('react-router', async () => {
     ...actual,
     useNavigate: () => mockNavigate,
     useLocation: () => ({ state: null }),
-    Link: ({ children, to, ...props }: { children: React.ReactNode; to: string; [key: string]: unknown }) => (
+    Link: ({
+      children,
+      to,
+      ...props
+    }: {
+      children: React.ReactNode;
+      to: string;
+      [key: string]: unknown;
+    }) => (
       <a href={to} {...props}>
         {children}
       </a>
@@ -130,9 +138,10 @@ describe('LoginForm', () => {
       const user = userEvent.setup();
       let resolveLogin: () => void;
       const mockLogin = vi.fn(
-        () => new Promise<void>((resolve) => {
-          resolveLogin = resolve;
-        })
+        () =>
+          new Promise<void>((resolve) => {
+            resolveLogin = resolve;
+          }),
       );
 
       // Set initial state with isLoading false
@@ -236,7 +245,10 @@ describe('LoginForm', () => {
       render(<LoginForm />);
 
       expect(screen.getByLabelText(/email/i)).toHaveAttribute('autocomplete', 'email');
-      expect(screen.getByLabelText(/password/i)).toHaveAttribute('autocomplete', 'current-password');
+      expect(screen.getByLabelText(/password/i)).toHaveAttribute(
+        'autocomplete',
+        'current-password',
+      );
     });
 
     it('should be keyboard navigable', async () => {

@@ -29,8 +29,20 @@ vi.mock('@features/tags/components/TagPicker', () => ({
     onDeselect: (id: string) => void;
   }) => (
     <div data-testid="tag-picker">
-      <button onClick={() => onSelect('tag-1')}>Add Tag</button>
-      <button onClick={() => onDeselect('tag-1')}>Remove Tag</button>
+      <button
+        onClick={() => {
+          onSelect('tag-1');
+        }}
+      >
+        Add Tag
+      </button>
+      <button
+        onClick={() => {
+          onDeselect('tag-1');
+        }}
+      >
+        Remove Tag
+      </button>
       <div>Selected: {selectedIds.join(',')}</div>
     </div>
   ),
@@ -136,9 +148,9 @@ describe('CreateTodoForm', () => {
                 updated_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       render(<CreateTodoForm />);
@@ -176,9 +188,9 @@ describe('CreateTodoForm', () => {
                 updated_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       render(<CreateTodoForm />);
@@ -215,19 +227,19 @@ describe('CreateTodoForm', () => {
                 updated_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       render(<CreateTodoForm />);
 
-      const input = screen.getByPlaceholderText(/add task/i) as HTMLInputElement;
+      const input = screen.getByPlaceholderText(/add task/i);
       await user.type(input, 'Test Task');
       await user.click(screen.getByRole('button', { name: /^add$/i }));
 
       await waitFor(() => {
-        expect(input.value).toBe('');
+        expect((input as HTMLInputElement).value).toBe('');
       });
     });
 
@@ -257,9 +269,9 @@ describe('CreateTodoForm', () => {
                 updated_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       render(<CreateTodoForm />);
@@ -299,9 +311,9 @@ describe('CreateTodoForm', () => {
                 updated_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       render(<CreateTodoForm />);
@@ -324,7 +336,7 @@ describe('CreateTodoForm', () => {
         http.post(`${API_URL}/todos`, () => {
           mockPost();
           return HttpResponse.json({ data: {} }, { status: 201 });
-        })
+        }),
       );
 
       render(<CreateTodoForm />);
@@ -359,9 +371,7 @@ describe('CreateTodoForm', () => {
 
       await user.click(screen.getByRole('button', { name: /\+ add description/i }));
 
-      expect(
-        screen.queryByRole('button', { name: /\+ add description/i })
-      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /\+ add description/i })).not.toBeInTheDocument();
     });
 
     it('should show remove description button when textarea is visible', async () => {
@@ -381,7 +391,7 @@ describe('CreateTodoForm', () => {
       await user.click(screen.getByRole('button', { name: /remove description/i }));
 
       expect(
-        screen.queryByPlaceholderText(/add a description \(optional\)/i)
+        screen.queryByPlaceholderText(/add a description \(optional\)/i),
       ).not.toBeInTheDocument();
     });
 
@@ -409,9 +419,9 @@ describe('CreateTodoForm', () => {
                 updated_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       render(<CreateTodoForm />);
@@ -453,9 +463,9 @@ describe('CreateTodoForm', () => {
                 updated_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       render(<CreateTodoForm />);
@@ -464,14 +474,14 @@ describe('CreateTodoForm', () => {
       await user.click(screen.getByRole('button', { name: /\+ add description/i }));
       await user.type(
         screen.getByPlaceholderText(/add a description \(optional\)/i),
-        'Description'
+        'Description',
       );
       await user.click(screen.getByRole('button', { name: /^add$/i }));
 
       await waitFor(() => {
         // Description toggle should be hidden after submission
         expect(
-          screen.queryByPlaceholderText(/add a description \(optional\)/i)
+          screen.queryByPlaceholderText(/add a description \(optional\)/i),
         ).not.toBeInTheDocument();
       });
     });
@@ -544,9 +554,9 @@ describe('CreateTodoForm', () => {
                 updated_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       render(<CreateTodoForm />);

@@ -7,10 +7,7 @@ import {
   useUpdateNotificationPreferences,
 } from '../../hooks/useNotifications';
 import { useNotificationUiStore } from '../../stores/notificationUiStore';
-import {
-  NOTIFICATION_CATEGORIES,
-  MANDATORY_NOTIFICATION_TYPES,
-} from '../../types/notification';
+import { NOTIFICATION_CATEGORIES, MANDATORY_NOTIFICATION_TYPES } from '../../types/notification';
 import type { NotificationPreference } from '../../types/notification';
 
 const CATEGORY_KEYS = {
@@ -38,8 +35,7 @@ export function NotificationPreferences() {
   const isEnabled = (typeName: string, channel: 'in_app' | 'email'): boolean => {
     if (!preferences) return true;
     const pref = preferences.find(
-      (p: NotificationPreference) =>
-        p.notificationType === typeName && p.channel === channel
+      (p: NotificationPreference) => p.notificationType === typeName && p.channel === channel,
     );
     return pref ? pref.enabled : true; // Default: enabled
   };
@@ -60,72 +56,59 @@ export function NotificationPreferences() {
       </div>
 
       {/* Notification type categories */}
-      {(Object.entries(NOTIFICATION_CATEGORIES) as [keyof typeof NOTIFICATION_CATEGORIES, readonly string[]][]).map(
-        ([category, types]) => (
-          <div
-            key={category}
-            className="bg-white rounded-lg border border-gray-200 overflow-hidden"
-          >
-            {/* Category header */}
-            <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 bg-gray-50">
-              <h3 className="text-sm font-medium text-gray-700">
-                {t(CATEGORY_KEYS[category])}
-              </h3>
-              <span className="text-xs font-medium text-gray-500">
-                {t('preferences.inApp')}
-              </span>
-            </div>
-
-            {/* Type rows */}
-            <div className="divide-y divide-gray-100">
-              {types.map((typeName) => {
-                const isMandatory = MANDATORY_NOTIFICATION_TYPES.has(typeName);
-                const enabled = isEnabled(typeName, 'in_app');
-                const typeLabel = (t as (key: string) => string)(`typeLabel.${typeName}`);
-
-                return (
-                  <div
-                    key={typeName}
-                    className="flex items-center justify-between px-4 py-3"
-                  >
-                    <div className="min-w-0">
-                      <p className="text-sm text-gray-900">
-                        {typeLabel}
-                      </p>
-                      {isMandatory && (
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          {t('preferences.mandatory')}
-                        </p>
-                      )}
-                    </div>
-                    <ToggleSwitch
-                      checked={isMandatory || enabled}
-                      onChange={() => handleToggle(typeName, 'in_app', enabled)}
-                      disabled={isMandatory}
-                      label={typeLabel}
-                      size="sm"
-                    />
-                  </div>
-                );
-              })}
-            </div>
+      {(
+        Object.entries(NOTIFICATION_CATEGORIES) as [
+          keyof typeof NOTIFICATION_CATEGORIES,
+          readonly string[],
+        ][]
+      ).map(([category, types]) => (
+        <div key={category} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+          {/* Category header */}
+          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3 bg-gray-50">
+            <h3 className="text-sm font-medium text-gray-700">{t(CATEGORY_KEYS[category])}</h3>
+            <span className="text-xs font-medium text-gray-500">{t('preferences.inApp')}</span>
           </div>
-        )
-      )}
+
+          {/* Type rows */}
+          <div className="divide-y divide-gray-100">
+            {types.map((typeName) => {
+              const isMandatory = MANDATORY_NOTIFICATION_TYPES.has(typeName);
+              const enabled = isEnabled(typeName, 'in_app');
+              const typeLabel = (t as (key: string) => string)(`typeLabel.${typeName}`);
+
+              return (
+                <div key={typeName} className="flex items-center justify-between px-4 py-3">
+                  <div className="min-w-0">
+                    <p className="text-sm text-gray-900">{typeLabel}</p>
+                    {isMandatory && (
+                      <p className="text-xs text-gray-500 mt-0.5">{t('preferences.mandatory')}</p>
+                    )}
+                  </div>
+                  <ToggleSwitch
+                    checked={isMandatory || enabled}
+                    onChange={() => {
+                      handleToggle(typeName, 'in_app', enabled);
+                    }}
+                    disabled={isMandatory}
+                    label={typeLabel}
+                    size="sm"
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
 
       {/* General settings */}
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <div className="border-b border-gray-100 px-4 py-3 bg-gray-50">
-          <h3 className="text-sm font-medium text-gray-700">
-            {t('preferences.general')}
-          </h3>
+          <h3 className="text-sm font-medium text-gray-700">{t('preferences.general')}</h3>
         </div>
         <div className="flex items-center justify-between px-4 py-3">
           <div className="min-w-0">
             <p className="text-sm text-gray-900">{t('preferences.showToast')}</p>
-            <p className="text-xs text-gray-500 mt-0.5">
-              {t('preferences.showToastDescription')}
-            </p>
+            <p className="text-xs text-gray-500 mt-0.5">{t('preferences.showToastDescription')}</p>
           </div>
           <ToggleSwitch
             checked={showToastOnNew}

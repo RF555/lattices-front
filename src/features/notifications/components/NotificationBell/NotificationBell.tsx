@@ -18,7 +18,7 @@ export function NotificationBell() {
         setPanelOpen(false);
       }
     },
-    [setPanelOpen]
+    [setPanelOpen],
   );
 
   const handleKeyDown = useCallback(
@@ -37,12 +37,12 @@ export function NotificationBell() {
         !(e.target instanceof HTMLInputElement) &&
         !(e.target instanceof HTMLTextAreaElement) &&
         !(e.target instanceof HTMLSelectElement) &&
-        !(e.target as HTMLElement)?.isContentEditable
+        !(e.target as HTMLElement).isContentEditable
       ) {
         togglePanel();
       }
     },
-    [panelOpen, setPanelOpen, togglePanel]
+    [panelOpen, setPanelOpen, togglePanel],
   );
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export function NotificationBell() {
         className={cn(
           'relative rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700',
           'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1',
-          'transition-colors'
+          'transition-colors',
         )}
         aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
       >
@@ -76,7 +76,13 @@ export function NotificationBell() {
         )}
       </button>
 
-      {panelOpen && <NotificationPanel onClose={() => setPanelOpen(false)} />}
+      {panelOpen && (
+        <NotificationPanel
+          onClose={() => {
+            setPanelOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }

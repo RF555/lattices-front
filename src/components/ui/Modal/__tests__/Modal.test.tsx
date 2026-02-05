@@ -30,7 +30,7 @@ describe('Modal', () => {
     const { container } = render(
       <Modal isOpen={true} onClose={vi.fn()}>
         <div>Content</div>
-      </Modal>
+      </Modal>,
     );
 
     // Title should not be in the document
@@ -120,7 +120,7 @@ describe('Modal', () => {
         <button>First Button</button>
         <button>Second Button</button>
         <button>Third Button</button>
-      </Modal>
+      </Modal>,
     );
 
     const dialog = screen.getByRole('dialog');
@@ -152,7 +152,7 @@ describe('Modal', () => {
         <button>First Button</button>
         <button>Second Button</button>
         <button>Third Button</button>
-      </Modal>
+      </Modal>,
     );
 
     const buttons = screen.getAllByRole('button');
@@ -193,7 +193,7 @@ describe('Modal', () => {
         <div>First child</div>
         <div>Second child</div>
         <div>Third child</div>
-      </Modal>
+      </Modal>,
     );
 
     expect(screen.getByText('First child')).toBeInTheDocument();

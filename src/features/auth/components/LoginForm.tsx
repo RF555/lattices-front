@@ -24,20 +24,26 @@ export function LoginForm() {
     resolver: zodResolver(createLoginSchema(t)),
   });
 
-  const from = location.state?.from?.pathname || '/app';
+  const from =
+    (location.state as { from?: { pathname?: string } } | null)?.from?.pathname ?? '/app';
 
   const onSubmit = async (data: LoginFormData) => {
     clearError();
     try {
       await login(data);
-      navigate(from, { replace: true });
+      void navigate(from, { replace: true });
     } catch {
       // Error is handled by store
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+      className="space-y-6"
+    >
       <div>
         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
           {t('login.email')}
@@ -50,9 +56,7 @@ export function LoginForm() {
           placeholder={t('login.emailPlaceholder')}
           error={!!errors.email}
         />
-        {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-        )}
+        {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
       </div>
 
       <div>
@@ -67,16 +71,10 @@ export function LoginForm() {
           placeholder={t('login.passwordPlaceholder')}
           error={!!errors.password}
         />
-        {errors.password && (
-          <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-        )}
+        {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
       </div>
 
-      {error && (
-        <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
-          {error}
-        </div>
-      )}
+      {error && <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">{error}</div>}
 
       <Button type="submit" isLoading={isLoading} className="w-full">
         {t('login.signIn')}

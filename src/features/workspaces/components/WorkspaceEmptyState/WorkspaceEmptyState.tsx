@@ -14,12 +14,8 @@ export function WorkspaceEmptyState({ onCreateWorkspace }: WorkspaceEmptyStatePr
       <div className="rounded-full bg-primary/10 p-4 mb-4">
         <Grid3X3 className="h-8 w-8 text-primary" />
       </div>
-      <h2 className="text-xl font-semibold text-gray-900 mb-2">
-        {t('emptyState.title')}
-      </h2>
-      <p className="text-sm text-gray-500 mb-6 max-w-md">
-        {t('emptyState.description')}
-      </p>
+      <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('emptyState.title')}</h2>
+      <p className="text-sm text-gray-500 mb-6 max-w-md">{t('emptyState.description')}</p>
       <Button onClick={onCreateWorkspace}>
         <Plus className="h-4 w-4 mr-2" />
         {t('emptyState.createFirst')}

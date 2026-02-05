@@ -7,10 +7,7 @@ import { Input } from '@components/ui/Input';
 import { Textarea } from '@components/ui/Textarea';
 import { useCreateWorkspace } from '../../hooks/useWorkspaces';
 import { useWorkspaceUiStore } from '../../stores/workspaceUiStore';
-import {
-  createWorkspaceSchema,
-  type WorkspaceFormData,
-} from '../../schemas/workspaceSchemas';
+import { createWorkspaceSchema, type WorkspaceFormData } from '../../schemas/workspaceSchemas';
 
 interface CreateWorkspaceDialogProps {
   isOpen: boolean;
@@ -56,21 +53,26 @@ export function CreateWorkspaceDialog({ isOpen, onClose }: CreateWorkspaceDialog
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title={t('createWorkspace')}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(onSubmit)(e);
+        }}
+        className="space-y-4"
+      >
         <div>
           <label htmlFor="ws-name" className="block text-sm font-medium text-gray-700">
             {t('form.name')}
           </label>
+          {}
           <Input
             id="ws-name"
             {...register('name')}
             placeholder={t('form.namePlaceholder')}
             error={!!errors.name}
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- dialog auto-focus is expected UX
             autoFocus
           />
-          {errors.name && (
-            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-          )}
+          {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
         </div>
 
         <div>

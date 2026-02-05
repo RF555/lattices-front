@@ -90,7 +90,9 @@ describe('authStore', () => {
       const loginPromise = new Promise((resolve) => {
         resolveLogin = resolve;
       });
-      vi.mocked(authProvider.login).mockReturnValue(loginPromise as Promise<{ user: User; tokens: AuthTokens }>);
+      vi.mocked(authProvider.login).mockReturnValue(
+        loginPromise as Promise<{ user: User; tokens: AuthTokens }>,
+      );
 
       const store = useAuthStore.getState();
       const loginCall = store.login({ email: 'test@example.com', password: 'password' });
@@ -111,9 +113,9 @@ describe('authStore', () => {
       vi.mocked(authProvider.login).mockRejectedValue(error);
 
       const store = useAuthStore.getState();
-      await expect(
-        store.login({ email: 'test@example.com', password: 'wrong' })
-      ).rejects.toThrow('Invalid credentials');
+      await expect(store.login({ email: 'test@example.com', password: 'wrong' })).rejects.toThrow(
+        'Invalid credentials',
+      );
 
       const state = useAuthStore.getState();
       expect(state.user).toBeNull();
@@ -163,7 +165,7 @@ describe('authStore', () => {
 
       const store = useAuthStore.getState();
       await expect(
-        store.register({ email: 'existing@example.com', password: 'password123' })
+        store.register({ email: 'existing@example.com', password: 'password123' }),
       ).rejects.toThrow('Email already exists');
 
       const state = useAuthStore.getState();

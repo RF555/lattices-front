@@ -8,10 +8,7 @@ interface UseTreeKeyboardOptions {
   isEnabled?: boolean;
 }
 
-export function useTreeKeyboard({
-  todos,
-  isEnabled = true,
-}: UseTreeKeyboardOptions) {
+export function useTreeKeyboard({ todos, isEnabled = true }: UseTreeKeyboardOptions) {
   const selectedId = useTodoUiStore((s) => s.selectedId);
   const setSelectedId = useTodoUiStore((s) => s.setSelectedId);
   const expandedIds = useTodoUiStore((s) => s.expandedIds);
@@ -47,10 +44,7 @@ export function useTreeKeyboard({
       if (!isEnabled) return;
 
       // Ignore if user is typing in an input
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      ) {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
         return;
       }
 
@@ -175,11 +169,13 @@ export function useTreeKeyboard({
       toggleExpanded,
       toggleMutation,
       deleteMutation,
-    ]
+    ],
   );
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [handleKeyDown]);
 }

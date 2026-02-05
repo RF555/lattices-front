@@ -66,8 +66,8 @@ describe('InviteMemberDialog', () => {
 
   it('should default to member role', () => {
     render(<InviteMemberDialog {...defaultProps} />);
-    const roleSelect = screen.getByLabelText(/role/i) as HTMLSelectElement;
-    expect(roleSelect.value).toBe('member');
+    const roleSelect = screen.getByLabelText(/role/i);
+    expect((roleSelect as HTMLSelectElement).value).toBe('member');
   });
 
   it('should allow changing role', async () => {
@@ -82,8 +82,8 @@ describe('InviteMemberDialog', () => {
   it('should have all role options (viewer, member, admin)', () => {
     render(<InviteMemberDialog {...defaultProps} />);
     const roleSelect = screen.getByLabelText(/role/i);
-    const options = Array.from(roleSelect.querySelectorAll('option')).map(
-      (opt) => opt.getAttribute('value')
+    const options = Array.from(roleSelect.querySelectorAll('option')).map((opt) =>
+      opt.getAttribute('value'),
     );
     expect(options).toContain('viewer');
     expect(options).toContain('member');
@@ -225,9 +225,7 @@ describe('InviteMemberDialog', () => {
 
     await user.click(screen.getByRole('button', { name: /copy/i }));
 
-    expect(writeTextMock).toHaveBeenCalledWith(
-      expect.stringContaining('raw-secret-token-abc123')
-    );
+    expect(writeTextMock).toHaveBeenCalledWith(expect.stringContaining('raw-secret-token-abc123'));
   });
 
   it('should show "Copied" feedback after copying link', async () => {

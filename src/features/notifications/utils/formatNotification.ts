@@ -7,12 +7,13 @@ import type { Notification } from '../types/notification';
  */
 export function formatNotificationMessage(
   notification: Notification,
-  t: TFunction<'notifications'>
+  t: TFunction<'notifications'>,
 ): string {
   const { type, metadata } = notification;
   const actorName = metadata.actorName || t('unknownActor', { defaultValue: 'Someone' });
   const entityTitle = metadata.entityTitle || t('unknownEntity', { defaultValue: 'an item' });
-  const workspaceName = metadata.workspaceName || t('unknownWorkspace', { defaultValue: 'a workspace' });
+  const workspaceName =
+    metadata.workspaceName || t('unknownWorkspace', { defaultValue: 'a workspace' });
 
   return t(`type.${type}`, {
     actorName,

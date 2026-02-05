@@ -56,7 +56,7 @@ describe('Input', () => {
         required
         maxLength={50}
         data-testid="custom-input"
-      />
+      />,
     );
 
     const input = screen.getByTestId('custom-input') as HTMLInputElement;
@@ -96,9 +96,9 @@ describe('Input', () => {
     };
 
     render(<Input value={value} onChange={handleChange} data-testid="controlled-input" />);
-    const input = screen.getByTestId('controlled-input') as HTMLInputElement;
+    const input = screen.getByTestId('controlled-input');
 
-    expect(input.value).toBe('');
+    expect((input as HTMLInputElement).value).toBe('');
   });
 
   it('should support common input types', () => {

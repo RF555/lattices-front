@@ -50,25 +50,19 @@ export function NotificationItem({
       className={cn(
         'group flex w-full gap-3 px-4 py-3 text-left transition-colors cursor-pointer',
         'hover:bg-gray-50 focus:bg-gray-50 focus:outline-none',
-        !notification.isRead && 'bg-blue-50/50'
+        !notification.isRead && 'bg-blue-50/50',
       )}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
     >
       {/* Unread indicator */}
       <div className="shrink-0 pt-2 w-2">
-        {!notification.isRead && (
-          <div className="h-2 w-2 rounded-full bg-blue-500" />
-        )}
+        {!notification.isRead && <div className="h-2 w-2 rounded-full bg-blue-500" />}
       </div>
 
       {/* Avatar */}
       {avatarUrl ? (
-        <img
-          src={avatarUrl}
-          alt=""
-          className="h-8 w-8 rounded-full object-cover shrink-0"
-        />
+        <img src={avatarUrl} alt="" className="h-8 w-8 rounded-full object-cover shrink-0" />
       ) : (
         <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600 shrink-0">
           {initials}
@@ -90,7 +84,7 @@ export function NotificationItem({
         className={cn(
           'shrink-0 rounded p-1 text-gray-400 transition-opacity',
           'hover:bg-gray-200 hover:text-gray-600',
-          'opacity-0 group-hover:opacity-100 focus:opacity-100'
+          'opacity-0 group-hover:opacity-100 focus:opacity-100',
         )}
         aria-label={t('dismiss')}
       >

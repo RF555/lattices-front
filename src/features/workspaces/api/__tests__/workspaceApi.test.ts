@@ -43,8 +43,8 @@ describe('workspaceApi', () => {
               },
             ],
             meta: { total: 2 },
-          })
-        )
+          }),
+        ),
       );
 
       const result = await workspaceApi.getAll();
@@ -72,8 +72,8 @@ describe('workspaceApi', () => {
     it('should handle empty workspaces list', async () => {
       server.use(
         http.get(`${API_URL}/workspaces`, () =>
-          HttpResponse.json({ data: [], meta: { total: 0 } })
-        )
+          HttpResponse.json({ data: [], meta: { total: 0 } }),
+        ),
       );
 
       const result = await workspaceApi.getAll();
@@ -98,8 +98,8 @@ describe('workspaceApi', () => {
               },
             ],
             meta: { total: 1 },
-          })
-        )
+          }),
+        ),
       );
 
       const result = await workspaceApi.getAll();
@@ -123,8 +123,8 @@ describe('workspaceApi', () => {
               created_at: '2024-01-01T00:00:00Z',
               updated_at: '2024-01-02T00:00:00Z',
             },
-          })
-        )
+          }),
+        ),
       );
 
       const result = await workspaceApi.getById('ws-123');
@@ -141,8 +141,8 @@ describe('workspaceApi', () => {
     it('should throw for non-existent workspace', async () => {
       server.use(
         http.get(`${API_URL}/workspaces/:id`, () =>
-          HttpResponse.json({ message: 'Workspace not found' }, { status: 404 })
-        )
+          HttpResponse.json({ message: 'Workspace not found' }, { status: 404 }),
+        ),
       );
 
       await expect(workspaceApi.getById('non-existent')).rejects.toThrow();
@@ -172,9 +172,9 @@ describe('workspaceApi', () => {
                 updated_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       const result = await workspaceApi.create({
@@ -208,9 +208,9 @@ describe('workspaceApi', () => {
                 updated_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       const result = await workspaceApi.create({ name: 'New Workspace' });
@@ -240,7 +240,7 @@ describe('workspaceApi', () => {
               updated_at: '2024-01-03T00:00:00Z',
             },
           });
-        })
+        }),
       );
 
       const result = await workspaceApi.update('ws-1', { name: 'Updated Name' });
@@ -269,7 +269,7 @@ describe('workspaceApi', () => {
               updated_at: '2024-01-03T00:00:00Z',
             },
           });
-        })
+        }),
       );
 
       const result = await workspaceApi.update('ws-1', { description: 'New description' });
@@ -295,7 +295,7 @@ describe('workspaceApi', () => {
               updated_at: '2024-01-03T00:00:00Z',
             },
           });
-        })
+        }),
       );
 
       const result = await workspaceApi.update('ws-1', {
@@ -311,7 +311,7 @@ describe('workspaceApi', () => {
   describe('remove', () => {
     it('should resolve without error on successful deletion', async () => {
       server.use(
-        http.delete(`${API_URL}/workspaces/:id`, () => new HttpResponse(null, { status: 204 }))
+        http.delete(`${API_URL}/workspaces/:id`, () => new HttpResponse(null, { status: 204 })),
       );
 
       await expect(workspaceApi.remove('ws-1')).resolves.toBeUndefined();
@@ -320,8 +320,8 @@ describe('workspaceApi', () => {
     it('should throw on failed deletion', async () => {
       server.use(
         http.delete(`${API_URL}/workspaces/:id`, () =>
-          HttpResponse.json({ message: 'Cannot delete workspace' }, { status: 403 })
-        )
+          HttpResponse.json({ message: 'Cannot delete workspace' }, { status: 403 }),
+        ),
       );
 
       await expect(workspaceApi.remove('ws-1')).rejects.toThrow();
@@ -352,8 +352,8 @@ describe('workspaceApi', () => {
               },
             ],
             meta: { total: 2 },
-          })
-        )
+          }),
+        ),
       );
 
       const result = await workspaceApi.getMembers('ws-1');
@@ -384,8 +384,8 @@ describe('workspaceApi', () => {
     it('should handle empty members list', async () => {
       server.use(
         http.get(`${API_URL}/workspaces/:workspaceId/members`, () =>
-          HttpResponse.json({ data: [], meta: { total: 0 } })
-        )
+          HttpResponse.json({ data: [], meta: { total: 0 } }),
+        ),
       );
 
       const result = await workspaceApi.getMembers('ws-1');
@@ -415,9 +415,9 @@ describe('workspaceApi', () => {
                 joined_at: '2024-01-05T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       const result = await workspaceApi.addMember('ws-1', 'user-2', 'admin');
@@ -433,24 +433,21 @@ describe('workspaceApi', () => {
   describe('updateMemberRole', () => {
     it('should send role and return mapped member', async () => {
       server.use(
-        http.patch(
-          `${API_URL}/workspaces/:workspaceId/members/:userId`,
-          async ({ request }) => {
-            const body = (await request.json()) as Record<string, unknown>;
-            expect(body).toEqual({ role: 'viewer' });
+        http.patch(`${API_URL}/workspaces/:workspaceId/members/:userId`, async ({ request }) => {
+          const body = (await request.json()) as Record<string, unknown>;
+          expect(body).toEqual({ role: 'viewer' });
 
-            return HttpResponse.json({
-              data: {
-                user_id: 'user-2',
-                email: 'member@example.com',
-                display_name: 'Member',
-                avatar_url: null,
-                role: body.role,
-                joined_at: '2024-01-02T00:00:00Z',
-              },
-            });
-          }
-        )
+          return HttpResponse.json({
+            data: {
+              user_id: 'user-2',
+              email: 'member@example.com',
+              display_name: 'Member',
+              avatar_url: null,
+              role: body.role,
+              joined_at: '2024-01-02T00:00:00Z',
+            },
+          });
+        }),
       );
 
       const result = await workspaceApi.updateMemberRole('ws-1', 'user-2', 'viewer');
@@ -464,9 +461,10 @@ describe('workspaceApi', () => {
   describe('removeMember', () => {
     it('should resolve without error on successful removal', async () => {
       server.use(
-        http.delete(`${API_URL}/workspaces/:workspaceId/members/:userId`, () =>
-          new HttpResponse(null, { status: 204 })
-        )
+        http.delete(
+          `${API_URL}/workspaces/:workspaceId/members/:userId`,
+          () => new HttpResponse(null, { status: 204 }),
+        ),
       );
 
       await expect(workspaceApi.removeMember('ws-1', 'user-2')).resolves.toBeUndefined();
@@ -475,8 +473,8 @@ describe('workspaceApi', () => {
     it('should throw on failed removal', async () => {
       server.use(
         http.delete(`${API_URL}/workspaces/:workspaceId/members/:userId`, () =>
-          HttpResponse.json({ message: 'Cannot remove member' }, { status: 403 })
-        )
+          HttpResponse.json({ message: 'Cannot remove member' }, { status: 403 }),
+        ),
       );
 
       await expect(workspaceApi.removeMember('ws-1', 'user-2')).rejects.toThrow();
@@ -486,27 +484,22 @@ describe('workspaceApi', () => {
   describe('transferOwnership', () => {
     it('should send new_owner_id and resolve without error', async () => {
       server.use(
-        http.post(
-          `${API_URL}/workspaces/:workspaceId/transfer-ownership`,
-          async ({ request }) => {
-            const body = (await request.json()) as Record<string, unknown>;
-            expect(body).toEqual({ new_owner_id: 'user-2' });
+        http.post(`${API_URL}/workspaces/:workspaceId/transfer-ownership`, async ({ request }) => {
+          const body = (await request.json()) as Record<string, unknown>;
+          expect(body).toEqual({ new_owner_id: 'user-2' });
 
-            return new HttpResponse(null, { status: 204 });
-          }
-        )
+          return new HttpResponse(null, { status: 204 });
+        }),
       );
 
-      await expect(
-        workspaceApi.transferOwnership('ws-1', 'user-2')
-      ).resolves.toBeUndefined();
+      await expect(workspaceApi.transferOwnership('ws-1', 'user-2')).resolves.toBeUndefined();
     });
 
     it('should throw on failed transfer', async () => {
       server.use(
         http.post(`${API_URL}/workspaces/:workspaceId/transfer-ownership`, () =>
-          HttpResponse.json({ message: 'Cannot transfer ownership' }, { status: 403 })
-        )
+          HttpResponse.json({ message: 'Cannot transfer ownership' }, { status: 403 }),
+        ),
       );
 
       await expect(workspaceApi.transferOwnership('ws-1', 'user-2')).rejects.toThrow();
@@ -523,8 +516,8 @@ describe('workspaceApi', () => {
     it('should throw on 500 error', async () => {
       server.use(
         http.get(`${API_URL}/workspaces`, () =>
-          HttpResponse.json({ message: 'Internal server error' }, { status: 500 })
-        )
+          HttpResponse.json({ message: 'Internal server error' }, { status: 500 }),
+        ),
       );
 
       await expect(workspaceApi.getAll()).rejects.toThrow();

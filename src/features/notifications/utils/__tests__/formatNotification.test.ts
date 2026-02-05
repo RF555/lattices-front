@@ -1,9 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import {
-  formatNotificationMessage,
-  getEntityRoute,
-  getActorInitials,
-} from '../formatNotification';
+import { formatNotificationMessage, getEntityRoute, getActorInitials } from '../formatNotification';
 import { createMockNotification } from '@/test/factories';
 import type { TFunction } from 'i18next';
 

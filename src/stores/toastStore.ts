@@ -35,20 +35,25 @@ export const useToastStore = create<ToastState>((set) => ({
     }
   },
 
-  removeToast: (id) =>
+  removeToast: (id) => {
     set((state) => ({
       toasts: state.toasts.filter((t) => t.id !== id),
-    })),
+    }));
+  },
 }));
 
 // Convenience functions
 export const toast = {
-  success: (message: string) =>
-    useToastStore.getState().addToast({ type: 'success', message }),
-  error: (message: string) =>
-    useToastStore.getState().addToast({ type: 'error', message, duration: 6000 }),
-  info: (message: string) =>
-    useToastStore.getState().addToast({ type: 'info', message }),
-  warning: (message: string) =>
-    useToastStore.getState().addToast({ type: 'warning', message }),
+  success: (message: string) => {
+    useToastStore.getState().addToast({ type: 'success', message });
+  },
+  error: (message: string) => {
+    useToastStore.getState().addToast({ type: 'error', message, duration: 6000 });
+  },
+  info: (message: string) => {
+    useToastStore.getState().addToast({ type: 'info', message });
+  },
+  warning: (message: string) => {
+    useToastStore.getState().addToast({ type: 'warning', message });
+  },
 };

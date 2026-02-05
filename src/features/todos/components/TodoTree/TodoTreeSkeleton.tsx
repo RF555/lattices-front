@@ -11,7 +11,7 @@ const SKELETON_WIDTHS = [65, 40, 55, 35, 50, 45, 60, 38];
 export function TodoTreeSkeleton({ count = 8 }: TodoTreeSkeletonProps) {
   return (
     <div className="space-y-2" role="status" aria-label="Loading tasks">
-      {[...Array(count)].map((_, i) => {
+      {Array.from({ length: count }, (_, i) => {
         const depth = SKELETON_DEPTHS[i % SKELETON_DEPTHS.length];
         const indent = depth * 24;
 

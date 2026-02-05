@@ -1,9 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
 import { notificationApi } from '../api/notificationApi';
-import type {
-  NotificationListResult,
-} from '../types/notification';
+import type { NotificationListResult } from '../types/notification';
 
 // ── Query Hooks ────────────────────────────────────────────────────────
 
@@ -77,9 +75,7 @@ export function useMarkAsRead() {
             ...data,
             unreadCount: Math.max(0, data.unreadCount - 1),
             notifications: data.notifications.map((n) =>
-              n.id === recipientId
-                ? { ...n, isRead: true, readAt: new Date().toISOString() }
-                : n
+              n.id === recipientId ? { ...n, isRead: true, readAt: new Date().toISOString() } : n,
             ),
           });
         }
@@ -107,7 +103,7 @@ export function useMarkAsRead() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
     },
   });
 }
@@ -133,7 +129,7 @@ export function useMarkAsUnread() {
             ...data,
             unreadCount: data.unreadCount + 1,
             notifications: data.notifications.map((n) =>
-              n.id === recipientId ? { ...n, isRead: false, readAt: null } : n
+              n.id === recipientId ? { ...n, isRead: false, readAt: null } : n,
             ),
           });
         }
@@ -158,7 +154,7 @@ export function useMarkAsUnread() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
     },
   });
 }
@@ -169,9 +165,7 @@ export function useMarkAllAsRead() {
 
   return useMutation({
     mutationFn: (workspaceId?: string) =>
-      workspaceId
-        ? notificationApi.markAllRead(workspaceId)
-        : notificationApi.markAllReadGlobal(),
+      workspaceId ? notificationApi.markAllRead(workspaceId) : notificationApi.markAllReadGlobal(),
 
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: queryKeys.notifications.all });
@@ -215,7 +209,7 @@ export function useMarkAllAsRead() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
     },
   });
 }
@@ -271,7 +265,7 @@ export function useDeleteNotification() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
     },
   });
 }
@@ -294,7 +288,7 @@ export function useUpdateNotificationPreferences() {
   return useMutation({
     mutationFn: notificationApi.updatePreference,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.preferences() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.preferences() });
     },
   });
 }
@@ -312,21 +306,17 @@ export function useNotificationTypes() {
 
 type CountSnapshot = [readonly unknown[], number | undefined][];
 
-function snapshotUnreadCounts(
-  queryClient: ReturnType<typeof useQueryClient>
-): CountSnapshot {
+function snapshotUnreadCounts(queryClient: ReturnType<typeof useQueryClient>): CountSnapshot {
   return queryClient
     .getQueriesData<number>({ queryKey: [...queryKeys.notifications.all, 'unread-count'] })
     .concat(
       queryClient.getQueriesData<number>({
         queryKey: queryKeys.notifications.totalUnreadCount(),
-      })
+      }),
     );
 }
 
-function decrementUnreadCounts(
-  queryClient: ReturnType<typeof useQueryClient>
-): CountSnapshot {
+function decrementUnreadCounts(queryClient: ReturnType<typeof useQueryClient>): CountSnapshot {
   const snapshot = snapshotUnreadCounts(queryClient);
   for (const [key, count] of snapshot) {
     if (typeof count === 'number') {
@@ -336,9 +326,7 @@ function decrementUnreadCounts(
   return snapshot;
 }
 
-function incrementUnreadCounts(
-  queryClient: ReturnType<typeof useQueryClient>
-): CountSnapshot {
+function incrementUnreadCounts(queryClient: ReturnType<typeof useQueryClient>): CountSnapshot {
   const snapshot = snapshotUnreadCounts(queryClient);
   for (const [key, count] of snapshot) {
     if (typeof count === 'number') {
@@ -348,9 +336,7 @@ function incrementUnreadCounts(
   return snapshot;
 }
 
-function zeroUnreadCounts(
-  queryClient: ReturnType<typeof useQueryClient>
-): CountSnapshot {
+function zeroUnreadCounts(queryClient: ReturnType<typeof useQueryClient>): CountSnapshot {
   const snapshot = snapshotUnreadCounts(queryClient);
   for (const [key, count] of snapshot) {
     if (typeof count === 'number') {

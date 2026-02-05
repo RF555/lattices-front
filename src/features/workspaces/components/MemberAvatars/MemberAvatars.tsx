@@ -29,16 +29,13 @@ export function MemberAvatars({ members, max = 4, size = 'sm' }: MemberAvatarsPr
             <img
               src={member.avatarUrl}
               alt=""
-              className={cn(
-                'rounded-full ring-2 ring-white object-cover',
-                SIZES[size]
-              )}
+              className={cn('rounded-full ring-2 ring-white object-cover', SIZES[size])}
             />
           ) : (
             <div
               className={cn(
                 'rounded-full ring-2 ring-white bg-gray-200 flex items-center justify-center font-medium text-gray-600',
-                SIZES[size]
+                SIZES[size],
               )}
             >
               {getInitials(member)}
@@ -51,7 +48,7 @@ export function MemberAvatars({ members, max = 4, size = 'sm' }: MemberAvatarsPr
         <div
           className={cn(
             'rounded-full ring-2 ring-white bg-gray-100 flex items-center justify-center font-medium text-gray-500',
-            SIZES[size]
+            SIZES[size],
           )}
         >
           +{remaining}

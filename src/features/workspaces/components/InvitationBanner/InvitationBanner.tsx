@@ -14,10 +14,7 @@ export function InvitationBanner() {
     <div className="bg-blue-50 border-b border-blue-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         {invitations.map((invitation) => (
-          <div
-            key={invitation.id}
-            className="flex items-center justify-between gap-3 text-sm"
-          >
+          <div key={invitation.id} className="flex items-center justify-between gap-3 text-sm">
             <div className="flex items-center gap-2 text-blue-700">
               <Mail className="h-4 w-4 shrink-0" />
               <span>{t('invitation.banner', { workspace: invitation.workspaceName })}</span>
@@ -25,7 +22,9 @@ export function InvitationBanner() {
             <div className="flex items-center gap-2 shrink-0">
               <Button
                 size="sm"
-                onClick={() => acceptInvitation.mutate(invitation.id)}
+                onClick={() => {
+                  acceptInvitation.mutate(invitation.id);
+                }}
                 isLoading={acceptInvitation.isPending}
               >
                 {t('invitation.accept')}

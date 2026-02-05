@@ -28,28 +28,28 @@ export function useWorkspaceRealtime(workspaceId: string | null | undefined): vo
       onTodoChange: () => {
         const wsId = workspaceIdRef.current;
         if (!wsId) return;
-        queryClientRef.current.invalidateQueries({ queryKey: queryKeys.todos.all });
+        void queryClientRef.current.invalidateQueries({ queryKey: queryKeys.todos.all });
       },
       onTagChange: () => {
         const wsId = workspaceIdRef.current;
         if (!wsId) return;
-        queryClientRef.current.invalidateQueries({ queryKey: queryKeys.tags.all });
+        void queryClientRef.current.invalidateQueries({ queryKey: queryKeys.tags.all });
       },
       onMemberChange: () => {
         const wsId = workspaceIdRef.current;
         if (!wsId) return;
-        queryClientRef.current.invalidateQueries({
+        void queryClientRef.current.invalidateQueries({
           queryKey: queryKeys.workspaces.members(wsId),
         });
       },
       onActivityChange: () => {
         const wsId = workspaceIdRef.current;
         if (!wsId) return;
-        queryClientRef.current.invalidateQueries({
+        void queryClientRef.current.invalidateQueries({
           queryKey: queryKeys.workspaces.activity(wsId),
         });
         // Also refresh notifications since activity may generate them
-        queryClientRef.current.invalidateQueries({
+        void queryClientRef.current.invalidateQueries({
           queryKey: queryKeys.notifications.all,
         });
       },

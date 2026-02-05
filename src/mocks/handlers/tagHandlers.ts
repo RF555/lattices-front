@@ -6,12 +6,18 @@ const API_URL = `${BASE_URL}/api/${API_VERSION}`;
 
 let mockTags = [
   {
-    id: 'tag-1', name: 'Work', color_hex: '#3b82f6',
-    usage_count: 2, created_at: new Date().toISOString(),
+    id: 'tag-1',
+    name: 'Work',
+    color_hex: '#3b82f6',
+    usage_count: 2,
+    created_at: new Date().toISOString(),
   },
   {
-    id: 'tag-2', name: 'Personal', color_hex: '#22c55e',
-    usage_count: 1, created_at: new Date().toISOString(),
+    id: 'tag-2',
+    name: 'Personal',
+    color_hex: '#22c55e',
+    usage_count: 1,
+    created_at: new Date().toISOString(),
   },
 ];
 
@@ -39,7 +45,7 @@ export const tagHandlers = [
     if (!tag) {
       return HttpResponse.json(
         { error_code: 'TAG_NOT_FOUND', message: 'Tag not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
     Object.assign(tag, body);

@@ -1,14 +1,6 @@
 import { NavLink, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import {
-  CheckSquare,
-  Tag,
-  Users,
-  Activity,
-  Settings,
-  UsersRound,
-  X,
-} from 'lucide-react';
+import { CheckSquare, Tag, Users, Activity, Settings, UsersRound, X } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 import { useWorkspaceUiStore } from '../../stores/workspaceUiStore';
 import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
@@ -16,9 +8,7 @@ import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
     'flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-    isActive
-      ? 'bg-primary/10 text-primary'
-      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+    isActive ? 'bg-primary/10 text-primary' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900',
   );
 
 export function WorkspaceSidebar() {

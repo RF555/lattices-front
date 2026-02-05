@@ -8,7 +8,7 @@
 
 import { describe, it, expect, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@/test/test-utils';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { type QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTestQueryClient } from '@/test/test-utils';
 import type { ReactNode } from 'react';
 import {
@@ -44,7 +44,9 @@ describe('Notification Query Hooks', () => {
       expect(result.current.isLoading).toBe(true);
 
       // Wait for data to load
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       // Verify response shape
       expect(result.current.data).toBeDefined();
@@ -68,14 +70,16 @@ describe('Notification Query Hooks', () => {
       const { wrapper } = createWrapper();
       const { result } = renderHook(() => useNotifications({ workspaceId: 'ws-1' }), { wrapper });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.data).toBeDefined();
       expect(result.current.data?.notifications).toBeInstanceOf(Array);
 
       // All notifications should belong to the workspace
       const allBelongToWorkspace = result.current.data!.notifications.every(
-        (n) => n.workspaceId === 'ws-1'
+        (n) => n.workspaceId === 'ws-1',
       );
       expect(allBelongToWorkspace).toBe(true);
     });
@@ -84,7 +88,9 @@ describe('Notification Query Hooks', () => {
       const { wrapper } = createWrapper();
       const { result } = renderHook(() => useNotifications({ isRead: false }), { wrapper });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       // All notifications should be unread
       const allUnread = result.current.data!.notifications.every((n) => !n.isRead);
@@ -97,11 +103,13 @@ describe('Notification Query Hooks', () => {
         wrapper,
       });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       // All notifications should be of the specified type
       const allCorrectType = result.current.data!.notifications.every(
-        (n) => n.type === 'task.completed'
+        (n) => n.type === 'task.completed',
       );
       expect(allCorrectType).toBe(true);
     });
@@ -110,7 +118,9 @@ describe('Notification Query Hooks', () => {
       const { wrapper } = createWrapper();
       const { result } = renderHook(() => useNotifications({ limit: 1 }), { wrapper });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.data?.notifications.length).toBeLessThanOrEqual(1);
     });
@@ -121,7 +131,9 @@ describe('Notification Query Hooks', () => {
       const { wrapper } = createWrapper();
       const { result } = renderHook(() => useUnreadCount(), { wrapper });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.data).toBeTypeOf('number');
       expect(result.current.data).toBeGreaterThanOrEqual(0);
@@ -131,7 +143,9 @@ describe('Notification Query Hooks', () => {
       const { wrapper } = createWrapper();
       const { result } = renderHook(() => useUnreadCount('ws-1'), { wrapper });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.data).toBeTypeOf('number');
       expect(result.current.data).toBeGreaterThanOrEqual(0);
@@ -141,7 +155,9 @@ describe('Notification Query Hooks', () => {
       const { wrapper } = createWrapper();
       const { result } = renderHook(() => useUnreadCount('ws-nonexistent'), { wrapper });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.data).toBe(0);
     });
@@ -152,7 +168,9 @@ describe('Notification Query Hooks', () => {
       const { wrapper } = createWrapper();
       const { result } = renderHook(() => useNotificationPreferences(), { wrapper });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.data).toBeInstanceOf(Array);
       expect(result.current.data!.length).toBeGreaterThan(0);
@@ -170,7 +188,9 @@ describe('Notification Query Hooks', () => {
       const { wrapper } = createWrapper();
       const { result } = renderHook(() => useNotificationPreferences(), { wrapper });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       const prefs = result.current.data!;
       prefs.forEach((pref) => {
@@ -186,7 +206,9 @@ describe('Notification Query Hooks', () => {
       const { wrapper } = createWrapper();
       const { result } = renderHook(() => useNotificationTypes(), { wrapper });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.data).toBeInstanceOf(Array);
       expect(result.current.data!.length).toBeGreaterThan(0);
@@ -203,11 +225,13 @@ describe('Notification Query Hooks', () => {
       const { wrapper } = createWrapper();
       const { result } = renderHook(() => useNotificationTypes(), { wrapper });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       const types = result.current.data!;
-      const hasMandatory = types.some((t) => t.isMandatory === true);
-      const hasOptional = types.some((t) => t.isMandatory === false);
+      const hasMandatory = types.some((t) => t.isMandatory);
+      const hasOptional = types.some((t) => !t.isMandatory);
 
       expect(hasMandatory).toBe(true);
       expect(hasOptional).toBe(true);
@@ -240,7 +264,9 @@ describe('Notification Mutation Hooks', () => {
       });
 
       // Wait for mutation to complete
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.isError).toBe(false);
     });
@@ -259,7 +285,9 @@ describe('Notification Mutation Hooks', () => {
 
       result.current.mutate(params);
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
     });
   });
 
@@ -276,7 +304,9 @@ describe('Notification Mutation Hooks', () => {
         recipientId: 'notif-2',
       });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.isError).toBe(false);
     });
@@ -295,7 +325,9 @@ describe('Notification Mutation Hooks', () => {
 
       result.current.mutate(params);
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
     });
   });
 
@@ -309,7 +341,9 @@ describe('Notification Mutation Hooks', () => {
 
       result.current.mutate(undefined);
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.isError).toBe(false);
     });
@@ -323,7 +357,9 @@ describe('Notification Mutation Hooks', () => {
 
       result.current.mutate('ws-1');
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.isError).toBe(false);
     });
@@ -340,7 +376,9 @@ describe('Notification Mutation Hooks', () => {
       await expect(mutatePromise).resolves.toBeDefined();
 
       // Wait for the mutation state to update
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
     });
   });
 
@@ -357,7 +395,9 @@ describe('Notification Mutation Hooks', () => {
         recipientId: 'notif-1',
       });
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.isError).toBe(false);
     });
@@ -376,7 +416,9 @@ describe('Notification Mutation Hooks', () => {
 
       result.current.mutate(params);
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
     });
   });
 
@@ -396,7 +438,9 @@ describe('Notification Mutation Hooks', () => {
 
       result.current.mutate(input);
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.isError).toBe(false);
     });
@@ -417,7 +461,9 @@ describe('Notification Mutation Hooks', () => {
 
       result.current.mutate(input);
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
 
       expect(result.current.isError).toBe(false);
     });
@@ -438,7 +484,9 @@ describe('Notification Mutation Hooks', () => {
 
       result.current.mutate(input);
 
-      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBe(true);
+      });
     });
 
     it('should invalidate preferences query after successful update', async () => {
@@ -458,7 +506,9 @@ describe('Notification Mutation Hooks', () => {
 
       mutationResult.current.mutate(input);
 
-      await waitFor(() => expect(mutationResult.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(mutationResult.current.isSuccess).toBe(true);
+      });
 
       // Mutation should complete successfully
       expect(mutationResult.current.isError).toBe(false);
@@ -473,7 +523,9 @@ describe('Notification Hooks Integration', () => {
     // First, fetch notifications
     const { result: queryResult } = renderHook(() => useNotifications(), { wrapper });
 
-    await waitFor(() => expect(queryResult.current.isSuccess).toBe(true));
+    await waitFor(() => {
+      expect(queryResult.current.isSuccess).toBe(true);
+    });
 
     const initialCount = queryResult.current.data!.notifications.length;
     expect(initialCount).toBeGreaterThan(0);
@@ -486,7 +538,9 @@ describe('Notification Hooks Integration', () => {
       recipientId: queryResult.current.data!.notifications[0].id,
     });
 
-    await waitFor(() => expect(mutationResult.current.isSuccess).toBe(true));
+    await waitFor(() => {
+      expect(mutationResult.current.isSuccess).toBe(true);
+    });
 
     // The mutation hook should have completed successfully
     expect(mutationResult.current.isError).toBe(false);
@@ -498,14 +552,18 @@ describe('Notification Hooks Integration', () => {
     // Fetch initial unread count
     const { result: countResult } = renderHook(() => useUnreadCount(), { wrapper });
 
-    await waitFor(() => expect(countResult.current.isSuccess).toBe(true));
+    await waitFor(() => {
+      expect(countResult.current.isSuccess).toBe(true);
+    });
 
     // Get an unread notification to mark as read
     const { result: notificationsResult } = renderHook(() => useNotifications({ isRead: false }), {
       wrapper,
     });
 
-    await waitFor(() => expect(notificationsResult.current.isSuccess).toBe(true));
+    await waitFor(() => {
+      expect(notificationsResult.current.isSuccess).toBe(true);
+    });
 
     if (notificationsResult.current.data!.notifications.length > 0) {
       const unreadNotif = notificationsResult.current.data!.notifications[0];
@@ -518,7 +576,9 @@ describe('Notification Hooks Integration', () => {
         recipientId: unreadNotif.id,
       });
 
-      await waitFor(() => expect(markReadResult.current.isSuccess).toBe(true));
+      await waitFor(() => {
+        expect(markReadResult.current.isSuccess).toBe(true);
+      });
 
       expect(markReadResult.current.isError).toBe(false);
     }

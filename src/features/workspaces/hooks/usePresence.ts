@@ -31,11 +31,13 @@ export function usePresence(workspaceId: string | null | undefined): PresenceRes
     realtimeManager.initialize();
 
     realtimeManager.subscribeToPresence(workspaceId, {
-      onSync: (users) => setAllUsers(users),
+      onSync: (users) => {
+        setAllUsers(users);
+      },
     });
 
     // Publish initial presence
-    realtimeManager.updatePresence(workspaceId, {
+    void realtimeManager.updatePresence(workspaceId, {
       userId: user.id,
       displayName: user.name || user.email,
       avatarUrl: user.avatarUrl || null,
@@ -53,7 +55,7 @@ export function usePresence(workspaceId: string | null | undefined): PresenceRes
     (taskId: string | null) => {
       if (!workspaceId || !userRef.current) return;
       viewingTaskRef.current = taskId;
-      realtimeManager.updatePresence(workspaceId, {
+      void realtimeManager.updatePresence(workspaceId, {
         userId: userRef.current.id,
         displayName: userRef.current.name || userRef.current.email,
         avatarUrl: userRef.current.avatarUrl || null,
@@ -61,13 +63,13 @@ export function usePresence(workspaceId: string | null | undefined): PresenceRes
         viewingTaskId: taskId,
       });
     },
-    [workspaceId]
+    [workspaceId],
   );
 
   // Filter out self from online users
   const onlineUsers = useMemo(
     () => allUsers.filter((u) => u.userId !== user?.id),
-    [allUsers, user?.id]
+    [allUsers, user?.id],
   );
 
   // Build per-task viewing map (excluding self)

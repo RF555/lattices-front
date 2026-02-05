@@ -18,10 +18,7 @@ interface GroupManageDialogProps {
 
 function createGroupSchema(t: (key: string) => string) {
   return z.object({
-    name: z
-      .string()
-      .min(1, t('validation.nameRequired'))
-      .max(50, t('validation.nameMaxLength')),
+    name: z.string().min(1, t('validation.nameRequired')).max(50, t('validation.nameMaxLength')),
     description: z
       .string()
       .max(200, t('validation.descriptionMaxLength'))
@@ -66,12 +63,12 @@ export function GroupManageDialog({ isOpen, onClose, workspaceId, group }: Group
     if (isEdit) {
       updateGroup.mutate(
         { name: data.name, description: data.description || null },
-        { onSuccess: onClose }
+        { onSuccess: onClose },
       );
     } else {
       createGroup.mutate(
         { name: data.name, description: data.description || undefined },
-        { onSuccess: onClose }
+        { onSuccess: onClose },
       );
     }
   };
@@ -79,12 +76,13 @@ export function GroupManageDialog({ isOpen, onClose, workspaceId, group }: Group
   const isPending = createGroup.isPending || updateGroup.isPending;
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={isEdit ? t('groups.edit') : t('groups.create')}
-    >
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? t('groups.edit') : t('groups.create')}>
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(onSubmit)(e);
+        }}
+        className="space-y-4"
+      >
         <div>
           <label htmlFor="group-name" className="block text-sm font-medium text-gray-700 mb-1">
             {t('groups.name')}
@@ -98,7 +96,10 @@ export function GroupManageDialog({ isOpen, onClose, workspaceId, group }: Group
         </div>
 
         <div>
-          <label htmlFor="group-description" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="group-description"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             {t('groups.description')}
           </label>
           <Input

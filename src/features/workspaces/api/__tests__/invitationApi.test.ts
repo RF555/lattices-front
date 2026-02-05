@@ -38,9 +38,9 @@ describe('invitationApi', () => {
         http.post(`${API_URL}/workspaces/:id/invitations`, () =>
           HttpResponse.json(
             { data: mockApiInvitation, token: 'raw-secret-token-xyz' },
-            { status: 201 }
-          )
-        )
+            { status: 201 },
+          ),
+        ),
       );
 
       const result = await invitationApi.createInvitation('ws-1', 'invitee@example.com', 'member');
@@ -56,11 +56,8 @@ describe('invitationApi', () => {
     it('should map snake_case fields to camelCase', async () => {
       server.use(
         http.post(`${API_URL}/workspaces/:id/invitations`, () =>
-          HttpResponse.json(
-            { data: mockApiInvitation, token: 'tok' },
-            { status: 201 }
-          )
-        )
+          HttpResponse.json({ data: mockApiInvitation, token: 'tok' }, { status: 201 }),
+        ),
       );
 
       const result = await invitationApi.createInvitation('ws-1', 'test@x.com', 'member');
@@ -82,8 +79,8 @@ describe('invitationApi', () => {
             workspace_name: 'Test Workspace',
             role: 'member',
             message: 'Invitation accepted successfully',
-          })
-        )
+          }),
+        ),
       );
 
       const result = await invitationApi.acceptInvitation('raw-secret-token');
@@ -101,8 +98,8 @@ describe('invitationApi', () => {
             workspace_name: 'My Team',
             role: 'admin',
             message: 'ok',
-          })
-        )
+          }),
+        ),
       );
 
       const result = await invitationApi.acceptInvitation('some-token');
@@ -125,7 +122,7 @@ describe('invitationApi', () => {
             role: 'member',
             message: 'Invitation accepted successfully',
           });
-        })
+        }),
       );
 
       const result = await invitationApi.acceptInvitationById('inv-123-uuid');
@@ -144,8 +141,8 @@ describe('invitationApi', () => {
             workspace_name: 'Dev Team',
             role: 'viewer',
             message: 'ok',
-          })
-        )
+          }),
+        ),
       );
 
       const result = await invitationApi.acceptInvitationById('inv-xyz');
@@ -163,8 +160,8 @@ describe('invitationApi', () => {
           HttpResponse.json({
             data: [mockApiInvitation],
             meta: { total: 1 },
-          })
-        )
+          }),
+        ),
       );
 
       const result = await invitationApi.getWorkspaceInvitations('ws-1');
@@ -178,8 +175,8 @@ describe('invitationApi', () => {
     it('should return empty array for workspace with no invitations', async () => {
       server.use(
         http.get(`${API_URL}/workspaces/:id/invitations`, () =>
-          HttpResponse.json({ data: [], meta: { total: 0 } })
-        )
+          HttpResponse.json({ data: [], meta: { total: 0 } }),
+        ),
       );
 
       const result = await invitationApi.getWorkspaceInvitations('ws-empty');
@@ -198,8 +195,8 @@ describe('invitationApi', () => {
               { ...mockApiInvitation, id: 'inv-2', email: 'other@example.com' },
             ],
             meta: { total: 2 },
-          })
-        )
+          }),
+        ),
       );
 
       const result = await invitationApi.getPendingInvitations();
@@ -217,7 +214,7 @@ describe('invitationApi', () => {
         http.delete(`${API_URL}/workspaces/:id/invitations/:invId`, ({ request }) => {
           capturedUrl = request.url;
           return new HttpResponse(null, { status: 204 });
-        })
+        }),
       );
 
       await invitationApi.revokeInvitation('ws-1', 'inv-1');

@@ -94,12 +94,13 @@ interface MockNotification {
   created_at: string;
 }
 
-interface MockNotificationPreferences {
-  [notificationType: string]: {
+type MockNotificationPreferences = Record<
+  string,
+  {
     in_app: boolean;
     email: boolean;
-  };
-}
+  }
+>;
 
 // Mock data
 let mockWorkspaces: MockWorkspace[] = [
@@ -125,7 +126,7 @@ let mockWorkspaces: MockWorkspace[] = [
   },
 ];
 
-let mockMembers: Record<string, MockMember[]> = {
+const mockMembers: Record<string, MockMember[]> = {
   'ws-1': [
     {
       user_id: 'user-1',
@@ -164,7 +165,7 @@ let mockMembers: Record<string, MockMember[]> = {
   ],
 };
 
-let mockInvitations: Record<string, MockInvitation[]> = {
+const mockInvitations: Record<string, MockInvitation[]> = {
   'ws-2': [
     {
       id: 'inv-1',
@@ -180,7 +181,7 @@ let mockInvitations: Record<string, MockInvitation[]> = {
   ],
 };
 
-let mockActivity: Record<string, MockActivityEntry[]> = {
+const mockActivity: Record<string, MockActivityEntry[]> = {
   'ws-1': [
     {
       id: 'act-1',
@@ -223,7 +224,7 @@ let mockActivity: Record<string, MockActivityEntry[]> = {
   ],
 };
 
-let mockGroups: Record<string, MockGroup[]> = {
+const mockGroups: Record<string, MockGroup[]> = {
   'ws-2': [
     {
       id: 'grp-1',
@@ -244,7 +245,7 @@ let mockGroups: Record<string, MockGroup[]> = {
   ],
 };
 
-let mockGroupMembers: Record<string, MockGroupMember[]> = {
+const mockGroupMembers: Record<string, MockGroupMember[]> = {
   'grp-1': [
     {
       user_id: 'user-2',
@@ -275,7 +276,7 @@ let mockGroupMembers: Record<string, MockGroupMember[]> = {
   ],
 };
 
-let mockNotifications: MockNotification[] = [
+const mockNotifications: MockNotification[] = [
   {
     id: 'notif-1',
     type: 'workspace_invitation',
@@ -314,7 +315,7 @@ let mockNotifications: MockNotification[] = [
   },
 ];
 
-let mockNotificationPreferences: MockNotificationPreferences = {
+const mockNotificationPreferences: MockNotificationPreferences = {
   workspace_invitation: { in_app: true, email: true },
   task_assigned: { in_app: true, email: true },
   task_completed: { in_app: true, email: false },
@@ -365,7 +366,7 @@ export const workspaceHandlers = [
     if (!workspace) {
       return HttpResponse.json(
         { error_code: 'WORKSPACE_NOT_FOUND', message: 'Workspace not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
     return HttpResponse.json({ data: workspace });
@@ -378,12 +379,11 @@ export const workspaceHandlers = [
     if (!workspace) {
       return HttpResponse.json(
         { error_code: 'WORKSPACE_NOT_FOUND', message: 'Workspace not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
     if (body.name) workspace.name = body.name as string;
-    if (body.description !== undefined)
-      workspace.description = body.description as string | null;
+    if (body.description !== undefined) workspace.description = body.description as string | null;
     workspace.updated_at = new Date().toISOString();
     return HttpResponse.json({ data: workspace });
   }),
@@ -442,7 +442,7 @@ export const workspaceHandlers = [
     if (!members) {
       return HttpResponse.json(
         { error_code: 'WORKSPACE_NOT_FOUND', message: 'Workspace not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -450,7 +450,7 @@ export const workspaceHandlers = [
     if (!member) {
       return HttpResponse.json(
         { error_code: 'MEMBER_NOT_FOUND', message: 'Member not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -463,9 +463,7 @@ export const workspaceHandlers = [
     const workspaceId = params.id as string;
     const userId = params.userId as string;
     if (mockMembers[workspaceId]) {
-      mockMembers[workspaceId] = mockMembers[workspaceId].filter(
-        (m) => m.user_id !== userId
-      );
+      mockMembers[workspaceId] = mockMembers[workspaceId].filter((m) => m.user_id !== userId);
       // Update member count
       const workspace = mockWorkspaces.find((w) => w.id === workspaceId);
       if (workspace) {
@@ -505,7 +503,7 @@ export const workspaceHandlers = [
     mockInvitations[workspaceId].push(newInvitation);
     return HttpResponse.json(
       { data: newInvitation, token: `mock-token-${newInvitation.id}` },
-      { status: 201 }
+      { status: 201 },
     );
   }),
 
@@ -557,7 +555,7 @@ export const workspaceHandlers = [
     if (!foundInvitation || !foundWorkspaceId) {
       return HttpResponse.json(
         { error_code: 'INVITATION_NOT_FOUND', message: 'Invitation not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -592,7 +590,7 @@ export const workspaceHandlers = [
     if (invitationId === 'accept') {
       return HttpResponse.json(
         { error_code: 'INVITATION_NOT_FOUND', message: 'Invitation not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -610,7 +608,7 @@ export const workspaceHandlers = [
     if (!foundInvitation || !foundWorkspaceId) {
       return HttpResponse.json(
         { error_code: 'INVITATION_NOT_FOUND', message: 'Invitation not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -680,7 +678,7 @@ export const workspaceHandlers = [
     if (!group) {
       return HttpResponse.json(
         { error_code: 'GROUP_NOT_FOUND', message: 'Group not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
     return HttpResponse.json({ data: group });
@@ -694,7 +692,7 @@ export const workspaceHandlers = [
     if (!group) {
       return HttpResponse.json(
         { error_code: 'GROUP_NOT_FOUND', message: 'Group not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
     if (body.name) group.name = body.name as string;
@@ -753,9 +751,7 @@ export const workspaceHandlers = [
     const groupId = params.groupId as string;
     const userId = params.userId as string;
     if (mockGroupMembers[groupId]) {
-      mockGroupMembers[groupId] = mockGroupMembers[groupId].filter(
-        (m) => m.user_id !== userId
-      );
+      mockGroupMembers[groupId] = mockGroupMembers[groupId].filter((m) => m.user_id !== userId);
       // Update member count
       const groups = mockGroups[params.id as string] || [];
       const group = groups.find((g) => g.id === groupId);
@@ -786,7 +782,7 @@ export const workspaceHandlers = [
     if (!notification) {
       return HttpResponse.json(
         { error_code: 'NOTIFICATION_NOT_FOUND', message: 'Notification not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
     notification.is_read = true;

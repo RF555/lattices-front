@@ -27,7 +27,7 @@ export function TodoTree({ viewingTask }: TodoTreeProps) {
       showCompleted: s.showCompleted,
       sortBy: s.sortBy,
       sortOrder: s.sortOrder,
-    }))
+    })),
   );
 
   const filteredTodos = useMemo(() => {
@@ -40,9 +40,8 @@ export function TodoTree({ viewingTask }: TodoTreeProps) {
     }
 
     if (filterTagIds.length > 0) {
-      result = filterTodoTree(
-        result,
-        (todo) => filterTagIds.some((tagId) => todo.tags?.some((t) => t.id === tagId))
+      result = filterTodoTree(result, (todo) =>
+        filterTagIds.some((tagId) => todo.tags.some((t) => t.id === tagId)),
       );
     }
 
@@ -53,7 +52,7 @@ export function TodoTree({ viewingTask }: TodoTreeProps) {
         (todo) =>
           todo.title.toLowerCase().includes(query) ||
           (todo.description?.toLowerCase().includes(query) ?? false) ||
-          (todo.tags?.some((t) => t.name.toLowerCase().includes(query)) ?? false)
+          todo.tags.some((t) => t.name.toLowerCase().includes(query)),
       );
     }
 
@@ -68,11 +67,7 @@ export function TodoTree({ viewingTask }: TodoTreeProps) {
   }
 
   if (error) {
-    return (
-      <div className="p-4 text-red-600 bg-red-50 rounded-md">
-        {t('tree.error')}
-      </div>
-    );
+    return <div className="p-4 text-red-600 bg-red-50 rounded-md">{t('tree.error')}</div>;
   }
 
   if (!filteredTodos.length) {

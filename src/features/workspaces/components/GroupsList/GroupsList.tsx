@@ -35,7 +35,9 @@ export function GroupsList({ workspaceId }: GroupsListProps) {
   const handleDelete = () => {
     if (!confirmDelete) return;
     deleteGroup.mutate(confirmDelete.id, {
-      onSuccess: () => setConfirmDelete(null),
+      onSuccess: () => {
+        setConfirmDelete(null);
+      },
     });
   };
 
@@ -44,7 +46,12 @@ export function GroupsList({ workspaceId }: GroupsListProps) {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900">{t('groups.title')}</h2>
         {canManageMembers && (
-          <Button size="sm" onClick={() => setShowCreate(true)}>
+          <Button
+            size="sm"
+            onClick={() => {
+              setShowCreate(true);
+            }}
+          >
             <Plus className="h-4 w-4 mr-1" />
             {t('groups.create')}
           </Button>
@@ -60,7 +67,9 @@ export function GroupsList({ workspaceId }: GroupsListProps) {
               key={group.id}
               type="button"
               className="flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-4 text-left hover:bg-gray-50 transition-colors w-full"
-              onClick={() => navigate(`/workspaces/${workspaceId}/groups/${group.id}`)}
+              onClick={() => {
+                void navigate(`/workspaces/${workspaceId}/groups/${group.id}`);
+              }}
             >
               <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0">
                 <Users className="h-5 w-5 text-blue-500" />
@@ -95,21 +104,31 @@ export function GroupsList({ workspaceId }: GroupsListProps) {
       {/* Create Group Dialog */}
       <GroupManageDialog
         isOpen={showCreate}
-        onClose={() => setShowCreate(false)}
+        onClose={() => {
+          setShowCreate(false);
+        }}
         workspaceId={workspaceId}
       />
 
       {/* Delete Confirmation */}
       <Modal
         isOpen={!!confirmDelete}
-        onClose={() => setConfirmDelete(null)}
+        onClose={() => {
+          setConfirmDelete(null);
+        }}
         title={t('groups.delete')}
       >
         <p className="text-sm text-gray-600 mb-4">
           {t('groups.deleteConfirm', { name: confirmDelete?.name })}
         </p>
         <div className="flex justify-end gap-2">
-          <Button variant="ghost" size="sm" onClick={() => setConfirmDelete(null)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setConfirmDelete(null);
+            }}
+          >
             {t('form.cancel')}
           </Button>
           <Button

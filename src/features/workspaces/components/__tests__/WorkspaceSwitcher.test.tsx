@@ -156,11 +156,11 @@ describe('WorkspaceSwitcher', () => {
 
     expect(screen.getByRole('option', { name: /engineering/i })).toHaveAttribute(
       'aria-selected',
-      'true'
+      'true',
     );
     expect(screen.getByRole('option', { name: /marketing/i })).toHaveAttribute(
       'aria-selected',
-      'false'
+      'false',
     );
   });
 

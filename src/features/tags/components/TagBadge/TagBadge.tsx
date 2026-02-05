@@ -14,27 +14,34 @@ const sizeStyles = {
   md: 'text-sm px-2 py-1',
 };
 
-export function TagBadge({
-  tag,
-  size = 'sm',
-  onRemove,
-  onClick,
-}: TagBadgeProps) {
+export function TagBadge({ tag, size = 'sm', onRemove, onClick }: TagBadgeProps) {
   const { t } = useTranslation('tags');
 
   return (
     <span
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
       className={cn(
         'inline-flex items-center gap-1 rounded-full',
         'font-medium',
         sizeStyles[size],
-        onClick && 'cursor-pointer hover:opacity-80'
+        onClick && 'cursor-pointer hover:opacity-80',
       )}
       style={{
         backgroundColor: `${tag.colorHex}20`,
         color: tag.colorHex,
       }}
       onClick={onClick}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
     >
       {tag.name}
       {onRemove && (

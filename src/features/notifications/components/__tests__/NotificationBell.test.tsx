@@ -115,7 +115,7 @@ describe('NotificationBell', () => {
       <div>
         <NotificationBell />
         <input type="text" placeholder="Test input" />
-      </div>
+      </div>,
     );
 
     const input = container.querySelector('input');

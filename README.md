@@ -4,20 +4,23 @@ Hierarchical task management application built with React, TypeScript, and Vite.
 
 ## Tech Stack
 
-| Category | Technology |
-|---|---|
-| Framework | React 18 + TypeScript (strict) |
-| Build | Vite 6 |
-| Routing | React Router 7 |
-| Server State | TanStack React Query 5 |
-| Client State | Zustand 5 |
-| Forms | React Hook Form + Zod |
-| Styling | Tailwind CSS 3 + tailwind-merge |
-| i18n | react-i18next + i18next |
-| Drag & Drop | dnd-kit |
-| Virtualization | @tanstack/react-virtual |
-| Testing | Vitest + React Testing Library + MSW |
-| Linting | ESLint 9 + Prettier |
+| Category       | Technology                              |
+| -------------- | --------------------------------------- |
+| Framework      | React 18 + TypeScript (strict)          |
+| Build          | Vite 6                                  |
+| Routing        | React Router 7                          |
+| Server State   | TanStack React Query 5                  |
+| Client State   | Zustand 5                               |
+| Forms          | React Hook Form + Zod                   |
+| Styling        | Tailwind CSS 3 + tailwind-merge         |
+| i18n           | react-i18next + i18next                 |
+| Drag & Drop    | dnd-kit                                 |
+| Virtualization | @tanstack/react-virtual                 |
+| Testing        | Vitest + React Testing Library + MSW    |
+| Linting        | ESLint 9 (strictTypeChecked) + Prettier |
+| Accessibility  | eslint-plugin-jsx-a11y                  |
+| Git Hooks      | Husky + lint-staged                     |
+| CI             | GitHub Actions                          |
 
 ## Project Structure
 
@@ -77,14 +80,14 @@ cp .env.example .env
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|---|---|---|
-| `VITE_API_URL` | `http://localhost:8000` | Backend API URL |
-| `VITE_API_VERSION` | `v1` | API version prefix |
-| `VITE_AUTH_PROVIDER` | `supabase` | Auth strategy: `supabase` or `jwt` |
-| `VITE_SUPABASE_URL` | — | Supabase project URL (required for Supabase auth) |
-| `VITE_SUPABASE_ANON_KEY` | — | Supabase anon key (required for Supabase auth) |
-| `VITE_ENABLE_MSW` | `false` | Enable MSW mock API in dev |
+| Variable                 | Default                 | Description                                       |
+| ------------------------ | ----------------------- | ------------------------------------------------- |
+| `VITE_API_URL`           | `http://localhost:8000` | Backend API URL                                   |
+| `VITE_API_VERSION`       | `v1`                    | API version prefix                                |
+| `VITE_AUTH_PROVIDER`     | `supabase`              | Auth strategy: `supabase` or `jwt`                |
+| `VITE_SUPABASE_URL`      | —                       | Supabase project URL (required for Supabase auth) |
+| `VITE_SUPABASE_ANON_KEY` | —                       | Supabase anon key (required for Supabase auth)    |
+| `VITE_ENABLE_MSW`        | `false`                 | Enable MSW mock API in dev                        |
 
 ### Development
 
@@ -103,6 +106,17 @@ pnpm test:run
 
 # Lint
 pnpm lint
+pnpm lint:fix        # auto-fix
+
+# Format
+pnpm format          # write
+pnpm format:check    # check only
+
+# Type check
+pnpm type-check
+
+# Full quality pipeline (format + lint + type-check + tests)
+pnpm quality
 
 # Production build
 pnpm build
@@ -193,6 +207,18 @@ In-app notification center for workspace events (task changes, member updates, i
 
 The app supports English (default) and Hebrew (RTL) using `react-i18next`. Translations are organized by feature namespace (`common`, `auth`, `todos`, `tags`, `notifications`) in `src/i18n/locales/`. The `useDirection` hook sets the document `dir` and `lang` attributes reactively on language change. CSS logical properties (`ps-*`/`pe-*`/`ms-*`/`me-*`/`inset-inline-start`) are used throughout for direction-agnostic layouts. A language switcher (EN/עב) is available in the header and on auth pages. Language preference persists in localStorage.
 
+## Code Quality
+
+The project enforces strict code quality standards via automated tooling:
+
+- **ESLint** — `strictTypeChecked` + `stylisticTypeChecked` with type-aware linting (`projectService`), `eslint-plugin-jsx-a11y` for accessibility, and `eslint-config-prettier` to prevent conflicts
+- **Prettier** — Consistent formatting (100 char width, single quotes, trailing commas, LF endings)
+- **TypeScript** — Strict mode with `noEmit` type checking
+- **Husky + lint-staged** — Pre-commit hook runs Prettier and ESLint on staged files
+- **GitHub Actions CI** — Two-job pipeline: `quality` (format:check + lint + type-check) and `test` (test:coverage + artifact upload)
+- **EditorConfig** — Shared editor settings (UTF-8, LF, 2-space indent)
+- **VS Code** — Shared settings (`.vscode/settings.json`) with format-on-save, ESLint auto-fix, and recommended extensions
+
 ## Key Patterns
 
 - **Feature-based architecture** following Bulletproof React conventions
@@ -203,7 +229,7 @@ The app supports English (default) and Hebrew (RTL) using `react-i18next`. Trans
 
 ## Testing
 
-702 tests across 41 test files using Vitest + React Testing Library + MSW.
+742 tests across 44 test files using Vitest + React Testing Library + MSW.
 
 ```bash
 pnpm test          # Watch mode
@@ -212,15 +238,17 @@ pnpm test:coverage # With coverage report
 ```
 
 **Test infrastructure:**
+
 - MSW v2 handlers mock all API endpoints (auth, todos, tags, workspaces, notifications)
 - Factory functions in `src/test/factories.ts` for generating test data
 - Custom render wrapper in `src/test/test-utils.tsx` (QueryClientProvider + MemoryRouter)
 
 **Coverage areas:**
-- API clients (todoApi, tagApi, workspaceApi, ApiClient)
+
+- API clients (todoApi, tagApi, workspaceApi, invitationApi, ApiClient)
 - React Query hooks with optimistic updates (useTodos, useTags)
 - Zustand stores (todoUiStore, workspaceUiStore, authStore, toastStore)
-- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, CreateWorkspaceDialog, NotificationBell, NotificationPanel, NotificationItem, NotificationPreferences, Modal, Input, etc.)
+- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, InvitationBanner, AcceptInvitation, CreateWorkspaceDialog, ActivityFeed, NotificationBell, NotificationPanel, NotificationItem, NotificationPreferences, Modal, Input, Button, etc.)
 - Notification hooks (useNotifications, useUnreadCount, useMarkAsRead, useMarkAllAsRead, useDeleteNotification, useNotificationPreferences, useUpdateNotificationPreferences, useNotificationTypes)
 - Notification utilities (formatNotificationMessage, getEntityRoute, getActorInitials)
 - Utility hooks (useWorkspacePermission, useIsMobile, useDirection, useAnnounce)

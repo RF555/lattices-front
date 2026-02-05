@@ -29,8 +29,12 @@ export function TodoToolbar() {
   // Fix M11: Debounce search input (300ms)
   const [localSearch, setLocalSearch] = useState(searchQuery);
   useEffect(() => {
-    const timer = setTimeout(() => setSearchQuery(localSearch), 300);
-    return () => clearTimeout(timer);
+    const timer = setTimeout(() => {
+      setSearchQuery(localSearch);
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [localSearch, setSearchQuery]);
 
   const totalCount = todos ? countTodos(todos) : 0;
@@ -52,10 +56,7 @@ export function TodoToolbar() {
   }, [todos]);
 
   const hasActiveFilters =
-    searchQuery.length > 0 ||
-    filterTagIds.length > 0 ||
-    !showCompleted ||
-    sortBy !== 'position';
+    searchQuery.length > 0 || filterTagIds.length > 0 || !showCompleted || sortBy !== 'position';
 
   return (
     <div className="space-y-0 border-b border-gray-200">
@@ -70,7 +71,9 @@ export function TodoToolbar() {
             <input
               type="checkbox"
               checked={showCompleted}
-              onChange={(e) => setShowCompleted(e.target.checked)}
+              onChange={(e) => {
+                setShowCompleted(e.target.checked);
+              }}
               className="rounded border-gray-300 text-primary focus:ring-primary"
             />
             {t('toolbar.showCompleted')}
@@ -82,7 +85,9 @@ export function TodoToolbar() {
           <div className="flex items-center gap-1">
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'position' | 'createdAt' | 'title')}
+              onChange={(e) => {
+                setSortBy(e.target.value as 'position' | 'createdAt' | 'title');
+              }}
               className="text-sm rounded-md border border-gray-300 px-2 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
             >
               <option value="position">{t('toolbar.sortManual')}</option>
@@ -90,7 +95,9 @@ export function TodoToolbar() {
               <option value="title">{t('toolbar.sortAlpha')}</option>
             </select>
             <button
-              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              onClick={() => {
+                setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+              }}
               className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
               title={sortOrder === 'asc' ? t('toolbar.sortDescending') : t('toolbar.sortAscending')}
             >
@@ -119,21 +126,27 @@ export function TodoToolbar() {
           <input
             type="search"
             value={localSearch}
-            onChange={(e) => setLocalSearch(e.target.value)}
+            onChange={(e) => {
+              setLocalSearch(e.target.value);
+            }}
             placeholder={t('toolbar.searchPlaceholder')}
             className="text-sm rounded-md border border-gray-300 px-3 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1"
           />
 
           <div className="flex items-center gap-1">
             <button
-              onClick={() => expandAll(allIds)}
+              onClick={() => {
+                expandAll(allIds);
+              }}
               className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
               title={t('toolbar.expandAll')}
             >
               <ChevronsDown className="w-4 h-4" />
             </button>
             <button
-              onClick={() => collapseAll()}
+              onClick={() => {
+                collapseAll();
+              }}
               className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
               title={t('toolbar.collapseAll')}
             >
@@ -159,11 +172,7 @@ export function TodoToolbar() {
           className="relative p-2 text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100"
           aria-label={toolbarExpanded ? t('toolbar.hideFilters') : t('toolbar.showFilters')}
         >
-          {toolbarExpanded ? (
-            <X className="w-5 h-5" />
-          ) : (
-            <SlidersHorizontal className="w-5 h-5" />
-          )}
+          {toolbarExpanded ? <X className="w-5 h-5" /> : <SlidersHorizontal className="w-5 h-5" />}
           {/* Active filter indicator dot */}
           {hasActiveFilters && !toolbarExpanded && (
             <span className="absolute top-1.5 end-1.5 w-2 h-2 bg-primary rounded-full" />
@@ -180,7 +189,9 @@ export function TodoToolbar() {
             <input
               type="search"
               value={localSearch}
-              onChange={(e) => setLocalSearch(e.target.value)}
+              onChange={(e) => {
+                setLocalSearch(e.target.value);
+              }}
               placeholder={t('toolbar.searchPlaceholder')}
               className="w-full text-sm rounded-md border border-gray-300 ps-8 pe-3 py-2 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1"
             />
@@ -191,7 +202,9 @@ export function TodoToolbar() {
             <input
               type="checkbox"
               checked={showCompleted}
-              onChange={(e) => setShowCompleted(e.target.checked)}
+              onChange={(e) => {
+                setShowCompleted(e.target.checked);
+              }}
               className="rounded border-gray-300 text-primary focus:ring-primary"
             />
             {t('toolbar.showCompleted')}
@@ -201,7 +214,9 @@ export function TodoToolbar() {
           <div className="flex items-center gap-2">
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as 'position' | 'createdAt' | 'title')}
+              onChange={(e) => {
+                setSortBy(e.target.value as 'position' | 'createdAt' | 'title');
+              }}
               className="flex-1 text-sm rounded-md border border-gray-300 px-2 py-2 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
             >
               <option value="position">{t('toolbar.sortManual')}</option>
@@ -209,7 +224,9 @@ export function TodoToolbar() {
               <option value="title">{t('toolbar.sortAlpha')}</option>
             </select>
             <button
-              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              onClick={() => {
+                setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+              }}
               className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
               title={sortOrder === 'asc' ? t('toolbar.sortDescending') : t('toolbar.sortAscending')}
             >
@@ -234,14 +251,18 @@ export function TodoToolbar() {
               </svg>
             </button>
             <button
-              onClick={() => expandAll(allIds)}
+              onClick={() => {
+                expandAll(allIds);
+              }}
               className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
               title={t('toolbar.expandAll')}
             >
               <ChevronsDown className="w-4 h-4" />
             </button>
             <button
-              onClick={() => collapseAll()}
+              onClick={() => {
+                collapseAll();
+              }}
               className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
               title={t('toolbar.collapseAll')}
             >

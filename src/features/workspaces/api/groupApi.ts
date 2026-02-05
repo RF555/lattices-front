@@ -50,15 +50,13 @@ function mapGroupMember(raw: ApiGroupMember): GroupMember {
 
 export const groupApi = {
   async getAll(workspaceId: string): Promise<Group[]> {
-    const res = await apiClient.get<ListResponse<ApiGroup>>(
-      `/workspaces/${workspaceId}/groups`
-    );
+    const res = await apiClient.get<ListResponse<ApiGroup>>(`/workspaces/${workspaceId}/groups`);
     return res.data.map(mapGroup);
   },
 
   async getById(workspaceId: string, groupId: string): Promise<Group> {
     const res = await apiClient.get<SingleResponse<ApiGroup>>(
-      `/workspaces/${workspaceId}/groups/${groupId}`
+      `/workspaces/${workspaceId}/groups/${groupId}`,
     );
     return mapGroup(res.data);
   },
@@ -66,7 +64,7 @@ export const groupApi = {
   async create(workspaceId: string, input: CreateGroupInput): Promise<Group> {
     const res = await apiClient.post<SingleResponse<ApiGroup>>(
       `/workspaces/${workspaceId}/groups`,
-      input
+      input,
     );
     return mapGroup(res.data);
   },
@@ -74,7 +72,7 @@ export const groupApi = {
   async update(workspaceId: string, groupId: string, input: UpdateGroupInput): Promise<Group> {
     const res = await apiClient.patch<SingleResponse<ApiGroup>>(
       `/workspaces/${workspaceId}/groups/${groupId}`,
-      input
+      input,
     );
     return mapGroup(res.data);
   },
@@ -87,7 +85,7 @@ export const groupApi = {
 
   async getMembers(workspaceId: string, groupId: string): Promise<GroupMember[]> {
     const res = await apiClient.get<ListResponse<ApiGroupMember>>(
-      `/workspaces/${workspaceId}/groups/${groupId}/members`
+      `/workspaces/${workspaceId}/groups/${groupId}/members`,
     );
     return res.data.map(mapGroupMember);
   },
@@ -96,7 +94,7 @@ export const groupApi = {
     workspaceId: string,
     groupId: string,
     userId: string,
-    role: 'admin' | 'member' = 'member'
+    role: 'admin' | 'member' = 'member',
   ): Promise<void> {
     await apiClient.post(`/workspaces/${workspaceId}/groups/${groupId}/members`, {
       user_id: userId,
@@ -105,8 +103,6 @@ export const groupApi = {
   },
 
   async removeMember(workspaceId: string, groupId: string, userId: string): Promise<void> {
-    await apiClient.delete(
-      `/workspaces/${workspaceId}/groups/${groupId}/members/${userId}`
-    );
+    await apiClient.delete(`/workspaces/${workspaceId}/groups/${groupId}/members/${userId}`);
   },
 };

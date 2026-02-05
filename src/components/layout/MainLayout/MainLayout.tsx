@@ -30,7 +30,11 @@ export function MainLayout() {
               {t('brand.name')}
             </h1>
             <div className="hidden sm:block h-6 w-px bg-gray-200" />
-            <WorkspaceSwitcher onCreateWorkspace={() => setShowCreateWorkspace(true)} />
+            <WorkspaceSwitcher
+              onCreateWorkspace={() => {
+                setShowCreateWorkspace(true);
+              }}
+            />
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
             <NotificationBell />
@@ -40,7 +44,13 @@ export function MainLayout() {
               </span>
             )}
             <LanguageSwitcher />
-            <Button variant="ghost" size="sm" onClick={() => logout()}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                void logout();
+              }}
+            >
               {t('nav.signOut')}
             </Button>
           </div>
@@ -52,7 +62,9 @@ export function MainLayout() {
       </main>
       <CreateWorkspaceDialog
         isOpen={showCreateWorkspace}
-        onClose={() => setShowCreateWorkspace(false)}
+        onClose={() => {
+          setShowCreateWorkspace(false);
+        }}
       />
     </div>
   );

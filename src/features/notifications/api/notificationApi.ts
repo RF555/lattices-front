@@ -74,11 +74,11 @@ export const notificationApi = {
   /** List notifications for a specific workspace */
   getForWorkspace: async (
     workspaceId: string,
-    params?: { is_read?: boolean; type?: string; cursor?: string; limit?: number }
+    params?: { is_read?: boolean; type?: string; cursor?: string; limit?: number },
   ): Promise<NotificationListResult> => {
     const response = await apiClient.get<NotificationListApiResponse>(
       `/workspaces/${workspaceId}/notifications`,
-      { params: params as Record<string, string | number | boolean | undefined> }
+      { params: params as Record<string, string | number | boolean | undefined> },
     );
     return {
       notifications: response.data.map(mapNotification),
@@ -90,50 +90,46 @@ export const notificationApi = {
   /** Get unread count for a specific workspace */
   getUnreadCount: async (workspaceId: string): Promise<number> => {
     const response = await apiClient.get<UnreadCountApiResponse>(
-      `/workspaces/${workspaceId}/notifications/unread-count`
+      `/workspaces/${workspaceId}/notifications/unread-count`,
     );
     return response.data.count;
   },
 
   /** Mark a single notification as read */
   markRead: async (workspaceId: string, recipientId: string): Promise<void> => {
-    await apiClient.patch(
-      `/workspaces/${workspaceId}/notifications/${recipientId}/read`
-    );
+    await apiClient.patch(`/workspaces/${workspaceId}/notifications/${recipientId}/read`);
   },
 
   /** Mark a single notification as unread */
   markUnread: async (workspaceId: string, recipientId: string): Promise<void> => {
-    await apiClient.patch(
-      `/workspaces/${workspaceId}/notifications/${recipientId}/unread`
-    );
+    await apiClient.patch(`/workspaces/${workspaceId}/notifications/${recipientId}/unread`);
   },
 
   /** Mark all notifications as read in a workspace */
   markAllRead: async (workspaceId: string): Promise<number> => {
     const response = await apiClient.post<MarkAllReadApiResponse>(
-      `/workspaces/${workspaceId}/notifications/mark-all-read`
+      `/workspaces/${workspaceId}/notifications/mark-all-read`,
     );
     return response.data.count;
   },
 
   /** Soft-delete a notification */
   remove: async (workspaceId: string, recipientId: string): Promise<void> => {
-    await apiClient.delete(
-      `/workspaces/${workspaceId}/notifications/${recipientId}`
-    );
+    await apiClient.delete(`/workspaces/${workspaceId}/notifications/${recipientId}`);
   },
 
   // ── User-scoped endpoints ─────────────────────────────────────────
 
   /** Cross-workspace notification feed */
-  getAll: async (
-    params?: { is_read?: boolean; type?: string; cursor?: string; limit?: number }
-  ): Promise<NotificationListResult> => {
-    const response = await apiClient.get<NotificationListApiResponse>(
-      '/users/me/notifications',
-      { params: params as Record<string, string | number | boolean | undefined> }
-    );
+  getAll: async (params?: {
+    is_read?: boolean;
+    type?: string;
+    cursor?: string;
+    limit?: number;
+  }): Promise<NotificationListResult> => {
+    const response = await apiClient.get<NotificationListApiResponse>('/users/me/notifications', {
+      params: params as Record<string, string | number | boolean | undefined>,
+    });
     return {
       notifications: response.data.map(mapNotification),
       unreadCount: response.meta.unread_count,
@@ -144,7 +140,7 @@ export const notificationApi = {
   /** Cross-workspace total unread count */
   getTotalUnreadCount: async (): Promise<number> => {
     const response = await apiClient.get<UnreadCountApiResponse>(
-      '/users/me/notifications/unread-count'
+      '/users/me/notifications/unread-count',
     );
     return response.data.count;
   },
@@ -152,7 +148,7 @@ export const notificationApi = {
   /** Mark all as read across all workspaces */
   markAllReadGlobal: async (): Promise<number> => {
     const response = await apiClient.post<MarkAllReadApiResponse>(
-      '/users/me/notifications/mark-all-read'
+      '/users/me/notifications/mark-all-read',
     );
     return response.data.count;
   },
@@ -162,7 +158,7 @@ export const notificationApi = {
   /** Get user's notification preferences */
   getPreferences: async (): Promise<NotificationPreference[]> => {
     const response = await apiClient.get<{ data: NotificationPreferenceApiResponse[] }>(
-      '/users/me/notification-preferences'
+      '/users/me/notification-preferences',
     );
     return response.data.map(mapPreference);
   },
@@ -176,7 +172,7 @@ export const notificationApi = {
         enabled: input.enabled,
         workspace_id: input.workspaceId,
         notification_type: input.notificationType,
-      }
+      },
     );
     return mapPreference(response.data);
   },
@@ -186,7 +182,7 @@ export const notificationApi = {
   /** Get available notification types (for preferences UI) */
   getTypes: async (): Promise<NotificationType[]> => {
     const response = await apiClient.get<{ data: NotificationTypeApiResponse[] }>(
-      '/users/me/notification-types'
+      '/users/me/notification-types',
     );
     return response.data.map(mapNotificationType);
   },

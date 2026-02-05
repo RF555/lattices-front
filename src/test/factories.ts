@@ -9,10 +9,18 @@
  *   const workspace = createMockWorkspace({ name: 'Custom Name' })
  */
 
-import type { Workspace, WorkspaceMember, Invitation, WorkspaceRole } from '@/features/workspaces/types/workspace';
+import type {
+  Workspace,
+  WorkspaceMember,
+  Invitation,
+  WorkspaceRole,
+} from '@/features/workspaces/types/workspace';
 import type { ActivityEntry } from '@/features/workspaces/types/activity';
 import type { Group, GroupMember } from '@/features/workspaces/types/group';
-import type { Notification, NotificationPreference } from '@/features/notifications/types/notification';
+import type {
+  Notification,
+  NotificationPreference,
+} from '@/features/notifications/types/notification';
 
 // Helper functions for timestamps
 function daysAgo(days: number): string {
@@ -97,7 +105,13 @@ export function createMockInvitation(overrides?: Partial<Invitation>): Invitatio
 export function createMockNotification(overrides?: Partial<Notification>): Notification {
   const id = `notif-${notificationIdCounter}`;
   const notificationId = `notif-id-${notificationIdCounter++}`;
-  const types = ['task.completed', 'task.updated', 'member.added', 'invitation.received', 'task.created'];
+  const types = [
+    'task.completed',
+    'task.updated',
+    'member.added',
+    'invitation.received',
+    'task.created',
+  ];
   const type = overrides?.type || types[(notificationIdCounter - 1) % types.length];
 
   return {
@@ -185,7 +199,7 @@ export function createMockActivityEntry(overrides?: Partial<ActivityEntry>): Act
 let notificationPreferenceIdCounter = 1;
 
 export function createMockNotificationPreference(
-  overrides?: Partial<NotificationPreference>
+  overrides?: Partial<NotificationPreference>,
 ): NotificationPreference {
   const id = `pref-${notificationPreferenceIdCounter++}`;
   return {

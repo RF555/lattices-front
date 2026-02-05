@@ -95,9 +95,7 @@ describe('findTodoInTree', () => {
   });
 
   it('finds root-level todo', () => {
-    const tree: Todo[] = [
-      { ...createTodo({ id: '1', title: 'Root' }), children: [] },
-    ];
+    const tree: Todo[] = [{ ...createTodo({ id: '1', title: 'Root' }), children: [] }];
 
     const found = findTodoInTree(tree, '1');
     expect(found).not.toBeNull();
@@ -111,9 +109,7 @@ describe('findTodoInTree', () => {
         children: [
           {
             ...createTodo({ id: '2' }),
-            children: [
-              { ...createTodo({ id: '3', title: 'Deep' }), children: [] },
-            ],
+            children: [{ ...createTodo({ id: '3', title: 'Deep' }), children: [] }],
           },
         ],
       },
@@ -239,9 +235,7 @@ describe('filterTodoTree', () => {
   });
 
   it('should return empty array if no matches', () => {
-    const tree: Todo[] = [
-      { ...createTodo({ id: '1', isCompleted: true }), children: [] },
-    ];
+    const tree: Todo[] = [{ ...createTodo({ id: '1', isCompleted: true }), children: [] }];
 
     const filtered = filterTodoTree(tree, (todo) => !todo.isCompleted);
     expect(filtered).toHaveLength(0);

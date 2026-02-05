@@ -6,7 +6,11 @@ import { useAuthStore } from '@features/auth/stores/authStore';
 import { Button } from '@components/ui/Button';
 import { Spinner } from '@components/ui/Spinner';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
-import { useWorkspaceMembers, useUpdateMemberRole, useRemoveMember } from '../../hooks/useWorkspaceMembers';
+import {
+  useWorkspaceMembers,
+  useUpdateMemberRole,
+  useRemoveMember,
+} from '../../hooks/useWorkspaceMembers';
 import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
 import { InviteMemberDialog } from '../InviteMemberDialog/InviteMemberDialog';
 import { RoleSelector } from '../RoleSelector/RoleSelector';
@@ -45,9 +49,7 @@ export function MembersList({ workspaceId }: MembersListProps) {
   }
 
   if (!members || members.length === 0) {
-    return (
-      <p className="text-sm text-gray-500 text-center py-8">{t('members.noMembers')}</p>
-    );
+    return <p className="text-sm text-gray-500 text-center py-8">{t('members.noMembers')}</p>;
   }
 
   const handleRoleChange = (member: WorkspaceMember, role: WorkspaceRole) => {
@@ -56,15 +58,18 @@ export function MembersList({ workspaceId }: MembersListProps) {
     setShowRoleChange(true);
   };
 
-  const confirmRoleChange = async () => {
+  const confirmRoleChange = () => {
     if (!actionMember) return;
-    await updateRole.mutateAsync({
-      workspaceId,
-      userId: actionMember.userId,
-      role: newRole,
-    });
-    setShowRoleChange(false);
-    setActionMember(null);
+    void updateRole
+      .mutateAsync({
+        workspaceId,
+        userId: actionMember.userId,
+        role: newRole,
+      })
+      .then(() => {
+        setShowRoleChange(false);
+        setActionMember(null);
+      });
   };
 
   const handleRemove = (member: WorkspaceMember) => {
@@ -72,14 +77,17 @@ export function MembersList({ workspaceId }: MembersListProps) {
     setShowRemoveConfirm(true);
   };
 
-  const confirmRemove = async () => {
+  const confirmRemove = () => {
     if (!actionMember) return;
-    await removeMember.mutateAsync({
-      workspaceId,
-      userId: actionMember.userId,
-    });
-    setShowRemoveConfirm(false);
-    setActionMember(null);
+    void removeMember
+      .mutateAsync({
+        workspaceId,
+        userId: actionMember.userId,
+      })
+      .then(() => {
+        setShowRemoveConfirm(false);
+        setActionMember(null);
+      });
   };
 
   const getInitials = (member: WorkspaceMember) => {
@@ -94,7 +102,12 @@ export function MembersList({ workspaceId }: MembersListProps) {
           {t('members.title')} ({members.length})
         </h3>
         {canManageMembers && (
-          <Button size="sm" onClick={() => setShowInvite(true)}>
+          <Button
+            size="sm"
+            onClick={() => {
+              setShowInvite(true);
+            }}
+          >
             <UserPlus className="h-4 w-4 mr-1" />
             {t('members.invite')}
           </Button>
@@ -109,7 +122,7 @@ export function MembersList({ workspaceId }: MembersListProps) {
               key={member.userId}
               className={cn(
                 'flex items-center justify-between px-4 py-3',
-                isCurrentUser && 'bg-blue-50/50'
+                isCurrentUser && 'bg-blue-50/50',
               )}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -127,9 +140,7 @@ export function MembersList({ workspaceId }: MembersListProps) {
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
                     {member.displayName || member.email}
-                    {isCurrentUser && (
-                      <span className="ml-1 text-xs text-gray-400">(you)</span>
-                    )}
+                    {isCurrentUser && <span className="ml-1 text-xs text-gray-400">(you)</span>}
                   </p>
                   {member.displayName && (
                     <p className="text-xs text-gray-500 truncate">{member.email}</p>
@@ -138,13 +149,11 @@ export function MembersList({ workspaceId }: MembersListProps) {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {member.role === 'owner' && (
-                  <Crown className="h-4 w-4 text-yellow-500" />
-                )}
+                {member.role === 'owner' && <Crown className="h-4 w-4 text-yellow-500" />}
                 <span
                   className={cn(
                     'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
-                    ROLE_COLORS[member.role]
+                    ROLE_COLORS[member.role],
                   )}
                 >
                   {t(`roles.${member.role}`)}
@@ -162,13 +171,17 @@ export function MembersList({ workspaceId }: MembersListProps) {
                     <div className="absolute right-0 top-full z-10 hidden group-focus-within:block bg-white rounded-md shadow-lg border border-gray-200 py-1 w-40">
                       <RoleSelector
                         currentRole={member.role}
-                        onSelect={(role) => handleRoleChange(member, role)}
+                        onSelect={(role) => {
+                          handleRoleChange(member, role);
+                        }}
                       />
                       <div className="border-t border-gray-100 mt-1 pt-1">
                         <button
                           type="button"
                           className="w-full px-3 py-1.5 text-left text-sm text-red-600 hover:bg-red-50"
-                          onClick={() => handleRemove(member)}
+                          onClick={() => {
+                            handleRemove(member);
+                          }}
                         >
                           {t('members.remove')}
                         </button>
@@ -184,14 +197,18 @@ export function MembersList({ workspaceId }: MembersListProps) {
 
       <InviteMemberDialog
         isOpen={showInvite}
-        onClose={() => setShowInvite(false)}
+        onClose={() => {
+          setShowInvite(false);
+        }}
         workspaceId={workspaceId}
       />
 
       <ConfirmationDialog
         isOpen={showRoleChange}
         onConfirm={confirmRoleChange}
-        onCancel={() => setShowRoleChange(false)}
+        onCancel={() => {
+          setShowRoleChange(false);
+        }}
         title={t('members.changeRole')}
         message={t('members.changeRoleConfirm', {
           name: actionMember?.displayName || actionMember?.email,
@@ -204,7 +221,9 @@ export function MembersList({ workspaceId }: MembersListProps) {
       <ConfirmationDialog
         isOpen={showRemoveConfirm}
         onConfirm={confirmRemove}
-        onCancel={() => setShowRemoveConfirm(false)}
+        onCancel={() => {
+          setShowRemoveConfirm(false);
+        }}
         title={t('members.removeMember')}
         message={
           t('members.removeConfirm', {

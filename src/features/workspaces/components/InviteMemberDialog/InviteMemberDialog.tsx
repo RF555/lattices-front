@@ -50,7 +50,9 @@ export function InviteMemberDialog({ isOpen, onClose, workspaceId }: InviteMembe
     try {
       await navigator.clipboard.writeText(inviteLink);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
     } catch {
       // Fallback: select the text in the input
     }
@@ -67,7 +69,11 @@ export function InviteMemberDialog({ isOpen, onClose, workspaceId }: InviteMembe
 
   if (inviteLink) {
     return (
-      <Modal isOpen={isOpen} onClose={handleClose} title={t('invitation.linkReady', { defaultValue: 'Invitation Created' })}>
+      <Modal
+        isOpen={isOpen}
+        onClose={handleClose}
+        title={t('invitation.linkReady', { defaultValue: 'Invitation Created' })}
+      >
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
             {t('invitation.linkDescription', {
@@ -87,7 +93,9 @@ export function InviteMemberDialog({ isOpen, onClose, workspaceId }: InviteMembe
               type="button"
               variant="secondary"
               size="sm"
-              onClick={handleCopyLink}
+              onClick={() => {
+                void handleCopyLink();
+              }}
               className="shrink-0"
             >
               {copied ? (
@@ -116,23 +124,30 @@ export function InviteMemberDialog({ isOpen, onClose, workspaceId }: InviteMembe
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title={t('members.invite')}>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(e);
+        }}
+        className="space-y-4"
+      >
         <div>
           <label htmlFor="invite-email" className="block text-sm font-medium text-gray-700">
             {t('invitation.email')}
           </label>
+          {}
           <Input
             id="invite-email"
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
             placeholder={t('invitation.emailPlaceholder')}
             error={!!error}
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- dialog auto-focus is expected UX
             autoFocus
           />
-          {error && (
-            <p className="mt-1 text-sm text-red-600">{error}</p>
-          )}
+          {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
         </div>
 
         <div>
@@ -142,7 +157,9 @@ export function InviteMemberDialog({ isOpen, onClose, workspaceId }: InviteMembe
           <select
             id="invite-role"
             value={role}
-            onChange={(e) => setRole(e.target.value as WorkspaceRole)}
+            onChange={(e) => {
+              setRole(e.target.value as WorkspaceRole);
+            }}
             className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           >
             {ROLE_OPTIONS.map((r) => (

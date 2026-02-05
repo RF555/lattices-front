@@ -17,7 +17,7 @@ export function useWorkspace(id: string) {
   return useQuery({
     queryKey: queryKeys.workspaces.detail(id),
     queryFn: () => workspaceApi.getById(id),
-    enabled: !!id,
+    enabled: id.length > 0,
   });
 }
 
@@ -31,7 +31,7 @@ export function useCreateWorkspace() {
       await queryClient.cancelQueries({ queryKey: queryKeys.workspaces.lists() });
 
       const previousWorkspaces = queryClient.getQueryData<Workspace[]>(
-        queryKeys.workspaces.lists()
+        queryKeys.workspaces.lists(),
       );
 
       const optimistic: Workspace = {
@@ -66,7 +66,7 @@ export function useCreateWorkspace() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
     },
   });
 }
@@ -79,8 +79,8 @@ export function useUpdateWorkspace() {
       workspaceApi.update(id, input),
 
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.detail(id) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.detail(id) });
       toast.success('Workspace updated');
     },
   });
@@ -99,7 +99,7 @@ export function useDeleteWorkspace() {
       if (remaining && remaining.length > 0) {
         setActiveWorkspace(remaining[0].id);
       }
-      queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
       toast.success('Workspace deleted');
     },
   });

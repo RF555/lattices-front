@@ -7,11 +7,7 @@ interface ErrorStateProps {
   onRetry?: () => void;
 }
 
-export function ErrorState({
-  title,
-  message,
-  onRetry,
-}: ErrorStateProps) {
+export function ErrorState({ title, message, onRetry }: ErrorStateProps) {
   const { t } = useTranslation();
   const resolvedTitle = title ?? t('error.defaultTitle');
   const resolvedMessage = message ?? t('error.defaultMessage');
@@ -20,12 +16,7 @@ export function ErrorState({
     <div className="flex flex-col items-center justify-center py-12 px-4">
       <div className="text-red-400 mb-4">
         <svg className="w-12 h-12" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M12 9v4M12 17h.01"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
+          <path d="M12 9v4M12 17h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           <path
             d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
             stroke="currentColor"
@@ -36,9 +27,7 @@ export function ErrorState({
         </svg>
       </div>
       <h3 className="text-lg font-medium text-gray-900 mb-1">{resolvedTitle}</h3>
-      <p className="text-sm text-gray-500 text-center mb-4 max-w-sm">
-        {resolvedMessage}
-      </p>
+      <p className="text-sm text-gray-500 text-center mb-4 max-w-sm">{resolvedMessage}</p>
       {onRetry && (
         <Button onClick={onRetry} size="sm">
           {t('actions.tryAgain')}

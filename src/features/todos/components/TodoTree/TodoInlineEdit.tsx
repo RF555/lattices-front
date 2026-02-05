@@ -6,11 +6,7 @@ interface TodoInlineEditProps {
   onCancel: () => void;
 }
 
-export function TodoInlineEdit({
-  initialValue,
-  onSave,
-  onCancel,
-}: TodoInlineEditProps) {
+export function TodoInlineEdit({ initialValue, onSave, onCancel }: TodoInlineEditProps) {
   const [value, setValue] = useState(initialValue);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -42,10 +38,14 @@ export function TodoInlineEdit({
       ref={inputRef}
       type="text"
       value={value}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={(e) => {
+        setValue(e.target.value);
+      }}
       onBlur={handleSubmit}
       onKeyDown={handleKeyDown}
-      onClick={(e) => e.stopPropagation()}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
       className="flex-1 text-sm px-1 py-0.5 border border-primary rounded focus:outline-none focus:ring-1 focus:ring-primary"
     />
   );

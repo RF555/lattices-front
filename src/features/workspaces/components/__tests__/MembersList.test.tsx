@@ -67,7 +67,7 @@ vi.mock('@features/auth/stores/authStore', () => ({
   useAuthStore: vi.fn((selector: (state: unknown) => unknown) =>
     selector({
       user: { id: 'user-2', email: 'admin@example.com', name: 'Bob Admin' },
-    })
+    }),
   ),
 }));
 
@@ -78,7 +78,12 @@ vi.mock('../InviteMemberDialog/InviteMemberDialog', () => ({
 
 vi.mock('../RoleSelector/RoleSelector', () => ({
   RoleSelector: ({ onChange }: { onChange: (role: string) => void }) => (
-    <select data-testid="role-selector" onChange={(e) => onChange(e.target.value)}>
+    <select
+      data-testid="role-selector"
+      onChange={(e) => {
+        onChange(e.target.value);
+      }}
+    >
       <option value="admin">Admin</option>
       <option value="member">Member</option>
       <option value="viewer">Viewer</option>

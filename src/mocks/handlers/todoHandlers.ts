@@ -28,26 +28,46 @@ function hoursAgo(hours: number): string {
 
 let mockTodos: MockTodo[] = [
   {
-    id: '1', title: 'First task', is_completed: false,
-    parent_id: null, position: 0,
+    id: '1',
+    title: 'First task',
+    is_completed: false,
+    parent_id: null,
+    position: 0,
     description: 'This is the first task with a detailed description. It has subtasks below.',
     completed_at: null,
-    child_count: 1, completed_child_count: 0, tags: [],
-    created_at: daysAgo(3), updated_at: hoursAgo(1),
+    child_count: 1,
+    completed_child_count: 0,
+    tags: [],
+    created_at: daysAgo(3),
+    updated_at: hoursAgo(1),
   },
   {
-    id: '2', title: 'Second task', is_completed: false,
-    parent_id: null, position: 1, description: null, completed_at: null,
-    child_count: 0, completed_child_count: 0, tags: [],
-    created_at: daysAgo(1), updated_at: daysAgo(1),
+    id: '2',
+    title: 'Second task',
+    is_completed: false,
+    parent_id: null,
+    position: 1,
+    description: null,
+    completed_at: null,
+    child_count: 0,
+    completed_child_count: 0,
+    tags: [],
+    created_at: daysAgo(1),
+    updated_at: daysAgo(1),
   },
   {
-    id: '3', title: 'Subtask', is_completed: false,
-    parent_id: '1', position: 0,
+    id: '3',
+    title: 'Subtask',
+    is_completed: false,
+    parent_id: '1',
+    position: 0,
     description: 'A subtask with its own description for testing nested detail panels.',
     completed_at: null,
-    child_count: 0, completed_child_count: 0, tags: [],
-    created_at: daysAgo(7), updated_at: daysAgo(2),
+    child_count: 0,
+    completed_child_count: 0,
+    tags: [],
+    created_at: daysAgo(7),
+    updated_at: daysAgo(2),
   },
 ];
 
@@ -65,7 +85,7 @@ export const todoHandlers = [
     if (!todo) {
       return HttpResponse.json(
         { error_code: 'TASK_NOT_FOUND', message: 'Task not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
     return HttpResponse.json({ data: todo });
@@ -97,7 +117,7 @@ export const todoHandlers = [
     if (!todo) {
       return HttpResponse.json(
         { error_code: 'TASK_NOT_FOUND', message: 'Task not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
     Object.assign(todo, body, { updated_at: new Date().toISOString() });
@@ -116,7 +136,7 @@ export const todoHandlers = [
     if (!todo) {
       return HttpResponse.json(
         { error_code: 'TASK_NOT_FOUND', message: 'Task not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
     const tagId = body.tag_id as string;

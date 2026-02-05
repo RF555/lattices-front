@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { server } from '@/mocks/server';
 import { http, HttpResponse } from 'msw';
 import {
@@ -41,7 +41,7 @@ function makeTag(
     colorHex: string;
     usageCount: number;
     createdAt: string;
-  }> = {}
+  }> = {},
 ): Tag {
   return {
     id: 'tag-1',
@@ -70,7 +70,9 @@ describe('useTags', () => {
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useTags(), { wrapper });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
 
     expect(result.current.data).toBeDefined();
     expect(Array.isArray(result.current.data)).toBe(true);
@@ -93,13 +95,15 @@ describe('useTags', () => {
             },
           ],
         });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useTags('ws-1'), { wrapper });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
 
     expect(result.current.data).toHaveLength(1);
     expect(result.current.data![0].name).toBe('Workspace Tag');
@@ -111,7 +115,9 @@ describe('useTags', () => {
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useTags(), { wrapper });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
 
     expect(result.current.data).toEqual([]);
   });
@@ -126,9 +132,9 @@ describe('useCreateTag', () => {
           {
             data: apiTag({ name: body.name, color_hex: body.color_hex }),
           },
-          { status: 201 }
+          { status: 201 },
         );
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -158,9 +164,9 @@ describe('useCreateTag', () => {
           {
             data: apiTag({ name: body.name }),
           },
-          { status: 201 }
+          { status: 201 },
         );
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -195,7 +201,7 @@ describe('useUpdateTag', () => {
             color_hex: body.color_hex,
           }),
         });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
@@ -221,7 +227,7 @@ describe('useUpdateTag', () => {
         return HttpResponse.json({
           data: apiTag({ id: params.id as string, name: body.name }),
         });
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -251,7 +257,7 @@ describe('useUpdateTag', () => {
         return HttpResponse.json({
           data: apiTag({ id: params.id as string, name: body.name }),
         });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
@@ -273,7 +279,7 @@ describe('useUpdateTag', () => {
         return HttpResponse.json({
           data: apiTag({ id: params.id as string, color_hex: body.color_hex }),
         });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
@@ -293,7 +299,7 @@ describe('useDeleteTag', () => {
     server.use(
       http.delete(`${API_URL}/tags/:id`, () => {
         return new HttpResponse(null, { status: 204 });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
@@ -311,7 +317,7 @@ describe('useDeleteTag', () => {
     server.use(
       http.delete(`${API_URL}/tags/:id`, () => {
         return new HttpResponse(null, { status: 204 });
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -329,7 +335,7 @@ describe('useDeleteTag', () => {
 
     // Check optimistic update removed the tag immediately
     await waitFor(() => {
-      const cached = queryClient.getQueryData(['tags', 'list']) as Tag[];
+      const cached = queryClient.getQueryData<Tag[]>(['tags', 'list'])!;
       expect(cached?.length).toBe(1);
       expect(cached?.[0]?.id).toBe('tag-2');
     });
@@ -338,11 +344,8 @@ describe('useDeleteTag', () => {
   it('should restore previous tags on error', async () => {
     server.use(
       http.delete(`${API_URL}/tags/:id`, () => {
-        return HttpResponse.json(
-          { message: 'Cannot delete tag in use' },
-          { status: 400 }
-        );
-      })
+        return HttpResponse.json({ message: 'Cannot delete tag in use' }, { status: 400 });
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -364,7 +367,7 @@ describe('useDeleteTag', () => {
 
     // Check that tags were restored after error
     await waitFor(() => {
-      const cached = queryClient.getQueryData(['tags', 'list']) as Tag[];
+      const cached = queryClient.getQueryData<Tag[]>(['tags', 'list'])!;
       expect(cached?.length).toBe(2);
       expect(cached?.find((t) => t.id === 'tag-1')).toBeDefined();
     });
@@ -374,7 +377,7 @@ describe('useDeleteTag', () => {
     server.use(
       http.delete(`${API_URL}/tags/:id`, () => {
         return new HttpResponse(null, { status: 204 });
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -401,7 +404,7 @@ describe('useAddTagToTodo', () => {
         expect(params.todoId).toBe('todo-1');
         expect(body).toHaveProperty('tag_id', 'tag-1');
         return new HttpResponse(null, { status: 204 });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
@@ -418,7 +421,7 @@ describe('useAddTagToTodo', () => {
     server.use(
       http.post(`${API_URL}/todos/:todoId/tags`, () => {
         return new HttpResponse(null, { status: 204 });
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -445,7 +448,7 @@ describe('useRemoveTagFromTodo', () => {
         expect(params.todoId).toBe('todo-1');
         expect(params.tagId).toBe('tag-1');
         return new HttpResponse(null, { status: 204 });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
@@ -462,7 +465,7 @@ describe('useRemoveTagFromTodo', () => {
     server.use(
       http.delete(`${API_URL}/todos/:todoId/tags/:tagId`, () => {
         return new HttpResponse(null, { status: 204 });
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();

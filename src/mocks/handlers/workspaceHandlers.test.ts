@@ -14,9 +14,15 @@ const API_URL = `${BASE_URL}/api/${API_VERSION}`;
 const server = setupServer(...workspaceHandlers);
 
 describe('Workspace MSW Handlers', () => {
-  beforeAll(() => server.listen());
-  afterEach(() => server.resetHandlers());
-  afterAll(() => server.close());
+  beforeAll(() => {
+    server.listen();
+  });
+  afterEach(() => {
+    server.resetHandlers();
+  });
+  afterAll(() => {
+    server.close();
+  });
 
   describe('Workspaces API', () => {
     it('should return list of workspaces', async () => {

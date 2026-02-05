@@ -1,5 +1,9 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
-import { useIsAuthenticated, useAuthLoading, useIsExplicitLogout } from '@features/auth/stores/authStore';
+import {
+  useIsAuthenticated,
+  useAuthLoading,
+  useIsExplicitLogout,
+} from '@features/auth/stores/authStore';
 
 export function ProtectedRoute() {
   const isAuthenticated = useIsAuthenticated();

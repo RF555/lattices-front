@@ -33,6 +33,7 @@ function mapTodo(raw: ApiTodo): Todo {
     updatedAt: raw.updated_at,
     childCount: raw.child_count,
     completedChildCount: raw.completed_child_count,
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive: API may omit tags
     tags: (raw.tags ?? []).map((t) => ({
       id: t.id,
       name: t.name,

@@ -23,7 +23,7 @@ export const TodoNode = memo(function TodoNode({
   const viewers = viewingTask?.get(todo.id) || [];
 
   return (
-    <div role="treeitem" aria-expanded={hasChildren ? isExpanded : undefined}>
+    <div role="treeitem" aria-selected={false} aria-expanded={hasChildren ? isExpanded : undefined}>
       <div className="flex items-center gap-1">
         <div className="flex-1 min-w-0">
           <TodoNodeContent

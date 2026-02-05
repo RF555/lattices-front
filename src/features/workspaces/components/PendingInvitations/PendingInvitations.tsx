@@ -49,9 +49,7 @@ export function PendingInvitations({ workspaceId }: PendingInvitationsProps) {
         {pendingInvitations.map((invitation) => (
           <li key={invitation.id} className="flex items-center justify-between px-4 py-3">
             <div className="min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">
-                {invitation.email}
-              </p>
+              <p className="text-sm font-medium text-gray-900 truncate">{invitation.email}</p>
               <p className="text-xs text-gray-500">
                 {t('invitation.invitedBy', { name: invitation.invitedByName })}
               </p>
@@ -61,7 +59,7 @@ export function PendingInvitations({ workspaceId }: PendingInvitationsProps) {
               <span
                 className={cn(
                   'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
-                  ROLE_COLORS[invitation.role]
+                  ROLE_COLORS[invitation.role],
                 )}
               >
                 {t(`roles.${invitation.role}`)}
@@ -71,12 +69,12 @@ export function PendingInvitations({ workspaceId }: PendingInvitationsProps) {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() =>
+                  onClick={() => {
                     revokeInvitation.mutate({
                       workspaceId,
                       invitationId: invitation.id,
-                    })
-                  }
+                    });
+                  }}
                   disabled={revokeInvitation.isPending}
                 >
                   <X className="h-3.5 w-3.5" />

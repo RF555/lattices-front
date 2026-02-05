@@ -60,9 +60,10 @@ export function TodoNodeContent({
   const isCompleted = todo.isCompleted;
 
   // Workspace badge for root-level todos in "All Workspaces" mode
-  const workspaceName = isAllWorkspaces && depth === 0 && todo.workspaceId
-    ? workspaces.find((w) => w.id === todo.workspaceId)?.name
-    : undefined;
+  const workspaceName =
+    isAllWorkspaces && depth === 0 && todo.workspaceId
+      ? workspaces.find((w) => w.id === todo.workspaceId)?.name
+      : undefined;
 
   const handleToggle = useCallback(() => {
     toggleMutate({ id: todo.id, isCompleted: !todo.isCompleted });
@@ -84,7 +85,7 @@ export function TodoNodeContent({
       updateMutate({ id: todo.id, input: { title } });
       setIsEditing(false);
     },
-    [updateMutate, todo.id]
+    [updateMutate, todo.id],
   );
 
   const handleSelect = useCallback(() => {
@@ -100,18 +101,24 @@ export function TodoNodeContent({
   return (
     <>
       <div
+        role="button"
+        tabIndex={0}
         className={cn(
           'group flex items-center gap-1.5 sm:gap-2 px-2 py-2 sm:py-1.5 rounded-md',
           'hover:bg-gray-50 transition-all',
-          depth === 0
-            ? 'shadow-node hover:shadow-node-hover'
-            : 'shadow-none hover:shadow-node',
+          depth === 0 ? 'shadow-node hover:shadow-node-hover' : 'shadow-none hover:shadow-node',
           isSelected && 'bg-blue-50 hover:bg-blue-100 shadow-node-selected',
           isCompleted && 'opacity-60',
-          className
+          className,
         )}
         style={{ paddingInlineStart: `${indentPx + 8}px`, ...style }}
         onClick={handleSelect}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleSelect();
+          }
+        }}
       >
         {leadingSlot}
 
@@ -131,7 +138,9 @@ export function TodoNodeContent({
           <TodoInlineEdit
             initialValue={todo.title}
             onSave={handleTitleSave}
-            onCancel={() => setIsEditing(false)}
+            onCancel={() => {
+              setIsEditing(false);
+            }}
           />
         ) : (
           <div className="flex-1 min-w-0 flex flex-wrap items-center gap-1 justify-between">
@@ -142,18 +151,18 @@ export function TodoNodeContent({
                   {workspaceName}
                 </span>
               )}
+              {}
               <span
-                className={cn(
-                  'text-sm truncate',
-                  isCompleted && 'line-through text-gray-500'
-                )}
-                onDoubleClick={() => setIsEditing(true)}
+                className={cn('text-sm truncate', isCompleted && 'line-through text-gray-500')}
+                onDoubleClick={() => {
+                  setIsEditing(true);
+                }}
               >
                 {todo.title}
               </span>
             </div>
             {/* Tag badges (read-only display in tree row) */}
-            {todo.tags?.length > 0 && (
+            {todo.tags.length > 0 && (
               <div className="flex items-center gap-1 shrink-0">
                 {todo.tags.map((tag) => (
                   <TagBadge key={tag.id} tag={tag} />
@@ -171,18 +180,21 @@ export function TodoNodeContent({
           <span
             className={cn(
               'text-xs tabular-nums',
-              todo.completedChildCount === todo.childCount
-                ? 'text-green-600'
-                : 'text-gray-400'
+              todo.completedChildCount === todo.childCount ? 'text-green-600' : 'text-gray-400',
             )}
-            title={t('nodeContent.subtaskProgress', { completed: todo.completedChildCount, total: todo.childCount })}
+            title={t('nodeContent.subtaskProgress', {
+              completed: todo.completedChildCount,
+              total: todo.childCount,
+            })}
           >
             {todo.completedChildCount}/{todo.childCount}
           </span>
         )}
 
         <TodoActions
-          onEdit={() => setIsEditing(true)}
+          onEdit={() => {
+            setIsEditing(true);
+          }}
           onDelete={handleDelete}
           isDeleting={deleteMutation.isPending}
         />
@@ -198,7 +210,9 @@ export function TodoNodeContent({
           confirmLabel={t('nodeContent.deleteConfirm')}
           variant="danger"
           onConfirm={handleConfirmDelete}
-          onCancel={() => setShowDeleteConfirm(false)}
+          onCancel={() => {
+            setShowDeleteConfirm(false);
+          }}
         />
       )}
     </>

@@ -41,33 +41,46 @@ export function TagEditModal({ tag, onClose }: TagEditModalProps) {
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
         <h2 className="text-lg font-semibold mb-4">{t('editModal.title')}</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            void handleSubmit(e);
+          }}
+          className="space-y-4"
+        >
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="tag-edit-name" className="block text-sm font-medium text-gray-700 mb-1">
               {t('editModal.nameLabel')}
             </label>
             <Input
+              id="tag-edit-name"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+              }}
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <span
+              id="tag-edit-color-label"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               {t('editModal.colorLabel')}
-            </label>
-            <div className="flex gap-2">
+            </span>
+            <div className="flex gap-2" role="radiogroup" aria-labelledby="tag-edit-color-label">
               {TAG_COLORS.map((c) => (
                 <button
                   key={c}
                   type="button"
                   className={cn(
                     'w-8 h-8 rounded-full',
-                    color === c && 'ring-2 ring-offset-2 ring-gray-400'
+                    color === c && 'ring-2 ring-offset-2 ring-gray-400',
                   )}
                   style={{ backgroundColor: c }}
-                  onClick={() => setColor(c)}
+                  onClick={() => {
+                    setColor(c);
+                  }}
                 />
               ))}
             </div>
@@ -77,10 +90,7 @@ export function TagEditModal({ tag, onClose }: TagEditModalProps) {
             <Button type="button" variant="secondary" onClick={onClose}>
               {t('actions.cancel', { ns: 'common' })}
             </Button>
-            <Button
-              type="submit"
-              isLoading={updateMutation.isPending}
-            >
+            <Button type="submit" isLoading={updateMutation.isPending}>
               {t('editModal.saveChanges')}
             </Button>
           </div>

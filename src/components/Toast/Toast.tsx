@@ -29,7 +29,9 @@ export function Toast({ toast }: ToastProps) {
 
   const handleDismiss = () => {
     setIsExiting(true);
-    setTimeout(() => removeToast(toast.id), 150);
+    setTimeout(() => {
+      removeToast(toast.id);
+    }, 150);
   };
 
   return (
@@ -39,7 +41,7 @@ export function Toast({ toast }: ToastProps) {
         'w-full sm:w-auto sm:min-w-[300px] max-w-md',
         'animate-in slide-in-from-right',
         isExiting && 'opacity-0 transition-opacity duration-150',
-        styles[toast.type]
+        styles[toast.type],
       )}
       role="alert"
     >

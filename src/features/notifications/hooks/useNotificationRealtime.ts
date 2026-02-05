@@ -55,11 +55,11 @@ export function useNotificationRealtime() {
         // Direct cache update: increment unread count for instant badge
         queryClient.setQueryData<number>(
           queryKeys.notifications.totalUnreadCount(),
-          (old) => (old ?? 0) + 1
+          (old) => (old ?? 0) + 1,
         );
 
         // Invalidate notification list to pick up the new item
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: queryKeys.notifications.lists(),
         });
 
@@ -81,7 +81,7 @@ export function useNotificationRealtime() {
             const now = Date.now();
             if (now - lastInvalidatedRef.current > RECONNECT_INVALIDATION_COOLDOWN_MS) {
               lastInvalidatedRef.current = now;
-              queryClient.invalidateQueries({
+              void queryClient.invalidateQueries({
                 queryKey: queryKeys.notifications.all,
               });
             }

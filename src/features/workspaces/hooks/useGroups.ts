@@ -27,7 +27,7 @@ export function useCreateGroup(workspaceId: string | undefined) {
     mutationFn: (input: CreateGroupInput) => groupApi.create(workspaceId!, input),
     onSuccess: () => {
       if (workspaceId) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.groups(workspaceId) });
+        void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.groups(workspaceId) });
       }
       toast.success('Group created');
     },
@@ -44,10 +44,10 @@ export function useUpdateGroup(workspaceId: string | undefined, groupId: string 
     mutationFn: (input: UpdateGroupInput) => groupApi.update(workspaceId!, groupId!, input),
     onSuccess: () => {
       if (workspaceId && groupId) {
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: queryKeys.workspaces.groupDetail(workspaceId, groupId),
         });
-        queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.groups(workspaceId) });
+        void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.groups(workspaceId) });
       }
       toast.success('Group updated');
     },
@@ -64,7 +64,7 @@ export function useDeleteGroup(workspaceId: string | undefined) {
     mutationFn: (groupId: string) => groupApi.delete(workspaceId!, groupId),
     onSuccess: () => {
       if (workspaceId) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.groups(workspaceId) });
+        void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.groups(workspaceId) });
       }
       toast.success('Group deleted');
     },
@@ -90,10 +90,10 @@ export function useAddGroupMember(workspaceId: string | undefined, groupId: stri
       groupApi.addMember(workspaceId!, groupId!, userId, role),
     onSuccess: () => {
       if (workspaceId && groupId) {
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: queryKeys.workspaces.groupMembers(workspaceId, groupId),
         });
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: queryKeys.workspaces.groupDetail(workspaceId, groupId),
         });
       }
@@ -105,20 +105,17 @@ export function useAddGroupMember(workspaceId: string | undefined, groupId: stri
   });
 }
 
-export function useRemoveGroupMember(
-  workspaceId: string | undefined,
-  groupId: string | undefined
-) {
+export function useRemoveGroupMember(workspaceId: string | undefined, groupId: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (userId: string) => groupApi.removeMember(workspaceId!, groupId!, userId),
     onSuccess: () => {
       if (workspaceId && groupId) {
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: queryKeys.workspaces.groupMembers(workspaceId, groupId),
         });
-        queryClient.invalidateQueries({
+        void queryClient.invalidateQueries({
           queryKey: queryKeys.workspaces.groupDetail(workspaceId, groupId),
         });
       }

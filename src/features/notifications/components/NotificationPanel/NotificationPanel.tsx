@@ -71,7 +71,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
 
     // Navigate to entity
     const route = getEntityRoute(notification);
-    navigate(route);
+    void navigate(route);
   };
 
   const handleLoadMore = () => {
@@ -86,7 +86,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
         'z-50 flex flex-col rounded-lg border border-gray-200 bg-white shadow-lg',
         // Mobile: fixed full-screen overlay; sm+: absolute dropdown
         'fixed inset-0 sm:absolute sm:inset-auto sm:end-0 sm:top-full sm:mt-2',
-        'w-full sm:w-96'
+        'w-full sm:w-96',
       )}
     >
       {/* Header */}
@@ -113,24 +113,28 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
       <div className="flex border-b border-gray-100">
         <button
           type="button"
-          onClick={() => setPanelFilter('all')}
+          onClick={() => {
+            setPanelFilter('all');
+          }}
           className={cn(
             'flex-1 px-4 py-2 text-xs font-medium transition-colors',
             panelFilter === 'all'
               ? 'border-b-2 border-primary text-primary'
-              : 'text-gray-500 hover:text-gray-700'
+              : 'text-gray-500 hover:text-gray-700',
           )}
         >
           {t('filterAll')}
         </button>
         <button
           type="button"
-          onClick={() => setPanelFilter('unread')}
+          onClick={() => {
+            setPanelFilter('unread');
+          }}
           className={cn(
             'flex-1 px-4 py-2 text-xs font-medium transition-colors',
             panelFilter === 'unread'
               ? 'border-b-2 border-primary text-primary'
-              : 'text-gray-500 hover:text-gray-700'
+              : 'text-gray-500 hover:text-gray-700',
           )}
         >
           {t('filterUnread')}

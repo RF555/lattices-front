@@ -12,10 +12,7 @@ import type { RealtimeCallbacks } from '@lib/realtime';
  * On any change, invalidates global query keys (todos, tags) so the
  * combined view refreshes.
  */
-export function useAllWorkspacesRealtime(
-  workspaceIds: string[],
-  enabled: boolean
-): void {
+export function useAllWorkspacesRealtime(workspaceIds: string[], enabled: boolean): void {
   const queryClient = useQueryClient();
   const queryClientRef = useRef(queryClient);
   queryClientRef.current = queryClient;
@@ -30,10 +27,10 @@ export function useAllWorkspacesRealtime(
 
     const callbacks: RealtimeCallbacks = {
       onTodoChange: () => {
-        queryClientRef.current.invalidateQueries({ queryKey: queryKeys.todos.all });
+        void queryClientRef.current.invalidateQueries({ queryKey: queryKeys.todos.all });
       },
       onTagChange: () => {
-        queryClientRef.current.invalidateQueries({ queryKey: queryKeys.tags.all });
+        void queryClientRef.current.invalidateQueries({ queryKey: queryKeys.tags.all });
       },
     };
 

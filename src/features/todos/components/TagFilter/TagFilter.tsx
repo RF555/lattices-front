@@ -28,10 +28,12 @@ export function TagFilter() {
         <button
           key={tag.id}
           type="button"
-          onClick={() => toggleTag(tag.id)}
+          onClick={() => {
+            toggleTag(tag.id);
+          }}
           className={cn(
             'rounded-full transition-opacity shrink-0',
-            !filterTagIds.includes(tag.id) && 'opacity-50 hover:opacity-75'
+            !filterTagIds.includes(tag.id) && 'opacity-50 hover:opacity-75',
           )}
         >
           <TagBadge tag={tag} />
@@ -40,7 +42,9 @@ export function TagFilter() {
       {filterTagIds.length > 0 && (
         <button
           type="button"
-          onClick={() => setFilterTagIds([])}
+          onClick={() => {
+            setFilterTagIds([]);
+          }}
           className="text-xs text-gray-500 hover:text-gray-700 shrink-0"
         >
           {t('filter.clear')}

@@ -78,10 +78,7 @@ export const workspaceApi = {
     if (input.name !== undefined) body.name = input.name;
     if (input.description !== undefined) body.description = input.description;
 
-    const response = await apiClient.patch<SingleResponse<ApiWorkspace>>(
-      `/workspaces/${id}`,
-      body
-    );
+    const response = await apiClient.patch<SingleResponse<ApiWorkspace>>(`/workspaces/${id}`, body);
     return mapWorkspace(response.data);
   },
 
@@ -91,7 +88,7 @@ export const workspaceApi = {
 
   async getMembers(workspaceId: string): Promise<WorkspaceMember[]> {
     const response = await apiClient.get<ListResponse<ApiWorkspaceMember>>(
-      `/workspaces/${workspaceId}/members`
+      `/workspaces/${workspaceId}/members`,
     );
     return response.data.map(mapMember);
   },
@@ -99,11 +96,11 @@ export const workspaceApi = {
   async addMember(
     workspaceId: string,
     userId: string,
-    role: WorkspaceRole
+    role: WorkspaceRole,
   ): Promise<WorkspaceMember> {
     const response = await apiClient.post<SingleResponse<ApiWorkspaceMember>>(
       `/workspaces/${workspaceId}/members`,
-      { user_id: userId, role }
+      { user_id: userId, role },
     );
     return mapMember(response.data);
   },
@@ -111,11 +108,11 @@ export const workspaceApi = {
   async updateMemberRole(
     workspaceId: string,
     userId: string,
-    role: WorkspaceRole
+    role: WorkspaceRole,
   ): Promise<WorkspaceMember> {
     const response = await apiClient.patch<SingleResponse<ApiWorkspaceMember>>(
       `/workspaces/${workspaceId}/members/${userId}`,
-      { role }
+      { role },
     );
     return mapMember(response.data);
   },

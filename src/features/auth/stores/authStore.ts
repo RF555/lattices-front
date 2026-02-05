@@ -148,8 +148,8 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({
         tokens: state.tokens,
       }),
-    }
-  )
+    },
+  ),
 );
 
 // Selector hooks

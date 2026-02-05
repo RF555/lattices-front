@@ -49,7 +49,10 @@ class ApiClient {
     return this.refreshPromise;
   }
 
-  private buildUrl(endpoint: string, params?: Record<string, string | number | boolean | undefined>): string {
+  private buildUrl(
+    endpoint: string,
+    params?: Record<string, string | number | boolean | undefined>,
+  ): string {
     const url = new URL(`${this.baseUrl}/api/${API_VERSION}${endpoint}`);
 
     if (params) {
@@ -71,14 +74,14 @@ class ApiClient {
     const { params, signal, ...fetchConfig } = config;
     const url = this.buildUrl(endpoint, params);
 
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...config.headers,
+      ...(config.headers as Record<string, string> | undefined),
     };
 
     const token = this.getAccessToken?.();
     if (token) {
-      (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
+      headers.Authorization = `Bearer ${token}`;
     }
 
     try {
@@ -93,14 +96,14 @@ class ApiClient {
         return null as T;
       }
 
-      const data = await response.json().catch(() => null);
+      const data: unknown = await response.json().catch(() => null);
 
       if (!response.ok) {
         // Auto-refresh on 401
         if (response.status === 401 && !_isRetry) {
           const newToken = await this.tryRefresh();
           if (newToken) {
-            return this.request<T>(endpoint, config, true);
+            return await this.request<T>(endpoint, config, true);
           }
         }
         throw ApiException.fromResponse(response, data);

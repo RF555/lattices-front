@@ -3,7 +3,10 @@ import { TodoTree } from '../components/TodoTree';
 import { CreateTodoForm } from '../components/CreateTodoForm';
 import { TodoToolbar } from '../components/TodoToolbar';
 import { useMemo } from 'react';
-import { useActiveWorkspaceId, useIsAllWorkspaces } from '@features/workspaces/stores/workspaceUiStore';
+import {
+  useActiveWorkspaceId,
+  useIsAllWorkspaces,
+} from '@features/workspaces/stores/workspaceUiStore';
 import { useWorkspaces } from '@features/workspaces/hooks/useWorkspaces';
 import { useWorkspaceRealtime } from '@features/workspaces/hooks/useWorkspaceRealtime';
 import { useAllWorkspacesRealtime } from '@features/workspaces/hooks/useAllWorkspacesRealtime';
@@ -33,7 +36,9 @@ export default function DashboardPage() {
             {isAllWorkspaces ? t('workspaces:allWorkspaces') : t('todos:dashboard.title')}
           </h1>
           <p className="text-sm text-gray-500 mt-1">
-            {isAllWorkspaces ? t('workspaces:allWorkspacesDescription') : t('todos:dashboard.subtitle')}
+            {isAllWorkspaces
+              ? t('workspaces:allWorkspacesDescription')
+              : t('todos:dashboard.subtitle')}
           </p>
         </div>
         {!isAllWorkspaces && (

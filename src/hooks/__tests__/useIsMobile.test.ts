@@ -9,7 +9,7 @@ describe('useIsMobile', () => {
   const originalMatchMedia = window.matchMedia;
 
   // Mock matchMedia implementation
-  let mediaQueryListeners: Array<(event: MediaQueryListEvent) => void> = [];
+  let mediaQueryListeners: ((event: MediaQueryListEvent) => void)[] = [];
   let currentMatches = false;
 
   const mockMatchMedia = (matches: boolean): typeof window.matchMedia => {
@@ -71,7 +71,10 @@ describe('useIsMobile', () => {
     act(() => {
       currentMatches = true;
       mediaQueryListeners.forEach((listener) => {
-        listener({ matches: true, media: `(max-width: ${MOBILE_BREAKPOINT - 1}px)` } as MediaQueryListEvent);
+        listener({
+          matches: true,
+          media: `(max-width: ${MOBILE_BREAKPOINT - 1}px)`,
+        } as MediaQueryListEvent);
       });
     });
 
@@ -89,7 +92,10 @@ describe('useIsMobile', () => {
     act(() => {
       currentMatches = false;
       mediaQueryListeners.forEach((listener) => {
-        listener({ matches: false, media: `(max-width: ${MOBILE_BREAKPOINT - 1}px)` } as MediaQueryListEvent);
+        listener({
+          matches: false,
+          media: `(max-width: ${MOBILE_BREAKPOINT - 1}px)`,
+        } as MediaQueryListEvent);
       });
     });
 
@@ -140,7 +146,10 @@ describe('useIsMobile', () => {
     act(() => {
       currentMatches = true;
       mediaQueryListeners.forEach((listener) => {
-        listener({ matches: true, media: `(max-width: ${MOBILE_BREAKPOINT - 1}px)` } as MediaQueryListEvent);
+        listener({
+          matches: true,
+          media: `(max-width: ${MOBILE_BREAKPOINT - 1}px)`,
+        } as MediaQueryListEvent);
       });
     });
     expect(result.current).toBe(true);
@@ -149,7 +158,10 @@ describe('useIsMobile', () => {
     act(() => {
       currentMatches = false;
       mediaQueryListeners.forEach((listener) => {
-        listener({ matches: false, media: `(max-width: ${MOBILE_BREAKPOINT - 1}px)` } as MediaQueryListEvent);
+        listener({
+          matches: false,
+          media: `(max-width: ${MOBILE_BREAKPOINT - 1}px)`,
+        } as MediaQueryListEvent);
       });
     });
     expect(result.current).toBe(false);
@@ -158,7 +170,10 @@ describe('useIsMobile', () => {
     act(() => {
       currentMatches = true;
       mediaQueryListeners.forEach((listener) => {
-        listener({ matches: true, media: `(max-width: ${MOBILE_BREAKPOINT - 1}px)` } as MediaQueryListEvent);
+        listener({
+          matches: true,
+          media: `(max-width: ${MOBILE_BREAKPOINT - 1}px)`,
+        } as MediaQueryListEvent);
       });
     });
     expect(result.current).toBe(true);

@@ -29,7 +29,7 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
       }
       if (e.key === 'Tab') {
         const focusableElements = dialogRef.current?.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
         );
         if (!focusableElements || focusableElements.length === 0) return;
 
@@ -45,7 +45,7 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
         }
       }
     },
-    [onClose]
+    [onClose],
   );
 
   const handleBackdropClick = useCallback(
@@ -54,7 +54,7 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
         onClose();
       }
     },
-    [onClose]
+    [onClose],
   );
 
   if (!isOpen) return null;
@@ -65,6 +65,7 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
       onClick={handleBackdropClick}
       role="presentation"
     >
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- dialog needs keyboard handler for Escape key and focus trap */}
       <div
         ref={dialogRef}
         role="dialog"
@@ -75,12 +76,10 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
         className={cn(
           'bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6',
           'focus:outline-none',
-          className
+          className,
         )}
       >
-        {title && (
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{title}</h2>
-        )}
+        {title && <h2 className="text-lg font-semibold text-gray-900 mb-4">{title}</h2>}
         {children}
       </div>
     </div>

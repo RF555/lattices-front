@@ -84,7 +84,8 @@ class RealtimeManager {
     if (!this.client) {
       this.initialize();
     }
-    this.client?.realtime.setAuth(accessToken);
+     
+    void this.client?.realtime.setAuth(accessToken);
   }
 
   // ── Connection ────────────────────────────────────────────────────
@@ -120,8 +121,9 @@ class RealtimeManager {
   subscribeToWorkspace(workspaceId: string, callbacks: RealtimeCallbacks): void {
     if (!this.client) {
       this.initialize();
-      if (!this.client) return;
     }
+     
+    if (!this.client) return;
 
     // Avoid duplicate subscriptions
     const channelName = `workspace:${workspaceId}`;
@@ -139,7 +141,7 @@ class RealtimeManager {
           table: 'todos',
           filter: `workspace_id=eq.${workspaceId}`,
         },
-        callbacks.onTodoChange
+        callbacks.onTodoChange,
       );
     }
 
@@ -153,7 +155,7 @@ class RealtimeManager {
           table: 'tags',
           filter: `workspace_id=eq.${workspaceId}`,
         },
-        callbacks.onTagChange
+        callbacks.onTagChange,
       );
     }
 
@@ -167,7 +169,7 @@ class RealtimeManager {
           table: 'workspace_members',
           filter: `workspace_id=eq.${workspaceId}`,
         },
-        callbacks.onMemberChange
+        callbacks.onMemberChange,
       );
     }
 
@@ -181,14 +183,14 @@ class RealtimeManager {
           table: 'activity_log',
           filter: `workspace_id=eq.${workspaceId}`,
         },
-        callbacks.onActivityChange
+        callbacks.onActivityChange,
       );
     }
 
     this.channels.set(channelName, channel);
     this.setStatus('connecting');
 
-    channel.subscribe((status) => {
+    channel.subscribe((status: string) => {
       if (status === 'SUBSCRIBED') {
         this.connectedChannels.add(channelName);
       } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
@@ -202,7 +204,7 @@ class RealtimeManager {
     const channelName = `workspace:${workspaceId}`;
     const channel = this.channels.get(channelName);
     if (channel) {
-      this.client?.removeChannel(channel);
+      void this.client?.removeChannel(channel);
       this.channels.delete(channelName);
       this.connectedChannels.delete(channelName);
       this.updateConnectionStatus();
@@ -214,8 +216,9 @@ class RealtimeManager {
   subscribeToPresence(workspaceId: string, callbacks: PresenceCallbacks): void {
     if (!this.client) {
       this.initialize();
-      if (!this.client) return;
     }
+     
+    if (!this.client) return;
 
     const channelName = `presence:${workspaceId}`;
     if (this.presenceChannels.has(channelName)) return;
@@ -229,9 +232,7 @@ class RealtimeManager {
       const users: PresenceUser[] = [];
       for (const key of Object.keys(state)) {
         const presences = state[key];
-        if (presences) {
-          users.push(...(presences as unknown as PresenceUser[]));
-        }
+        users.push(...(presences as unknown as PresenceUser[]));
       }
       callbacks.onSync?.(users);
     });
@@ -256,7 +257,7 @@ class RealtimeManager {
     const channelName = `presence:${workspaceId}`;
     const channel = this.presenceChannels.get(channelName);
     if (channel) {
-      this.client?.removeChannel(channel);
+      void this.client?.removeChannel(channel);
       this.presenceChannels.delete(channelName);
     }
   }
@@ -274,14 +275,12 @@ class RealtimeManager {
 
   // ── Notifications (User-scoped) ─────────────────────────────────
 
-  subscribeToNotifications(
-    userId: string,
-    callbacks: NotificationRealtimeCallbacks
-  ): void {
+  subscribeToNotifications(userId: string, callbacks: NotificationRealtimeCallbacks): void {
     if (!this.client) {
       this.initialize();
-      if (!this.client) return;
     }
+     
+    if (!this.client) return;
 
     const channelName = `notifications:${userId}`;
     if (this.channels.has(channelName)) return;
@@ -297,20 +296,22 @@ class RealtimeManager {
           table: 'notification_recipients',
           filter: `recipient_id=eq.${userId}`,
         },
-        callbacks.onNewNotification
+        callbacks.onNewNotification,
       );
     }
 
     this.channels.set(channelName, channel);
 
-    channel.subscribe((status) => {
+    channel.subscribe((status: string) => {
       if (status === 'SUBSCRIBED') {
         this.connectedChannels.add(channelName);
       } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
         this.connectedChannels.delete(channelName);
       }
       this.updateConnectionStatus();
-      callbacks.onSubscriptionStatus?.(status as 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED');
+      callbacks.onSubscriptionStatus?.(
+        status as 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED',
+      );
     });
   }
 
@@ -318,7 +319,7 @@ class RealtimeManager {
     const channelName = `notifications:${userId}`;
     const channel = this.channels.get(channelName);
     if (channel) {
-      this.client?.removeChannel(channel);
+      void this.client?.removeChannel(channel);
       this.channels.delete(channelName);
       this.connectedChannels.delete(channelName);
       this.updateConnectionStatus();
@@ -332,12 +333,12 @@ class RealtimeManager {
    */
   cleanup(): void {
     for (const channel of this.channels.values()) {
-      this.client?.removeChannel(channel);
+      void this.client?.removeChannel(channel);
     }
     this.channels.clear();
 
     for (const channel of this.presenceChannels.values()) {
-      this.client?.removeChannel(channel);
+      void this.client?.removeChannel(channel);
     }
     this.presenceChannels.clear();
 

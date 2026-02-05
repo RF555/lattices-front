@@ -44,7 +44,7 @@ describe('tagApi', () => {
               },
             ],
           });
-        })
+        }),
       );
 
       const result = await tagApi.getAll('ws-1');
@@ -53,9 +53,7 @@ describe('tagApi', () => {
     });
 
     it('should handle empty result', async () => {
-      server.use(
-        http.get(`${API_URL}/tags`, () => HttpResponse.json({ data: [] }))
-      );
+      server.use(http.get(`${API_URL}/tags`, () => HttpResponse.json({ data: [] })));
 
       const result = await tagApi.getAll();
       expect(result).toEqual([]);
@@ -73,8 +71,8 @@ describe('tagApi', () => {
                 created_at: '2024-01-01T00:00:00Z',
               },
             ],
-          })
-        )
+          }),
+        ),
       );
 
       const result = await tagApi.getAll();
@@ -114,9 +112,9 @@ describe('tagApi', () => {
                 created_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       const result = await tagApi.create({ name: 'Test Tag', colorHex: '#22c55e' });
@@ -138,9 +136,9 @@ describe('tagApi', () => {
                 created_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       await tagApi.create({ name: 'Workspace Tag' }, 'ws-1');
@@ -161,9 +159,9 @@ describe('tagApi', () => {
                 created_at: '2024-01-01T00:00:00Z',
               },
             },
-            { status: 201 }
+            { status: 201 },
           );
-        })
+        }),
       );
 
       const result = await tagApi.create({ name: 'Default Color' });
@@ -185,7 +183,7 @@ describe('tagApi', () => {
               created_at: '2024-01-01T00:00:00Z',
             },
           });
-        })
+        }),
       );
 
       const result = await tagApi.update('tag-1', { name: 'Updated Tag' });
@@ -209,7 +207,7 @@ describe('tagApi', () => {
               created_at: '2024-01-01T00:00:00Z',
             },
           });
-        })
+        }),
       );
 
       await tagApi.update('tag-1', { name: 'Name Only' });
@@ -230,7 +228,7 @@ describe('tagApi', () => {
               created_at: '2024-01-01T00:00:00Z',
             },
           });
-        })
+        }),
       );
 
       const result = await tagApi.update('tag-1', { colorHex: '#ef4444' });
@@ -252,7 +250,7 @@ describe('tagApi', () => {
               created_at: '2024-01-01T00:00:00Z',
             },
           });
-        })
+        }),
       );
 
       const result = await tagApi.update('tag-1', { name: 'Updated', colorHex: '#22c55e' });
@@ -270,7 +268,7 @@ describe('tagApi', () => {
       server.use(
         http.delete(`${API_URL}/tags/:id`, () => {
           return new HttpResponse(null, { status: 204 });
-        })
+        }),
       );
 
       await expect(tagApi.delete('non-existent')).resolves.toBeUndefined();
@@ -286,7 +284,7 @@ describe('tagApi', () => {
           expect(body).toHaveProperty('tag_id', 'tag-1');
           expect(body).not.toHaveProperty('tagId');
           return new HttpResponse(null, { status: 204 });
-        })
+        }),
       );
 
       await expect(tagApi.addToTodo('todo-1', 'tag-1')).resolves.toBeUndefined();
@@ -300,7 +298,7 @@ describe('tagApi', () => {
           expect(params.todoId).toBe('todo-1');
           expect(params.tagId).toBe('tag-1');
           return new HttpResponse(null, { status: 204 });
-        })
+        }),
       );
 
       await expect(tagApi.removeFromTodo('todo-1', 'tag-1')).resolves.toBeUndefined();
@@ -330,7 +328,7 @@ describe('tagApi', () => {
               },
             ],
           });
-        })
+        }),
       );
 
       const result = await tagApi.getForTodo('todo-1');
@@ -341,11 +339,7 @@ describe('tagApi', () => {
     });
 
     it('should handle todo with no tags', async () => {
-      server.use(
-        http.get(`${API_URL}/todos/:todoId/tags`, () =>
-          HttpResponse.json({ data: [] })
-        )
-      );
+      server.use(http.get(`${API_URL}/todos/:todoId/tags`, () => HttpResponse.json({ data: [] })));
 
       const result = await tagApi.getForTodo('todo-without-tags');
       expect(result).toEqual([]);
@@ -361,8 +355,8 @@ describe('tagApi', () => {
     it('should throw on 500 error', async () => {
       server.use(
         http.get(`${API_URL}/tags`, () =>
-          HttpResponse.json({ message: 'Server error' }, { status: 500 })
-        )
+          HttpResponse.json({ message: 'Server error' }, { status: 500 }),
+        ),
       );
       await expect(tagApi.getAll()).rejects.toThrow();
     });
@@ -372,9 +366,9 @@ describe('tagApi', () => {
         http.patch(`${API_URL}/tags/:id`, () =>
           HttpResponse.json(
             { error_code: 'TAG_NOT_FOUND', message: 'Tag not found' },
-            { status: 404 }
-          )
-        )
+            { status: 404 },
+          ),
+        ),
       );
       await expect(tagApi.update('non-existent', { name: 'Test' })).rejects.toThrow();
     });

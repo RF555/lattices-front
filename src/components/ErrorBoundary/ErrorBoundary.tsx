@@ -14,32 +14,19 @@ function ErrorFallback({ error, onRetry }: ErrorFallbackProps) {
     <div className="flex flex-col items-center justify-center min-h-[400px] p-8">
       <div className="text-red-500 mb-4">
         <svg className="w-16 h-16" viewBox="0 0 24 24" fill="none">
-          <circle
-            cx="12"
-            cy="12"
-            r="10"
-            stroke="currentColor"
-            strokeWidth="2"
-          />
-          <path
-            d="M12 7v5M12 16v.01"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
+          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+          <path d="M12 7v5M12 16v.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
       </div>
-      <h2 className="text-xl font-semibold text-gray-900 mb-2">
-        {t('error.somethingWentWrong')}
-      </h2>
-      <p className="text-gray-600 text-center mb-6 max-w-md">
-        {t('error.unexpectedError')}
-      </p>
+      <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('error.somethingWentWrong')}</h2>
+      <p className="text-gray-600 text-center mb-6 max-w-md">{t('error.unexpectedError')}</p>
       <div className="flex gap-3">
         <Button onClick={onRetry}>{t('actions.tryAgain')}</Button>
         <Button
           variant="secondary"
-          onClick={() => window.location.reload()}
+          onClick={() => {
+            window.location.reload();
+          }}
         >
           {t('actions.reloadPage')}
         </Button>
@@ -91,12 +78,7 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
 
-      return (
-        <ErrorFallback
-          error={this.state.error}
-          onRetry={this.handleRetry}
-        />
-      );
+      return <ErrorFallback error={this.state.error} onRetry={this.handleRetry} />;
     }
 
     return this.props.children;

@@ -25,9 +25,11 @@ export function RoleSelector({ currentRole, onSelect, disabled }: RoleSelectorPr
             'flex w-full items-center justify-between px-3 py-1.5 text-left text-sm',
             'hover:bg-gray-50 transition-colors',
             'disabled:opacity-50 disabled:cursor-not-allowed',
-            role === currentRole && 'bg-gray-50'
+            role === currentRole && 'bg-gray-50',
           )}
-          onClick={() => onSelect(role)}
+          onClick={() => {
+            onSelect(role);
+          }}
         >
           <span>{t(`roles.${role}`)}</span>
           {role === currentRole && <Check className="h-3.5 w-3.5 text-primary" />}

@@ -32,8 +32,8 @@ describe('todoApi', () => {
     it('should handle empty result', async () => {
       server.use(
         http.get(`${API_URL}/todos`, () =>
-          HttpResponse.json({ data: [], meta: { total: 0, root_count: 0 } })
-        )
+          HttpResponse.json({ data: [], meta: { total: 0, root_count: 0 } }),
+        ),
       );
       const result = await todoApi.getAll();
       expect(result).toEqual([]);
@@ -43,16 +43,25 @@ describe('todoApi', () => {
       server.use(
         http.get(`${API_URL}/todos`, () =>
           HttpResponse.json({
-            data: [{
-              id: '1', title: 'With tags', is_completed: false, parent_id: null,
-              position: 0, description: null, completed_at: null,
-              child_count: 0, completed_child_count: 0,
-              tags: [{ id: 't1', name: 'Tag', color_hex: '#ff0000' }],
-              created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z',
-            }],
+            data: [
+              {
+                id: '1',
+                title: 'With tags',
+                is_completed: false,
+                parent_id: null,
+                position: 0,
+                description: null,
+                completed_at: null,
+                child_count: 0,
+                completed_child_count: 0,
+                tags: [{ id: 't1', name: 'Tag', color_hex: '#ff0000' }],
+                created_at: '2024-01-01T00:00:00Z',
+                updated_at: '2024-01-01T00:00:00Z',
+              },
+            ],
             meta: { total: 1, root_count: 1 },
-          })
-        )
+          }),
+        ),
       );
 
       const result = await todoApi.getAll();
@@ -63,15 +72,25 @@ describe('todoApi', () => {
       server.use(
         http.get(`${API_URL}/todos`, () =>
           HttpResponse.json({
-            data: [{
-              id: '1', title: 'No tags', is_completed: false, parent_id: null,
-              position: 0, description: null, completed_at: null,
-              child_count: 0, completed_child_count: 0, tags: null,
-              created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z',
-            }],
+            data: [
+              {
+                id: '1',
+                title: 'No tags',
+                is_completed: false,
+                parent_id: null,
+                position: 0,
+                description: null,
+                completed_at: null,
+                child_count: 0,
+                completed_child_count: 0,
+                tags: null,
+                created_at: '2024-01-01T00:00:00Z',
+                updated_at: '2024-01-01T00:00:00Z',
+              },
+            ],
             meta: { total: 1, root_count: 1 },
-          })
-        )
+          }),
+        ),
       );
 
       const result = await todoApi.getAll();
@@ -106,15 +125,26 @@ describe('todoApi', () => {
           const body = (await request.json()) as Record<string, unknown>;
           expect(body).toHaveProperty('parent_id', 'parent-1');
           expect(body).not.toHaveProperty('parentId');
-          return HttpResponse.json({
-            data: {
-              id: 'new', title: body.title, description: null,
-              is_completed: false, parent_id: body.parent_id, position: 0,
-              completed_at: null, child_count: 0, completed_child_count: 0,
-              tags: [], created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z',
+          return HttpResponse.json(
+            {
+              data: {
+                id: 'new',
+                title: body.title,
+                description: null,
+                is_completed: false,
+                parent_id: body.parent_id,
+                position: 0,
+                completed_at: null,
+                child_count: 0,
+                completed_child_count: 0,
+                tags: [],
+                created_at: '2024-01-01T00:00:00Z',
+                updated_at: '2024-01-01T00:00:00Z',
+              },
             },
-          }, { status: 201 });
-        })
+            { status: 201 },
+          );
+        }),
       );
 
       const result = await todoApi.create({ title: 'Subtask', parentId: 'parent-1' });
@@ -136,13 +166,21 @@ describe('todoApi', () => {
           expect(body).not.toHaveProperty('isCompleted');
           return HttpResponse.json({
             data: {
-              id: params.id, title: 'Test', is_completed: true, parent_id: null,
-              position: 0, description: null, completed_at: '2024-01-01T00:00:00Z',
-              child_count: 0, completed_child_count: 0, tags: [],
-              created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z',
+              id: params.id,
+              title: 'Test',
+              is_completed: true,
+              parent_id: null,
+              position: 0,
+              description: null,
+              completed_at: '2024-01-01T00:00:00Z',
+              child_count: 0,
+              completed_child_count: 0,
+              tags: [],
+              created_at: '2024-01-01T00:00:00Z',
+              updated_at: '2024-01-01T00:00:00Z',
             },
           });
-        })
+        }),
       );
 
       await todoApi.update('1', { isCompleted: true });
@@ -155,13 +193,21 @@ describe('todoApi', () => {
           expect(Object.keys(body)).toEqual(['title']);
           return HttpResponse.json({
             data: {
-              id: params.id, title: body.title, is_completed: false, parent_id: null,
-              position: 0, description: null, completed_at: null,
-              child_count: 0, completed_child_count: 0, tags: [],
-              created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z',
+              id: params.id,
+              title: body.title,
+              is_completed: false,
+              parent_id: null,
+              position: 0,
+              description: null,
+              completed_at: null,
+              child_count: 0,
+              completed_child_count: 0,
+              tags: [],
+              created_at: '2024-01-01T00:00:00Z',
+              updated_at: '2024-01-01T00:00:00Z',
             },
           });
-        })
+        }),
       );
 
       await todoApi.update('1', { title: 'Only title' });
@@ -183,8 +229,8 @@ describe('todoApi', () => {
     it('should throw on 500 error', async () => {
       server.use(
         http.get(`${API_URL}/todos`, () =>
-          HttpResponse.json({ message: 'Server error' }, { status: 500 })
-        )
+          HttpResponse.json({ message: 'Server error' }, { status: 500 }),
+        ),
       );
       await expect(todoApi.getAll()).rejects.toThrow();
     });

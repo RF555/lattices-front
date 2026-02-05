@@ -33,8 +33,7 @@ export const queryKeys = {
       [...queryKeys.workspaces.all, workspaceId, 'invitations'] as const,
     activity: (workspaceId: string) =>
       [...queryKeys.workspaces.all, workspaceId, 'activity'] as const,
-    groups: (workspaceId: string) =>
-      [...queryKeys.workspaces.all, workspaceId, 'groups'] as const,
+    groups: (workspaceId: string) => [...queryKeys.workspaces.all, workspaceId, 'groups'] as const,
     groupDetail: (workspaceId: string, groupId: string) =>
       [...queryKeys.workspaces.groups(workspaceId), groupId] as const,
     groupMembers: (workspaceId: string, groupId: string) =>
@@ -55,8 +54,7 @@ export const queryKeys = {
       [...queryKeys.notifications.lists(), filters] as const,
     unreadCount: (workspaceId?: string) =>
       [...queryKeys.notifications.all, 'unread-count', workspaceId] as const,
-    totalUnreadCount: () =>
-      [...queryKeys.notifications.all, 'total-unread-count'] as const,
+    totalUnreadCount: () => [...queryKeys.notifications.all, 'total-unread-count'] as const,
     preferences: () => [...queryKeys.notifications.all, 'preferences'] as const,
     types: () => [...queryKeys.notifications.all, 'types'] as const,
   },

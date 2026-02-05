@@ -129,7 +129,7 @@ describe('ActivityFeed', () => {
 
   it('should show "Load more" button when activities count >= PAGE_SIZE', () => {
     const activities = Array.from({ length: 20 }, (_, i) =>
-      createMockActivity({ id: `a-${i}`, actorName: `User ${i}` })
+      createMockActivity({ id: `a-${i}`, actorName: `User ${i}` }),
     );
 
     mockUseWorkspaceActivity.mockReturnValue({
@@ -143,7 +143,7 @@ describe('ActivityFeed', () => {
 
   it('should not show "Load more" button when activities count < PAGE_SIZE', () => {
     const activities = Array.from({ length: 5 }, (_, i) =>
-      createMockActivity({ id: `a-${i}`, actorName: `User ${i}` })
+      createMockActivity({ id: `a-${i}`, actorName: `User ${i}` }),
     );
 
     mockUseWorkspaceActivity.mockReturnValue({
@@ -158,7 +158,7 @@ describe('ActivityFeed', () => {
   it('should increase limit when "Load more" is clicked', async () => {
     const user = userEvent.setup();
     const activities = Array.from({ length: 20 }, (_, i) =>
-      createMockActivity({ id: `a-${i}`, actorName: `User ${i}` })
+      createMockActivity({ id: `a-${i}`, actorName: `User ${i}` }),
     );
 
     mockUseWorkspaceActivity.mockReturnValue({

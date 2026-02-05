@@ -12,10 +12,7 @@ import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import { useWorkspace, useUpdateWorkspace, useDeleteWorkspace } from '../../hooks/useWorkspaces';
 import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
 import { TagList } from '@features/tags/components/TagList';
-import {
-  createWorkspaceSchema,
-  type WorkspaceFormData,
-} from '../../schemas/workspaceSchemas';
+import { createWorkspaceSchema, type WorkspaceFormData } from '../../schemas/workspaceSchemas';
 
 export function WorkspaceSettings() {
   const { id } = useParams<{ id: string }>();
@@ -56,10 +53,11 @@ export function WorkspaceSettings() {
     });
   };
 
-  const handleDelete = async () => {
-    await deleteWorkspace.mutateAsync(workspace.id);
-    setShowDeleteConfirm(false);
-    navigate('/app');
+  const handleDelete = () => {
+    void deleteWorkspace.mutateAsync(workspace.id).then(() => {
+      setShowDeleteConfirm(false);
+      void navigate('/app');
+    });
   };
 
   return (
@@ -67,7 +65,9 @@ export function WorkspaceSettings() {
       <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={() => navigate('/app')}
+          onClick={() => {
+            void navigate('/app');
+          }}
           className="text-gray-400 hover:text-gray-600 transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
@@ -79,32 +79,25 @@ export function WorkspaceSettings() {
       {/* General Settings */}
       <section className="bg-white rounded-lg border border-gray-200 p-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">{t('settings.general')}</h3>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            void handleSubmit(onSubmit)(e);
+          }}
+          className="space-y-4"
+        >
           <div>
             <label htmlFor="ws-name" className="block text-sm font-medium text-gray-700">
               {t('form.name')}
             </label>
-            <Input
-              id="ws-name"
-              {...register('name')}
-              disabled={!canEdit}
-              error={!!errors.name}
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-            )}
+            <Input id="ws-name" {...register('name')} disabled={!canEdit} error={!!errors.name} />
+            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
           </div>
 
           <div>
             <label htmlFor="ws-desc" className="block text-sm font-medium text-gray-700">
               {t('form.description')}
             </label>
-            <Textarea
-              id="ws-desc"
-              {...register('description')}
-              disabled={!canEdit}
-              rows={3}
-            />
+            <Textarea id="ws-desc" {...register('description')} disabled={!canEdit} rows={3} />
             {errors.description && (
               <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
             )}
@@ -112,11 +105,7 @@ export function WorkspaceSettings() {
 
           {canEdit && (
             <div className="flex justify-end">
-              <Button
-                type="submit"
-                disabled={!isDirty}
-                isLoading={updateWorkspace.isPending}
-              >
+              <Button type="submit" disabled={!isDirty} isLoading={updateWorkspace.isPending}>
                 {t('settings.saveChanges')}
               </Button>
             </div>
@@ -139,12 +128,12 @@ export function WorkspaceSettings() {
       {canDelete && (
         <section className="bg-white rounded-lg border border-red-200 p-6">
           <h3 className="text-lg font-medium text-red-600 mb-2">{t('settings.dangerZone')}</h3>
-          <p className="text-sm text-gray-600 mb-4">
-            {t('settings.deleteWarning')}
-          </p>
+          <p className="text-sm text-gray-600 mb-4">{t('settings.deleteWarning')}</p>
           <Button
             variant="danger"
-            onClick={() => setShowDeleteConfirm(true)}
+            onClick={() => {
+              setShowDeleteConfirm(true);
+            }}
           >
             <Trash2 className="h-4 w-4 mr-2" />
             {t('settings.deleteWorkspace')}
@@ -155,7 +144,9 @@ export function WorkspaceSettings() {
       <ConfirmationDialog
         isOpen={showDeleteConfirm}
         onConfirm={handleDelete}
-        onCancel={() => setShowDeleteConfirm(false)}
+        onCancel={() => {
+          setShowDeleteConfirm(false);
+        }}
         title={t('settings.confirmDelete')}
         message={t('settings.confirmDeleteMessage', { name: workspace.name })}
         variant="danger"

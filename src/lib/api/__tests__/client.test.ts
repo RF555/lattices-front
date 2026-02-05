@@ -25,9 +25,7 @@ describe('ApiClient', () => {
   describe('URL building', () => {
     it('should build correct URL with base URL, /api, version, and endpoint', async () => {
       server.use(
-        http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
-          HttpResponse.json({ data: [] })
-        )
+        http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () => HttpResponse.json({ data: [] })),
       );
 
       const result = await client.get('/todos');
@@ -42,7 +40,7 @@ describe('ApiClient', () => {
           expect(url.searchParams.get('limit')).toBe('10');
           expect(url.searchParams.get('archived')).toBe('false');
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/todos', {
@@ -58,7 +56,7 @@ describe('ApiClient', () => {
           expect(url.searchParams.has('undefined')).toBe(false);
           expect(url.searchParams.get('defined')).toBe('value');
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/todos', {
@@ -74,7 +72,7 @@ describe('ApiClient', () => {
           expect(url.searchParams.get('page')).toBe('2');
           expect(url.searchParams.get('sort')).toBe('created_at');
           return HttpResponse.json({ results: [] });
-        })
+        }),
       );
 
       await client.get('/search', {
@@ -87,8 +85,8 @@ describe('ApiClient', () => {
     it('should perform GET request', async () => {
       server.use(
         http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
-          HttpResponse.json({ data: [{ id: '1', title: 'Test' }] })
-        )
+          HttpResponse.json({ data: [{ id: '1', title: 'Test' }] }),
+        ),
       );
 
       const result = await client.get<{ data: unknown[] }>('/todos');
@@ -100,11 +98,8 @@ describe('ApiClient', () => {
         http.post(`${BASE_URL}/api/${API_VERSION}/todos`, async ({ request }) => {
           const body = (await request.json()) as Record<string, unknown>;
           expect(body).toEqual({ title: 'New todo', description: 'Test' });
-          return HttpResponse.json(
-            { data: { id: '1', ...body } },
-            { status: 201 }
-          );
-        })
+          return HttpResponse.json({ data: { id: '1', ...body } }, { status: 201 });
+        }),
       );
 
       const result = await client.post('/todos', {
@@ -120,7 +115,7 @@ describe('ApiClient', () => {
           const body = await request.text();
           expect(body).toBe('');
           return HttpResponse.json({ success: true });
-        })
+        }),
       );
 
       const result = await client.post<{ success: boolean }>('/actions/trigger');
@@ -133,7 +128,7 @@ describe('ApiClient', () => {
           const body = (await request.json()) as Record<string, unknown>;
           expect(body).toEqual({ title: 'Updated', is_completed: true });
           return HttpResponse.json({ data: { id: '1', ...body } });
-        })
+        }),
       );
 
       await client.put('/todos/1', { title: 'Updated', is_completed: true });
@@ -145,7 +140,7 @@ describe('ApiClient', () => {
           const body = (await request.json()) as Record<string, unknown>;
           expect(body).toEqual({ title: 'Patched' });
           return HttpResponse.json({ data: { id: '1', title: 'Patched' } });
-        })
+        }),
       );
 
       await client.patch('/todos/1', { title: 'Patched' });
@@ -153,9 +148,10 @@ describe('ApiClient', () => {
 
     it('should perform DELETE request', async () => {
       server.use(
-        http.delete(`${BASE_URL}/api/${API_VERSION}/todos/1`, () =>
-          new HttpResponse(null, { status: 204 })
-        )
+        http.delete(
+          `${BASE_URL}/api/${API_VERSION}/todos/1`,
+          () => new HttpResponse(null, { status: 204 }),
+        ),
       );
 
       const result = await client.delete('/todos/1');
@@ -172,7 +168,7 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/todos`, ({ request }) => {
           expect(request.headers.get('Authorization')).toBe(`Bearer ${token}`);
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/todos');
@@ -185,7 +181,7 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/public`, ({ request }) => {
           expect(request.headers.has('Authorization')).toBe(false);
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/public');
@@ -196,7 +192,7 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/public`, ({ request }) => {
           expect(request.headers.has('Authorization')).toBe(false);
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/public');
@@ -210,7 +206,7 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/todos`, ({ request }) => {
           const auth = request.headers.get('Authorization');
           return HttpResponse.json({ token: auth });
-        })
+        }),
       );
 
       const result1 = await client.get<{ token: string }>('/todos');
@@ -225,9 +221,10 @@ describe('ApiClient', () => {
   describe('204 No Content handling', () => {
     it('should return null for 204 responses', async () => {
       server.use(
-        http.delete(`${BASE_URL}/api/${API_VERSION}/todos/1`, () =>
-          new HttpResponse(null, { status: 204 })
-        )
+        http.delete(
+          `${BASE_URL}/api/${API_VERSION}/todos/1`,
+          () => new HttpResponse(null, { status: 204 }),
+        ),
       );
 
       const result = await client.delete('/todos/1');
@@ -236,9 +233,10 @@ describe('ApiClient', () => {
 
     it('should return null for 204 POST responses', async () => {
       server.use(
-        http.post(`${BASE_URL}/api/${API_VERSION}/actions/void`, () =>
-          new HttpResponse(null, { status: 204 })
-        )
+        http.post(
+          `${BASE_URL}/api/${API_VERSION}/actions/void`,
+          () => new HttpResponse(null, { status: 204 }),
+        ),
       );
 
       const result = await client.post('/actions/void', {});
@@ -256,9 +254,9 @@ describe('ApiClient', () => {
               error_code: 'VALIDATION_ERROR',
               details: { field: 'title' },
             },
-            { status: 400 }
-          )
-        )
+            { status: 400 },
+          ),
+        ),
       );
 
       await expect(client.get('/todos')).rejects.toThrow(ApiException);
@@ -275,9 +273,9 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/todos/999`, () =>
           HttpResponse.json(
             { message: 'Not found', error_code: 'TASK_NOT_FOUND' },
-            { status: 404 }
-          )
-        )
+            { status: 404 },
+          ),
+        ),
       );
 
       await expect(client.get('/todos/999')).rejects.toMatchObject({
@@ -291,9 +289,9 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
           HttpResponse.json(
             { message: 'Server error', error_code: 'INTERNAL_ERROR' },
-            { status: 500 }
-          )
-        )
+            { status: 500 },
+          ),
+        ),
       );
 
       await expect(client.get('/todos')).rejects.toMatchObject({
@@ -303,11 +301,7 @@ describe('ApiClient', () => {
     });
 
     it('should throw NETWORK_ERROR for fetch failures', async () => {
-      server.use(
-        http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
-          HttpResponse.error()
-        )
-      );
+      server.use(http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () => HttpResponse.error()));
 
       await expect(client.get('/todos')).rejects.toMatchObject({
         code: 'NETWORK_ERROR',
@@ -317,11 +311,7 @@ describe('ApiClient', () => {
     });
 
     it('should throw NETWORK_ERROR for network failures', async () => {
-      server.use(
-        http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
-          HttpResponse.error()
-        )
-      );
+      server.use(http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () => HttpResponse.error()));
 
       await expect(client.get('/todos')).rejects.toMatchObject({
         code: 'NETWORK_ERROR',
@@ -335,9 +325,9 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
           HttpResponse.json(
             { message: 'Custom error', error_code: 'CUSTOM_CODE' },
-            { status: 422 }
-          )
-        )
+            { status: 422 },
+          ),
+        ),
       );
 
       try {
@@ -369,11 +359,11 @@ describe('ApiClient', () => {
           if (auth === 'Bearer old-token') {
             return HttpResponse.json(
               { message: 'Unauthorized', error_code: 'UNAUTHORIZED' },
-              { status: 401 }
+              { status: 401 },
             );
           }
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/todos');
@@ -397,14 +387,14 @@ describe('ApiClient', () => {
           if (auth === 'Bearer old-token') {
             return HttpResponse.json(
               { message: 'Unauthorized', error_code: 'UNAUTHORIZED' },
-              { status: 401 }
+              { status: 401 },
             );
           }
           if (auth === 'Bearer new-token') {
             return HttpResponse.json({ data: [{ id: '1' }] });
           }
           return HttpResponse.json({ error: 'Unexpected token' }, { status: 400 });
-        })
+        }),
       );
 
       const result = await client.get<{ data: unknown[] }>('/todos');
@@ -422,9 +412,9 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
           HttpResponse.json(
             { message: 'Unauthorized', error_code: 'UNAUTHORIZED' },
-            { status: 401 }
-          )
-        )
+            { status: 401 },
+          ),
+        ),
       );
 
       await expect(client.get('/todos')).rejects.toMatchObject({
@@ -441,9 +431,9 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
           HttpResponse.json(
             { message: 'Unauthorized', error_code: 'UNAUTHORIZED' },
-            { status: 401 }
-          )
-        )
+            { status: 401 },
+          ),
+        ),
       );
 
       await expect(client.get('/todos')).rejects.toMatchObject({
@@ -467,9 +457,9 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
           HttpResponse.json(
             { message: 'Unauthorized', error_code: 'UNAUTHORIZED' },
-            { status: 401 }
-          )
-        )
+            { status: 401 },
+          ),
+        ),
       );
 
       await expect(client.get('/todos')).rejects.toMatchObject({
@@ -498,11 +488,11 @@ describe('ApiClient', () => {
           if (auth === 'Bearer old-token') {
             return HttpResponse.json(
               { message: 'Unauthorized', error_code: 'UNAUTHORIZED' },
-              { status: 401 }
+              { status: 401 },
             );
           }
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       // Make three concurrent requests that all get 401
@@ -528,7 +518,7 @@ describe('ApiClient', () => {
           const url = new URL(request.url);
           expect(url.searchParams.get('filter')).toBe('active');
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/todos', { params: { filter: 'active' } });
@@ -542,7 +532,7 @@ describe('ApiClient', () => {
           // Simulate a slow response
           await new Promise((resolve) => setTimeout(resolve, 100));
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       const promise = client.get('/todos', { signal: controller.signal });
@@ -556,7 +546,7 @@ describe('ApiClient', () => {
         http.post(`${BASE_URL}/api/${API_VERSION}/todos`, ({ request }) => {
           expect(request.headers.get('Content-Type')).toBe('application/json');
           return HttpResponse.json({ data: {} }, { status: 201 });
-        })
+        }),
       );
 
       await client.post('/todos', { title: 'Test' });
@@ -567,7 +557,7 @@ describe('ApiClient', () => {
         http.get(`${BASE_URL}/api/${API_VERSION}/todos`, ({ request }) => {
           expect(request.headers.get('X-Custom-Header')).toBe('custom-value');
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/todos', {
@@ -584,7 +574,7 @@ describe('ApiClient', () => {
           expect(request.headers.get('Authorization')).toBe('Bearer token');
           expect(request.headers.get('X-Custom')).toBe('value');
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/todos', {
@@ -597,7 +587,7 @@ describe('ApiClient', () => {
         http.post(`${BASE_URL}/api/${API_VERSION}/upload`, ({ request }) => {
           expect(request.headers.get('Content-Type')).toBe('multipart/form-data');
           return HttpResponse.json({ success: true });
-        })
+        }),
       );
 
       await client.post('/upload', null, {
@@ -609,9 +599,10 @@ describe('ApiClient', () => {
   describe('Edge cases', () => {
     it('should handle empty response body', async () => {
       server.use(
-        http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
-          new HttpResponse('', { status: 200 })
-        )
+        http.get(
+          `${BASE_URL}/api/${API_VERSION}/todos`,
+          () => new HttpResponse('', { status: 200 }),
+        ),
       );
 
       const result = await client.get('/todos');
@@ -620,12 +611,14 @@ describe('ApiClient', () => {
 
     it('should handle non-JSON response for errors', async () => {
       server.use(
-        http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
-          new HttpResponse('Internal Server Error', {
-            status: 500,
-            headers: { 'Content-Type': 'text/plain' },
-          })
-        )
+        http.get(
+          `${BASE_URL}/api/${API_VERSION}/todos`,
+          () =>
+            new HttpResponse('Internal Server Error', {
+              status: 500,
+              headers: { 'Content-Type': 'text/plain' },
+            }),
+        ),
       );
 
       await expect(client.get('/todos')).rejects.toMatchObject({
@@ -637,9 +630,7 @@ describe('ApiClient', () => {
 
     it('should handle endpoint with leading slash', async () => {
       server.use(
-        http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
-          HttpResponse.json({ data: [] })
-        )
+        http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () => HttpResponse.json({ data: [] })),
       );
 
       await expect(client.get('/todos')).resolves.toBeDefined();
@@ -647,9 +638,7 @@ describe('ApiClient', () => {
 
     it('should handle endpoint without leading slash', async () => {
       server.use(
-        http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () =>
-          HttpResponse.json({ data: [] })
-        )
+        http.get(`${BASE_URL}/api/${API_VERSION}/todos`, () => HttpResponse.json({ data: [] })),
       );
 
       // Note: This assumes the client doesn't require leading slash
@@ -663,7 +652,7 @@ describe('ApiClient', () => {
           expect(url.searchParams.get('completed')).toBe('true');
           expect(url.searchParams.get('archived')).toBe('false');
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/todos', {
@@ -678,7 +667,7 @@ describe('ApiClient', () => {
           expect(url.searchParams.get('page')).toBe('0');
           expect(url.searchParams.get('limit')).toBe('50');
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       await client.get('/todos', {

@@ -27,7 +27,7 @@ export function useDndSensors() {
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
-    })
+    }),
   );
 }
 

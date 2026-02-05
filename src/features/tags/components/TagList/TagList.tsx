@@ -49,14 +49,18 @@ export function TagList({ workspaceId }: TagListProps) {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setEditingTag(tag)}
+              onClick={() => {
+                setEditingTag(tag);
+              }}
             >
               {t('actions.edit', { ns: 'common' })}
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setDeletingTagId(tag.id)}
+              onClick={() => {
+                setDeletingTagId(tag.id);
+              }}
               disabled={deleteMutation.isPending}
             >
               {t('actions.delete', { ns: 'common' })}
@@ -68,7 +72,9 @@ export function TagList({ workspaceId }: TagListProps) {
       {editingTag && (
         <TagEditModal
           tag={editingTag}
-          onClose={() => setEditingTag(null)}
+          onClose={() => {
+            setEditingTag(null);
+          }}
         />
       )}
 
@@ -76,14 +82,18 @@ export function TagList({ workspaceId }: TagListProps) {
         <ConfirmationDialog
           isOpen
           title={t('list.deleteTitle')}
-          message={t('list.deleteMessage', { name: tags.find((tg) => tg.id === deletingTagId)?.name })}
+          message={t('list.deleteMessage', {
+            name: tags.find((tg) => tg.id === deletingTagId)?.name,
+          })}
           confirmLabel={t('actions.delete', { ns: 'common' })}
           variant="danger"
           onConfirm={() => {
             deleteMutation.mutate(deletingTagId);
             setDeletingTagId(null);
           }}
-          onCancel={() => setDeletingTagId(null)}
+          onCancel={() => {
+            setDeletingTagId(null);
+          }}
         />
       )}
     </div>

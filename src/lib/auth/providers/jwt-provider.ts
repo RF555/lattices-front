@@ -21,14 +21,14 @@ interface AuthResponse {
  */
 function getExpiresAt(accessToken: string, expiresIn?: number): number {
   try {
-    const payload = JSON.parse(atob(accessToken.split('.')[1]));
-    if (payload.exp) {
+    const payload = JSON.parse(atob(accessToken.split('.')[1])) as Record<string, unknown>;
+    if (typeof payload.exp === 'number') {
       return payload.exp * 1000;
     }
   } catch {
     // Invalid JWT format, fall through
   }
-  const seconds = expiresIn || 30 * 60;
+  const seconds = expiresIn ?? 30 * 60;
   return Date.now() + seconds * 1000;
 }
 
@@ -108,11 +108,13 @@ export class JwtAuthProvider implements IAuthProvider {
       const raw = localStorage.getItem('auth-storage');
       if (!raw) return null;
 
-      const parsed = JSON.parse(raw);
-      const tokens = parsed?.state?.tokens;
+      const parsed = JSON.parse(raw) as Record<string, unknown>;
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive: JSON.parse may return null
+      const state = parsed?.state as Record<string, unknown> | undefined;
+      const tokens = state?.tokens as AuthTokens | undefined;
       if (!tokens?.accessToken) return null;
 
-      return tokens as AuthTokens;
+      return tokens;
     } catch {
       return null;
     }

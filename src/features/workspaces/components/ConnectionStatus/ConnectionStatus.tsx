@@ -33,15 +33,11 @@ export function ConnectionStatus() {
         'inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium',
         isConnecting
           ? 'bg-yellow-50 text-yellow-700 border border-yellow-200'
-          : 'bg-red-50 text-red-700 border border-red-200'
+          : 'bg-red-50 text-red-700 border border-red-200',
       )}
       title={t(`realtime.status.${status}`)}
     >
-      {isConnecting ? (
-        <Wifi className="h-3 w-3 animate-pulse" />
-      ) : (
-        <WifiOff className="h-3 w-3" />
-      )}
+      {isConnecting ? <Wifi className="h-3 w-3 animate-pulse" /> : <WifiOff className="h-3 w-3" />}
       <span>{t(`realtime.status.${status}`)}</span>
     </div>
   );

@@ -60,11 +60,11 @@ export const invitationApi = {
   async createInvitation(
     workspaceId: string,
     email: string,
-    role: WorkspaceRole
+    role: WorkspaceRole,
   ): Promise<InvitationCreatedResult> {
     const response = await apiClient.post<ApiInvitationCreatedResponse>(
       `/workspaces/${workspaceId}/invitations`,
-      { email, role }
+      { email, role },
     );
     return {
       invitation: mapInvitation(response.data),
@@ -74,7 +74,7 @@ export const invitationApi = {
 
   async getWorkspaceInvitations(workspaceId: string): Promise<Invitation[]> {
     const response = await apiClient.get<ListResponse<ApiInvitation>>(
-      `/workspaces/${workspaceId}/invitations`
+      `/workspaces/${workspaceId}/invitations`,
     );
     return response.data.map(mapInvitation);
   },
@@ -84,16 +84,15 @@ export const invitationApi = {
   },
 
   async acceptInvitation(token: string): Promise<AcceptInvitationResult> {
-    const response = await apiClient.post<ApiAcceptInvitationResponse>(
-      '/invitations/accept',
-      { token }
-    );
+    const response = await apiClient.post<ApiAcceptInvitationResponse>('/invitations/accept', {
+      token,
+    });
     return mapAcceptResponse(response);
   },
 
   async acceptInvitationById(invitationId: string): Promise<AcceptInvitationResult> {
     const response = await apiClient.post<ApiAcceptInvitationResponse>(
-      `/invitations/${invitationId}/accept`
+      `/invitations/${invitationId}/accept`,
     );
     return mapAcceptResponse(response);
   },

@@ -82,7 +82,7 @@ describe('TagFilter', () => {
         http.get(`${API_URL}/tags`, ({ request }) => {
           capturedUrl = request.url;
           return HttpResponse.json({ data: workspaceATags });
-        })
+        }),
       );
 
       useWorkspaceUiStore.setState({
@@ -105,7 +105,7 @@ describe('TagFilter', () => {
       server.use(
         http.get(`${API_URL}/tags`, () => {
           return HttpResponse.json({ data: workspaceATags });
-        })
+        }),
       );
 
       useWorkspaceUiStore.setState({
@@ -130,7 +130,7 @@ describe('TagFilter', () => {
         http.get(`${API_URL}/tags`, ({ request }) => {
           capturedUrl = request.url;
           return HttpResponse.json({ data: allTags });
-        })
+        }),
       );
 
       // "All Workspaces" = null activeWorkspaceId + explicit selection
@@ -162,7 +162,7 @@ describe('TagFilter', () => {
             return HttpResponse.json({ data: workspaceBTags });
           }
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       useWorkspaceUiStore.setState({
@@ -186,7 +186,7 @@ describe('TagFilter', () => {
       server.use(
         http.get(`${API_URL}/tags`, () => {
           return HttpResponse.json({ data: [] });
-        })
+        }),
       );
 
       const { container } = render(<TagFilter />);
@@ -201,7 +201,7 @@ describe('TagFilter', () => {
       server.use(
         http.get(`${API_URL}/tags`, () => {
           return HttpResponse.json({ data: workspaceATags });
-        })
+        }),
       );
 
       useWorkspaceUiStore.setState({
@@ -223,7 +223,7 @@ describe('TagFilter', () => {
       server.use(
         http.get(`${API_URL}/tags`, () => {
           return HttpResponse.json({ data: workspaceATags });
-        })
+        }),
       );
 
       useWorkspaceUiStore.setState({
@@ -284,7 +284,7 @@ describe('TagFilter', () => {
       server.use(
         http.get(`${API_URL}/tags`, () => {
           return HttpResponse.json({ data: workspaceATags });
-        })
+        }),
       );
 
       useWorkspaceUiStore.setState({

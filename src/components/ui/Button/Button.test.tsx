@@ -100,7 +100,7 @@ describe('Button', () => {
       render(
         <Button isLoading onClick={handleClick}>
           Submit
-        </Button>
+        </Button>,
       );
 
       await user.click(screen.getByRole('button'));
@@ -126,7 +126,7 @@ describe('Button', () => {
       render(
         <Button disabled onClick={handleClick}>
           Disabled
-        </Button>
+        </Button>,
       );
 
       await user.click(screen.getByRole('button'));
@@ -151,7 +151,7 @@ describe('Button', () => {
       render(
         <Button type="submit" name="submit-btn" data-testid="custom-button">
           Submit
-        </Button>
+        </Button>,
       );
       const button = screen.getByTestId('custom-button');
       expect(button).toHaveAttribute('type', 'submit');
@@ -197,7 +197,7 @@ describe('Button', () => {
       render(
         <Button variant="danger" size="lg">
           Large Danger
-        </Button>
+        </Button>,
       );
       const button = screen.getByRole('button');
       expect(button).toHaveClass('bg-red-600', 'text-base', 'px-6', 'py-3');
@@ -207,7 +207,7 @@ describe('Button', () => {
       render(
         <Button variant="secondary" isLoading>
           Loading Secondary
-        </Button>
+        </Button>,
       );
       const button = screen.getByRole('button');
       expect(button).toHaveClass('bg-gray-100');
@@ -219,7 +219,7 @@ describe('Button', () => {
       render(
         <Button variant="primary" size="sm" disabled className="mt-4">
           Complete
-        </Button>
+        </Button>,
       );
       const button = screen.getByRole('button');
       expect(button).toHaveClass('bg-primary', 'text-sm', 'px-3', 'mt-4');

@@ -1,6 +1,15 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router';
-import { ChevronDown, Check, Plus, Users, UsersRound, Activity, Settings, Layers } from 'lucide-react';
+import {
+  ChevronDown,
+  Check,
+  Plus,
+  Users,
+  UsersRound,
+  Activity,
+  Settings,
+  Layers,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 import { useActiveWorkspace } from '../../hooks/useActiveWorkspace';
@@ -27,40 +36,40 @@ export function WorkspaceSwitcher({ onCreateWorkspace }: WorkspaceSwitcherProps)
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [isOpen, handleClickOutside]);
 
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setIsOpen(false);
-      }
-    },
-    []
-  );
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setIsOpen(false);
+    }
+  }, []);
 
   if (isLoading) {
-    return (
-      <div className="h-8 w-32 animate-pulse rounded-md bg-gray-200" />
-    );
+    return <div className="h-8 w-32 animate-pulse rounded-md bg-gray-200" />;
   }
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- keyDown handler only closes dropdown on Escape
     <div ref={dropdownRef} className="relative" onKeyDown={handleKeyDown}>
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
         className={cn(
           'flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-1.5',
           'text-sm font-medium text-gray-700 hover:bg-gray-50',
           'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1',
-          'transition-colors'
+          'transition-colors',
         )}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
         <span className="max-w-[140px] truncate">
-          {isAllWorkspaces ? t('allWorkspaces') : (activeWorkspace?.name || t('selectWorkspace'))}
+          {isAllWorkspaces ? t('allWorkspaces') : activeWorkspace?.name || t('selectWorkspace')}
         </span>
         <ChevronDown
           className={cn('h-4 w-4 text-gray-400 transition-transform', isOpen && 'rotate-180')}
@@ -81,29 +90,25 @@ export function WorkspaceSwitcher({ onCreateWorkspace }: WorkspaceSwitcherProps)
             className={cn(
               'flex w-full items-center justify-between px-3 py-2 text-left text-sm',
               'hover:bg-gray-50 transition-colors',
-              isAllWorkspaces && 'bg-gray-50'
+              isAllWorkspaces && 'bg-gray-50',
             )}
             onClick={() => {
               setActiveWorkspace(null);
               setIsOpen(false);
-              navigate('/app');
+              void navigate('/app');
             }}
           >
             <div className="flex items-center gap-2 min-w-0 flex-1">
               <Layers className="h-4 w-4 shrink-0 text-gray-500" />
               <div className="flex flex-col min-w-0">
-                <span className="truncate font-medium text-gray-900">
-                  {t('allWorkspaces')}
-                </span>
+                <span className="truncate font-medium text-gray-900">{t('allWorkspaces')}</span>
                 <span className="truncate text-xs text-gray-500">
                   {t('allWorkspacesDescription')}
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-2 ml-2 shrink-0">
-              {isAllWorkspaces && (
-                <Check className="h-4 w-4 text-primary" />
-              )}
+              {isAllWorkspaces && <Check className="h-4 w-4 text-primary" />}
             </div>
           </button>
 
@@ -118,22 +123,18 @@ export function WorkspaceSwitcher({ onCreateWorkspace }: WorkspaceSwitcherProps)
               className={cn(
                 'flex w-full items-center justify-between px-3 py-2 text-left text-sm',
                 'hover:bg-gray-50 transition-colors',
-                !isAllWorkspaces && workspace.id === activeWorkspace?.id && 'bg-gray-50'
+                !isAllWorkspaces && workspace.id === activeWorkspace?.id && 'bg-gray-50',
               )}
               onClick={() => {
                 setActiveWorkspace(workspace.id);
                 setIsOpen(false);
-                navigate('/app');
+                void navigate('/app');
               }}
             >
               <div className="flex flex-col min-w-0 flex-1">
-                <span className="truncate font-medium text-gray-900">
-                  {workspace.name}
-                </span>
+                <span className="truncate font-medium text-gray-900">{workspace.name}</span>
                 {workspace.description && (
-                  <span className="truncate text-xs text-gray-500">
-                    {workspace.description}
-                  </span>
+                  <span className="truncate text-xs text-gray-500">{workspace.description}</span>
                 )}
               </div>
               <div className="flex items-center gap-2 ml-2 shrink-0">
@@ -160,7 +161,7 @@ export function WorkspaceSwitcher({ onCreateWorkspace }: WorkspaceSwitcherProps)
                   type="button"
                   className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-sm text-gray-600 hover:bg-gray-50 transition-colors"
                   onClick={() => {
-                    navigate(`/app/workspaces/${activeWorkspace.id}/${path}`);
+                    void navigate(`/app/workspaces/${activeWorkspace.id}/${path}`);
                     setIsOpen(false);
                   }}
                 >

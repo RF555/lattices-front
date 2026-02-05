@@ -104,7 +104,7 @@ export const useTodoUiStore = create<TodoUiStore>()(
             ...current,
             ...persistedState,
             expandedIds: new Set(
-              Array.isArray(persistedState.expandedIds) ? persistedState.expandedIds : []
+              Array.isArray(persistedState.expandedIds) ? persistedState.expandedIds : [],
             ),
           };
         } catch {
@@ -112,8 +112,8 @@ export const useTodoUiStore = create<TodoUiStore>()(
           return current;
         }
       },
-    }
-  )
+    },
+  ),
 );
 
 // Selector hooks
@@ -126,5 +126,5 @@ export const useTodoFilters = () =>
     useShallow((state) => ({
       searchQuery: state.searchQuery,
       filterTagIds: state.filterTagIds,
-    }))
+    })),
   );

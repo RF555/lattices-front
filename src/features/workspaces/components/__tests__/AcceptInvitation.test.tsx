@@ -32,8 +32,9 @@ vi.mock('../../hooks/useInvitations', () => ({
 }));
 
 vi.mock('../../stores/workspaceUiStore', () => ({
-  useWorkspaceUiStore: vi.fn((selector: (state: { setActiveWorkspace: typeof mockSetActiveWorkspace }) => unknown) =>
-    selector({ setActiveWorkspace: mockSetActiveWorkspace })
+  useWorkspaceUiStore: vi.fn(
+    (selector: (state: { setActiveWorkspace: typeof mockSetActiveWorkspace }) => unknown) =>
+      selector({ setActiveWorkspace: mockSetActiveWorkspace }),
   ),
 }));
 
@@ -48,10 +49,9 @@ describe('AcceptInvitation', () => {
     mockIsAuthenticated = false;
     render(<AcceptInvitation />);
 
-    expect(mockNavigate).toHaveBeenCalledWith(
-      '/auth/login?redirect=/invite?token=valid-token',
-      { replace: true }
-    );
+    expect(mockNavigate).toHaveBeenCalledWith('/auth/login?redirect=/invite?token=valid-token', {
+      replace: true,
+    });
   });
 
   it('should show error when no token is provided', () => {
@@ -72,7 +72,7 @@ describe('AcceptInvitation', () => {
       expect.objectContaining({
         onSuccess: expect.any(Function),
         onError: expect.any(Function),
-      })
+      }),
     );
   });
 

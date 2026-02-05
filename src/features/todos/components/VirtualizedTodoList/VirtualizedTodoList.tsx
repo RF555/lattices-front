@@ -14,7 +14,7 @@ export function VirtualizedTodoList() {
   // Flatten the tree structure respecting expansion state
   const visibleItems = useMemo(
     () => flattenTodoTree(treeTodos, expandedIds),
-    [treeTodos, expandedIds]
+    [treeTodos, expandedIds],
   );
 
   const virtualizer = useVirtualizer({
@@ -25,11 +25,7 @@ export function VirtualizedTodoList() {
   });
 
   return (
-    <div
-      ref={parentRef}
-      className="h-[600px] overflow-auto"
-      role="tree"
-    >
+    <div ref={parentRef} className="h-[600px] overflow-auto" role="tree">
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,

@@ -8,6 +8,14 @@ import type { ActivityEntry } from '../../types/activity';
 
 const PAGE_SIZE = 20;
 
+/** Safely render an unknown change value as a display string */
+function displayValue(value: unknown): string {
+  if (value == null) return '-';
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value);
+  return JSON.stringify(value);
+}
+
 interface ActivityFeedProps {
   workspaceId: string;
 }
@@ -26,9 +34,7 @@ export function ActivityFeed({ workspaceId }: ActivityFeedProps) {
   }
 
   if (!activities || activities.length === 0) {
-    return (
-      <p className="text-sm text-gray-500 text-center py-8">{t('activity.empty')}</p>
-    );
+    return <p className="text-sm text-gray-500 text-center py-8">{t('activity.empty')}</p>;
   }
 
   const getInitials = (entry: ActivityEntry) => {
@@ -53,9 +59,7 @@ export function ActivityFeed({ workspaceId }: ActivityFeedProps) {
                 </div>
               )}
               <div className="min-w-0 flex-1">
-                <p className="text-sm text-gray-900">
-                  {formatAction(entry, t)}
-                </p>
+                <p className="text-sm text-gray-900">{formatAction(entry, t)}</p>
                 <p className="text-xs text-gray-500 mt-0.5">
                   {formatRelativeTime(entry.createdAt, t)}
                 </p>
@@ -65,12 +69,9 @@ export function ActivityFeed({ workspaceId }: ActivityFeedProps) {
                       <div key={field}>
                         <span className="font-medium">{field}</span>:{' '}
                         <span className="line-through text-red-400">
-                          {String(change.old || '-')}
+                          {displayValue(change.old)}
                         </span>{' '}
-                        &rarr;{' '}
-                        <span className="text-green-600">
-                          {String(change.new || '-')}
-                        </span>
+                        &rarr; <span className="text-green-600">{displayValue(change.new)}</span>
                       </div>
                     ))}
                   </div>
@@ -86,7 +87,9 @@ export function ActivityFeed({ workspaceId }: ActivityFeedProps) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setLimit((prev) => prev + PAGE_SIZE)}
+            onClick={() => {
+              setLimit((prev) => prev + PAGE_SIZE);
+            }}
           >
             {t('activity.loadMore')}
           </Button>

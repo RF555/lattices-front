@@ -28,7 +28,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     expect(screen.getByText(/John Doe completed "Fix bug"/i)).toBeInTheDocument();
@@ -45,7 +45,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     // Check for blue dot indicator (has bg-blue-500 class)
@@ -65,7 +65,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     const indicator = container.querySelector('.bg-blue-500');
@@ -86,7 +86,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     // Avatar has alt="" so it's presentation role, use container query
@@ -108,7 +108,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     expect(screen.getByText('JO')).toBeInTheDocument();
@@ -127,7 +127,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     expect(screen.getByText('?')).toBeInTheDocument();
@@ -144,7 +144,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     // The exact text depends on formatRelativeTime, but it should show some time indicator
@@ -168,7 +168,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     // Click the notification
@@ -196,7 +196,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     await user.click(screen.getByText(/John completed "Test"/i));
@@ -215,7 +215,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     const dismissButton = screen.getByLabelText(/dismiss/i);
@@ -235,7 +235,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     const dismissButton = screen.getByLabelText(/dismiss/i);
@@ -273,7 +273,7 @@ describe('NotificationItem', () => {
           onRead={mockOnRead}
           onDelete={mockOnDelete}
           onClick={mockOnClick}
-        />
+        />,
       );
 
       expect(screen.getByText(expectedText)).toBeInTheDocument();
@@ -296,7 +296,7 @@ describe('NotificationItem', () => {
         onRead={mockOnRead}
         onDelete={mockOnDelete}
         onClick={mockOnClick}
-      />
+      />,
     );
 
     // Should still render with fallback values (i18n handles this)

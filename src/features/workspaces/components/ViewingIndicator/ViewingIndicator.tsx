@@ -41,7 +41,7 @@ export function ViewingIndicator({ viewers, className }: ViewingIndicatorProps) 
             >
               {viewer.displayName.slice(0, 1).toUpperCase()}
             </div>
-          )
+          ),
         )}
         {viewers.length > 3 && (
           <div className="h-4 w-4 rounded-full border border-white bg-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-600">

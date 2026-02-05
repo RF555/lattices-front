@@ -35,7 +35,7 @@ export const activityApi = {
   async getWorkspaceActivity(
     workspaceId: string,
     limit?: number,
-    offset?: number
+    offset?: number,
   ): Promise<ActivityEntry[]> {
     const params: Record<string, string | number | boolean | undefined> = {};
     if (limit !== undefined) params.limit = limit;
@@ -43,7 +43,7 @@ export const activityApi = {
 
     const response = await apiClient.get<ListResponse<ApiActivityEntry>>(
       `/workspaces/${workspaceId}/activity`,
-      { params }
+      { params },
     );
     return response.data.map(mapActivity);
   },
@@ -51,11 +51,11 @@ export const activityApi = {
   async getEntityHistory(
     workspaceId: string,
     entityType: string,
-    entityId: string
+    entityId: string,
   ): Promise<ActivityEntry[]> {
     const response = await apiClient.get<ListResponse<ApiActivityEntry>>(
       `/workspaces/${workspaceId}/activity`,
-      { params: { entity_type: entityType, entity_id: entityId } }
+      { params: { entity_type: entityType, entity_id: entityId } },
     );
     return response.data.map(mapActivity);
   },

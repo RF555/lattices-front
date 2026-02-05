@@ -8,7 +8,7 @@ export function useWorkspaceInvitations(workspaceId: string) {
   return useQuery({
     queryKey: queryKeys.workspaces.invitations(workspaceId),
     queryFn: () => invitationApi.getWorkspaceInvitations(workspaceId),
-    enabled: !!workspaceId,
+    enabled: workspaceId.length > 0,
   });
 }
 
@@ -27,7 +27,7 @@ export function useCreateInvitation() {
     }) => invitationApi.createInvitation(workspaceId, email, role),
 
     onSuccess: (_, { workspaceId }) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.workspaces.invitations(workspaceId),
       });
     },
@@ -38,16 +38,11 @@ export function useRevokeInvitation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      workspaceId,
-      invitationId,
-    }: {
-      workspaceId: string;
-      invitationId: string;
-    }) => invitationApi.revokeInvitation(workspaceId, invitationId),
+    mutationFn: ({ workspaceId, invitationId }: { workspaceId: string; invitationId: string }) =>
+      invitationApi.revokeInvitation(workspaceId, invitationId),
 
     onSuccess: (_, { workspaceId }) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.workspaces.invitations(workspaceId),
       });
       toast.success('Invitation revoked');
@@ -62,8 +57,8 @@ export function useAcceptInvitation() {
     mutationFn: (token: string) => invitationApi.acceptInvitation(token),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.invitations.pending() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.invitations.pending() });
       toast.success('Invitation accepted! Welcome to the workspace.');
     },
   });
@@ -76,8 +71,8 @@ export function useAcceptInvitationById() {
     mutationFn: (invitationId: string) => invitationApi.acceptInvitationById(invitationId),
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.invitations.pending() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.invitations.pending() });
       toast.success('Invitation accepted! Welcome to the workspace.');
     },
   });

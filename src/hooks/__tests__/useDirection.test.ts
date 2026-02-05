@@ -25,7 +25,9 @@ describe('useDirection', () => {
   it('should return ltr direction for English language', async () => {
     await i18n.changeLanguage('en');
 
-    renderHook(() => useDirection());
+    renderHook(() => {
+      useDirection();
+    });
 
     expect(document.documentElement.dir).toBe('ltr');
     expect(document.documentElement.lang).toBe('en');
@@ -34,7 +36,9 @@ describe('useDirection', () => {
   it('should return rtl direction for Hebrew language', async () => {
     await i18n.changeLanguage('he');
 
-    renderHook(() => useDirection());
+    renderHook(() => {
+      useDirection();
+    });
 
     expect(document.documentElement.dir).toBe('rtl');
     expect(document.documentElement.lang).toBe('he');
@@ -43,7 +47,9 @@ describe('useDirection', () => {
   it('should update direction when language changes from en to he', async () => {
     // Start with English
     await i18n.changeLanguage('en');
-    const { rerender } = renderHook(() => useDirection());
+    const { rerender } = renderHook(() => {
+      useDirection();
+    });
 
     expect(document.documentElement.dir).toBe('ltr');
     expect(document.documentElement.lang).toBe('en');
@@ -59,7 +65,9 @@ describe('useDirection', () => {
   it('should update direction when language changes from he to en', async () => {
     // Start with Hebrew
     await i18n.changeLanguage('he');
-    const { rerender } = renderHook(() => useDirection());
+    const { rerender } = renderHook(() => {
+      useDirection();
+    });
 
     expect(document.documentElement.dir).toBe('rtl');
     expect(document.documentElement.lang).toBe('he');
@@ -75,7 +83,9 @@ describe('useDirection', () => {
   it('should set dir attribute on html element', async () => {
     await i18n.changeLanguage('en');
 
-    renderHook(() => useDirection());
+    renderHook(() => {
+      useDirection();
+    });
 
     const htmlElement = document.documentElement;
     expect(htmlElement.hasAttribute('dir')).toBe(true);
@@ -85,7 +95,9 @@ describe('useDirection', () => {
   it('should set lang attribute on html element', async () => {
     await i18n.changeLanguage('en');
 
-    renderHook(() => useDirection());
+    renderHook(() => {
+      useDirection();
+    });
 
     const htmlElement = document.documentElement;
     expect(htmlElement.hasAttribute('lang')).toBe(true);
@@ -93,7 +105,9 @@ describe('useDirection', () => {
   });
 
   it('should handle multiple language switches', async () => {
-    const { rerender } = renderHook(() => useDirection());
+    const { rerender } = renderHook(() => {
+      useDirection();
+    });
 
     // Switch to English
     await i18n.changeLanguage('en');
@@ -118,7 +132,9 @@ describe('useDirection', () => {
     // Set language before rendering hook
     await i18n.changeLanguage('he');
 
-    renderHook(() => useDirection());
+    renderHook(() => {
+      useDirection();
+    });
 
     // Should immediately set correct direction
     expect(document.documentElement.dir).toBe('rtl');
@@ -128,13 +144,17 @@ describe('useDirection', () => {
   it('should use i18n.dir() to determine direction', async () => {
     // English uses ltr
     await i18n.changeLanguage('en');
-    renderHook(() => useDirection());
+    renderHook(() => {
+      useDirection();
+    });
     expect(i18n.dir()).toBe('ltr');
     expect(document.documentElement.dir).toBe('ltr');
 
     // Hebrew uses rtl
     await i18n.changeLanguage('he');
-    const { rerender: rerenderHe } = renderHook(() => useDirection());
+    const { rerender: rerenderHe } = renderHook(() => {
+      useDirection();
+    });
     rerenderHe();
     expect(i18n.dir()).toBe('rtl');
     expect(document.documentElement.dir).toBe('rtl');
@@ -144,7 +164,9 @@ describe('useDirection', () => {
     // This is a safety test - in practice, resolvedLanguage should always be set
     await i18n.changeLanguage('en');
 
-    renderHook(() => useDirection());
+    renderHook(() => {
+      useDirection();
+    });
 
     // Even if resolvedLanguage is undefined, the hook defaults to 'en'
     expect(document.documentElement.lang).toBe('en');

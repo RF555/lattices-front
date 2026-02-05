@@ -251,7 +251,7 @@ describe('RegisterForm', () => {
         () =>
           new Promise<void>((resolve) => {
             resolveRegister = resolve;
-          })
+          }),
       );
 
       useAuthStore.setState({ register: mockRegister, isLoading: false });
@@ -356,13 +356,10 @@ describe('RegisterForm', () => {
 
       expect(screen.getByLabelText(/name \(optional\)/i)).toHaveAttribute('autocomplete', 'name');
       expect(screen.getByLabelText(/^email$/i)).toHaveAttribute('autocomplete', 'email');
-      expect(screen.getByLabelText(/^password$/i)).toHaveAttribute(
-        'autocomplete',
-        'new-password'
-      );
+      expect(screen.getByLabelText(/^password$/i)).toHaveAttribute('autocomplete', 'new-password');
       expect(screen.getByLabelText(/confirm password/i)).toHaveAttribute(
         'autocomplete',
-        'new-password'
+        'new-password',
       );
     });
 

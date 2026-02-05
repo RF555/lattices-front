@@ -52,13 +52,22 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
   const availableMembers = workspaceMembers?.filter((wm) => !memberIds.has(wm.userId)) || [];
 
   const handleAddMember = (userId: string) => {
-    addMember.mutate({ userId }, { onSuccess: () => setShowAddMember(false) });
+    addMember.mutate(
+      { userId },
+      {
+        onSuccess: () => {
+          setShowAddMember(false);
+        },
+      },
+    );
   };
 
   const handleRemoveMember = () => {
     if (!confirmRemove) return;
     removeMember.mutate(confirmRemove.userId, {
-      onSuccess: () => setConfirmRemove(null),
+      onSuccess: () => {
+        setConfirmRemove(null);
+      },
     });
   };
 
@@ -68,19 +77,25 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
       <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={() => navigate(`/workspaces/${workspaceId}/groups`)}
+          onClick={() => {
+            void navigate(`/workspaces/${workspaceId}/groups`);
+          }}
           className="text-gray-400 hover:text-gray-600 transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
         <div className="flex-1 min-w-0">
           <h2 className="text-xl font-semibold text-gray-900">{group.name}</h2>
-          {group.description && (
-            <p className="text-sm text-gray-500 mt-0.5">{group.description}</p>
-          )}
+          {group.description && <p className="text-sm text-gray-500 mt-0.5">{group.description}</p>}
         </div>
         {canManageMembers && (
-          <Button variant="ghost" size="sm" onClick={() => setShowEdit(true)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setShowEdit(true);
+            }}
+          >
             <Pencil className="h-4 w-4 mr-1" />
             {t('groups.edit')}
           </Button>
@@ -92,7 +107,13 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-medium text-gray-700">{t('groups.members')}</h3>
           {canManageMembers && (
-            <Button variant="ghost" size="sm" onClick={() => setShowAddMember(true)}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setShowAddMember(true);
+              }}
+            >
               <UserPlus className="h-4 w-4 mr-1" />
               {t('groups.addMember')}
             </Button>
@@ -130,7 +151,9 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
                 {canManageMembers && (
                   <button
                     type="button"
-                    onClick={() => setConfirmRemove(member)}
+                    onClick={() => {
+                      setConfirmRemove(member);
+                    }}
                     className="text-gray-400 hover:text-red-500 transition-colors p-1"
                     aria-label={t('groups.removeMember')}
                   >
@@ -146,7 +169,9 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
       {/* Edit Group Dialog */}
       <GroupManageDialog
         isOpen={showEdit}
-        onClose={() => setShowEdit(false)}
+        onClose={() => {
+          setShowEdit(false);
+        }}
         workspaceId={workspaceId}
         group={group}
       />
@@ -154,11 +179,15 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
       {/* Add Member Dialog */}
       <Modal
         isOpen={showAddMember}
-        onClose={() => setShowAddMember(false)}
+        onClose={() => {
+          setShowAddMember(false);
+        }}
         title={t('groups.addMember')}
       >
         {availableMembers.length === 0 ? (
-          <p className="text-sm text-gray-500 py-4">All workspace members are already in this group.</p>
+          <p className="text-sm text-gray-500 py-4">
+            All workspace members are already in this group.
+          </p>
         ) : (
           <div className="max-h-60 overflow-y-auto divide-y divide-gray-100">
             {availableMembers.map((wm) => (
@@ -166,14 +195,12 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
                 key={wm.userId}
                 type="button"
                 className="flex w-full items-center gap-3 px-2 py-2 hover:bg-gray-50 rounded transition-colors"
-                onClick={() => handleAddMember(wm.userId)}
+                onClick={() => {
+                  handleAddMember(wm.userId);
+                }}
               >
                 {wm.avatarUrl ? (
-                  <img
-                    src={wm.avatarUrl}
-                    alt=""
-                    className="h-7 w-7 rounded-full object-cover"
-                  />
+                  <img src={wm.avatarUrl} alt="" className="h-7 w-7 rounded-full object-cover" />
                 ) : (
                   <div className="h-7 w-7 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600">
                     {(wm.displayName || wm.email).slice(0, 2).toUpperCase()}
@@ -189,14 +216,22 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
       {/* Remove Member Confirmation */}
       <Modal
         isOpen={!!confirmRemove}
-        onClose={() => setConfirmRemove(null)}
+        onClose={() => {
+          setConfirmRemove(null);
+        }}
         title={t('groups.removeMember')}
       >
         <p className="text-sm text-gray-600 mb-4">
           Remove {confirmRemove?.displayName || confirmRemove?.email} from this group?
         </p>
         <div className="flex justify-end gap-2">
-          <Button variant="ghost" size="sm" onClick={() => setConfirmRemove(null)}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              setConfirmRemove(null);
+            }}
+          >
             {t('form.cancel')}
           </Button>
           <Button

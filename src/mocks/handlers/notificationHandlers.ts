@@ -108,7 +108,7 @@ let mockNotifications: MockNotification[] = [
   },
 ];
 
-let mockPreferences: MockNotificationPreference[] = [
+const mockPreferences: MockNotificationPreference[] = [
   {
     id: 'pref-1',
     channel: 'in_app',
@@ -209,7 +209,8 @@ export const notificationHandlers = [
     }
 
     const paginated = filtered.slice(startIndex, startIndex + limit);
-    const nextCursor = startIndex + limit < filtered.length ? paginated[paginated.length - 1].id : null;
+    const nextCursor =
+      startIndex + limit < filtered.length ? paginated[paginated.length - 1].id : null;
     const unreadCount = mockNotifications.filter((n) => !n.is_read).length;
 
     return HttpResponse.json({
@@ -263,7 +264,7 @@ export const notificationHandlers = [
   // Get workspace unread count
   http.get(`${API_URL}/workspaces/:workspaceId/notifications/unread-count`, ({ params }) => {
     const count = mockNotifications.filter(
-      (n) => n.workspace_id === params.workspaceId && !n.is_read
+      (n) => n.workspace_id === params.workspaceId && !n.is_read,
     ).length;
     return HttpResponse.json({
       data: { count },
@@ -276,7 +277,7 @@ export const notificationHandlers = [
     if (!notification) {
       return HttpResponse.json(
         { error_code: 'NOTIFICATION_NOT_FOUND', message: 'Notification not found' },
-        { status: 404 }
+        { status: 404 },
       );
     }
     notification.is_read = true;
@@ -285,23 +286,26 @@ export const notificationHandlers = [
   }),
 
   // Mark as unread
-  http.patch(`${API_URL}/workspaces/:workspaceId/notifications/:recipientId/unread`, ({ params }) => {
-    const notification = mockNotifications.find((n) => n.id === params.recipientId);
-    if (!notification) {
-      return HttpResponse.json(
-        { error_code: 'NOTIFICATION_NOT_FOUND', message: 'Notification not found' },
-        { status: 404 }
-      );
-    }
-    notification.is_read = false;
-    notification.read_at = null;
-    return new HttpResponse(null, { status: 204 });
-  }),
+  http.patch(
+    `${API_URL}/workspaces/:workspaceId/notifications/:recipientId/unread`,
+    ({ params }) => {
+      const notification = mockNotifications.find((n) => n.id === params.recipientId);
+      if (!notification) {
+        return HttpResponse.json(
+          { error_code: 'NOTIFICATION_NOT_FOUND', message: 'Notification not found' },
+          { status: 404 },
+        );
+      }
+      notification.is_read = false;
+      notification.read_at = null;
+      return new HttpResponse(null, { status: 204 });
+    },
+  ),
 
   // Mark all as read (workspace-scoped)
   http.post(`${API_URL}/workspaces/:workspaceId/notifications/mark-all-read`, ({ params }) => {
     const workspaceNotifications = mockNotifications.filter(
-      (n) => n.workspace_id === params.workspaceId
+      (n) => n.workspace_id === params.workspaceId,
     );
     let count = 0;
     const now = new Date().toISOString();
@@ -360,7 +364,7 @@ export const notificationHandlers = [
       (p) =>
         p.channel === body.channel &&
         p.workspace_id === (body.workspace_id || null) &&
-        p.notification_type === (body.notification_type || null)
+        p.notification_type === (body.notification_type || null),
     );
 
     if (existing) {

@@ -190,7 +190,7 @@ describe('NotificationPreferences', () => {
     expect(screen.getByText('General')).toBeInTheDocument();
     expect(screen.getByText('Show toast notifications')).toBeInTheDocument();
     expect(
-      screen.getByText('Display a brief toast when new notifications arrive')
+      screen.getByText('Display a brief toast when new notifications arrive'),
     ).toBeInTheDocument();
   });
 

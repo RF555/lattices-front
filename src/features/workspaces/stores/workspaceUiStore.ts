@@ -34,7 +34,8 @@ export const useWorkspaceUiStore = create<WorkspaceUiStore>()(
 
       toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
 
-      clearWorkspace: () => set({ activeWorkspaceId: null, _hasExplicitSelection: false, sidebarOpen: false }),
+      clearWorkspace: () =>
+        set({ activeWorkspaceId: null, _hasExplicitSelection: false, sidebarOpen: false }),
     }),
     {
       name: 'workspace-ui-storage',
@@ -43,14 +44,12 @@ export const useWorkspaceUiStore = create<WorkspaceUiStore>()(
         activeWorkspaceId: state.activeWorkspaceId,
         _hasExplicitSelection: state._hasExplicitSelection,
       }),
-    }
-  )
+    },
+  ),
 );
 
 // Selector hooks
-export const useActiveWorkspaceId = () =>
-  useWorkspaceUiStore((state) => state.activeWorkspaceId);
-export const useSidebarOpen = () =>
-  useWorkspaceUiStore((state) => state.sidebarOpen);
+export const useActiveWorkspaceId = () => useWorkspaceUiStore((state) => state.activeWorkspaceId);
+export const useSidebarOpen = () => useWorkspaceUiStore((state) => state.sidebarOpen);
 export const useIsAllWorkspaces = () =>
   useWorkspaceUiStore((state) => state.activeWorkspaceId === null && state._hasExplicitSelection);

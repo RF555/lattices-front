@@ -16,7 +16,9 @@ export default function MembersPage() {
       <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={() => navigate('/app')}
+          onClick={() => {
+            void navigate('/app');
+          }}
           className="text-gray-400 hover:text-gray-600 transition-colors"
         >
           <ArrowLeft className="h-5 w-5" />

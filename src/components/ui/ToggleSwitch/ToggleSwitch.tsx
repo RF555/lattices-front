@@ -49,7 +49,7 @@ export function ToggleSwitch({
         'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
         trackSize,
         checked ? 'bg-primary' : 'bg-gray-300',
-        disabled && 'cursor-not-allowed opacity-50'
+        disabled && 'cursor-not-allowed opacity-50',
       )}
     >
       <span
@@ -57,7 +57,7 @@ export function ToggleSwitch({
           'pointer-events-none inline-block transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out',
           thumbSize,
           'translate-y-0.5 translate-x-0.5',
-          checked && thumbTranslate
+          checked && thumbTranslate,
         )}
       />
     </button>

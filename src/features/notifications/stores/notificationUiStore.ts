@@ -38,13 +38,11 @@ export const useNotificationUiStore = create<NotificationUiStore>()(
       partialize: (state) => ({
         showToastOnNew: state.showToastOnNew,
       }),
-    }
-  )
+    },
+  ),
 );
 
 // Selector hooks
 export const usePanelOpen = () => useNotificationUiStore((state) => state.panelOpen);
-export const useShowToastOnNew = () =>
-  useNotificationUiStore((state) => state.showToastOnNew);
-export const usePanelFilter = () =>
-  useNotificationUiStore((state) => state.panelFilter);
+export const useShowToastOnNew = () => useNotificationUiStore((state) => state.showToastOnNew);
+export const usePanelFilter = () => useNotificationUiStore((state) => state.panelFilter);

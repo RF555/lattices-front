@@ -301,9 +301,7 @@ describe('createWorkspaceSchema', () => {
       const result = workspaceSchema.safeParse(invalidData);
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.errors[0].message).toBe(
-          'Description must be 200 characters or less'
-        );
+        expect(result.error.errors[0].message).toBe('Description must be 200 characters or less');
       }
     });
   });

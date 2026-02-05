@@ -32,11 +32,7 @@ export function OnlineIndicator({ onlineUsers, className }: OnlineIndicatorProps
           {onlineUsers.slice(0, 10).map((user) => (
             <div key={user.userId} className="flex items-center gap-2 py-0.5">
               {user.avatarUrl ? (
-                <img
-                  src={user.avatarUrl}
-                  alt=""
-                  className="h-4 w-4 rounded-full object-cover"
-                />
+                <img src={user.avatarUrl} alt="" className="h-4 w-4 rounded-full object-cover" />
               ) : (
                 <div className="h-4 w-4 rounded-full bg-gray-600 flex items-center justify-center text-[10px] font-medium">
                   {user.displayName.slice(0, 1).toUpperCase()}

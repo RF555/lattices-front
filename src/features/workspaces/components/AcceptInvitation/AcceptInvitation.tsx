@@ -26,7 +26,7 @@ export function AcceptInvitation() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate(`/auth/login?redirect=/invite?token=${token}`, { replace: true });
+      void navigate(`/auth/login?redirect=/invite?token=${token}`, { replace: true });
       return;
     }
 
@@ -51,15 +51,15 @@ export function AcceptInvitation() {
         }
       },
     });
-  // Only run once on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // Only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleGoToWorkspace = () => {
     if (workspaceId) {
       setActiveWorkspace(workspaceId);
     }
-    navigate('/app', { replace: true });
+    void navigate('/app', { replace: true });
   };
 
   return (
@@ -90,7 +90,12 @@ export function AcceptInvitation() {
           <>
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
             <p className="text-gray-600 mb-4">{errorMessage}</p>
-            <Button variant="secondary" onClick={() => navigate('/app', { replace: true })}>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                void navigate('/app', { replace: true });
+              }}
+            >
               {t('invitation.goToWorkspace')}
             </Button>
           </>

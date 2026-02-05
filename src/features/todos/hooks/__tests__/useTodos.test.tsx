@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { server } from '@/mocks/server';
 import { http, HttpResponse } from 'msw';
 import {
@@ -14,6 +14,7 @@ import {
   useToggleTodo,
   useMoveTodo,
 } from '../useTodos';
+import type { Todo } from '../../types/todo';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const API_VERSION = import.meta.env.VITE_API_VERSION || 'v1';
@@ -35,17 +36,35 @@ function createWrapper() {
 }
 
 /** Helper to create a mock todo for pre-populating cache (camelCase frontend shape) */
-function makeTodo(overrides: Partial<{
-  id: string; title: string; isCompleted: boolean; parentId: string | null;
-  position: number; description: string | null; completedAt: string | null;
-  childCount: number; completedChildCount: number;
-  tags: { id: string; name: string; colorHex: string }[];
-  createdAt: string; updatedAt: string;
-}> = {}) {
+function makeTodo(
+  overrides: Partial<{
+    id: string;
+    title: string;
+    isCompleted: boolean;
+    parentId: string | null;
+    position: number;
+    description: string | null;
+    completedAt: string | null;
+    childCount: number;
+    completedChildCount: number;
+    tags: { id: string; name: string; colorHex: string }[];
+    createdAt: string;
+    updatedAt: string;
+  }> = {},
+) {
   return {
-    id: '1', title: 'Task', isCompleted: false, parentId: null, position: 0,
-    description: null, completedAt: null, childCount: 0, completedChildCount: 0,
-    tags: [], createdAt: '2024-01-01T00:00:00Z', updatedAt: '2024-01-01T00:00:00Z',
+    id: '1',
+    title: 'Task',
+    isCompleted: false,
+    parentId: null,
+    position: 0,
+    description: null,
+    completedAt: null,
+    childCount: 0,
+    completedChildCount: 0,
+    tags: [],
+    createdAt: '2024-01-01T00:00:00Z',
+    updatedAt: '2024-01-01T00:00:00Z',
     ...overrides,
   };
 }
@@ -53,9 +72,18 @@ function makeTodo(overrides: Partial<{
 /** Helper to create a snake_case API response shape */
 function apiTodo(overrides: Record<string, unknown> = {}) {
   return {
-    id: 'new-1', title: 'New', is_completed: false, parent_id: null, position: 0,
-    description: null, completed_at: null, child_count: 0, completed_child_count: 0,
-    tags: [], created_at: '2024-01-01T00:00:00Z', updated_at: '2024-01-01T00:00:00Z',
+    id: 'new-1',
+    title: 'New',
+    is_completed: false,
+    parent_id: null,
+    position: 0,
+    description: null,
+    completed_at: null,
+    child_count: 0,
+    completed_child_count: 0,
+    tags: [],
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-01T00:00:00Z',
     ...overrides,
   };
 }
@@ -65,7 +93,9 @@ describe('useTodos', () => {
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useTodos(), { wrapper });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
 
     expect(result.current.data).toBeDefined();
     expect(Array.isArray(result.current.data)).toBe(true);
@@ -77,7 +107,9 @@ describe('useFlatTodos', () => {
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useFlatTodos(), { wrapper });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
 
     expect(result.current.data).toBeDefined();
     expect(Array.isArray(result.current.data)).toBe(true);
@@ -92,7 +124,9 @@ describe('useTodo', () => {
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useTodo('1'), { wrapper });
 
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBe(true);
+    });
 
     expect(result.current.data).toBeDefined();
     expect(result.current.data?.id).toBe('1');
@@ -112,10 +146,13 @@ describe('useCreateTodo', () => {
     server.use(
       http.post(`${API_URL}/todos`, async ({ request }) => {
         const body = (await request.json()) as Record<string, unknown>;
-        return HttpResponse.json({
-          data: apiTodo({ title: body.title, description: body.description }),
-        }, { status: 201 });
-      })
+        return HttpResponse.json(
+          {
+            data: apiTodo({ title: body.title, description: body.description }),
+          },
+          { status: 201 },
+        );
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -137,10 +174,13 @@ describe('useCreateTodo', () => {
     server.use(
       http.post(`${API_URL}/todos`, async ({ request }) => {
         const body = (await request.json()) as Record<string, unknown>;
-        return HttpResponse.json({
-          data: apiTodo({ title: body.title as string }),
-        }, { status: 201 });
-      })
+        return HttpResponse.json(
+          {
+            data: apiTodo({ title: body.title as string }),
+          },
+          { status: 201 },
+        );
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -156,7 +196,7 @@ describe('useCreateTodo', () => {
 
     // Check optimistic update was applied immediately
     await waitFor(() => {
-      const cached = queryClient.getQueryData(queryKey) as unknown[];
+      const cached = queryClient.getQueryData<Todo[]>(queryKey)!;
       // Either 2 (optimistic added) or more if refetch happened
       expect(cached?.length).toBeGreaterThanOrEqual(2);
     });
@@ -171,7 +211,7 @@ describe('useUpdateTodo', () => {
         return HttpResponse.json({
           data: apiTodo({ id: params.id as string, title: body.title as string }),
         });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
@@ -179,7 +219,10 @@ describe('useUpdateTodo', () => {
 
     let mutationResult: unknown;
     await act(async () => {
-      mutationResult = await result.current.mutateAsync({ id: '1', input: { title: 'Updated Title' } });
+      mutationResult = await result.current.mutateAsync({
+        id: '1',
+        input: { title: 'Updated Title' },
+      });
     });
 
     expect(mutationResult).toBeDefined();
@@ -192,7 +235,7 @@ describe('useUpdateTodo', () => {
         return HttpResponse.json({
           data: apiTodo({ id: params.id as string, title: body.title as string }),
         });
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -207,7 +250,7 @@ describe('useUpdateTodo', () => {
     });
 
     await waitFor(() => {
-      const cached = queryClient.getQueryData(queryKey) as { title: string }[];
+      const cached = queryClient.getQueryData<Todo[]>(queryKey)!;
       // Optimistic update should set title to 'Updated'
       expect(cached?.[0]?.title).toBe('Updated');
     });
@@ -219,7 +262,7 @@ describe('useDeleteTodo', () => {
     server.use(
       http.delete(`${API_URL}/todos/:id`, () => {
         return new HttpResponse(null, { status: 204 });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
@@ -238,7 +281,7 @@ describe('useDeleteTodo', () => {
     server.use(
       http.delete(`${API_URL}/todos/:id`, () => {
         return new HttpResponse(null, { status: 204 });
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -257,7 +300,7 @@ describe('useDeleteTodo', () => {
     });
 
     await waitFor(() => {
-      const cached = queryClient.getQueryData(queryKey) as { id: string }[];
+      const cached = queryClient.getQueryData<Todo[]>(queryKey)!;
       // Should remove '1' and its child '3', leaving only '2'
       expect(cached?.length).toBe(1);
       expect(cached?.[0]?.id).toBe('2');
@@ -277,7 +320,7 @@ describe('useToggleTodo', () => {
             completed_at: body.is_completed ? new Date().toISOString() : null,
           }),
         });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
@@ -302,7 +345,7 @@ describe('useToggleTodo', () => {
             completed_at: body.is_completed ? new Date().toISOString() : null,
           }),
         });
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -317,7 +360,7 @@ describe('useToggleTodo', () => {
     });
 
     await waitFor(() => {
-      const cached = queryClient.getQueryData(queryKey) as { isCompleted: boolean; completedAt: string | null }[];
+      const cached = queryClient.getQueryData<Todo[]>(queryKey)!;
       expect(cached?.[0]?.isCompleted).toBe(true);
       expect(cached?.[0]?.completedAt).not.toBeNull();
     });
@@ -336,7 +379,7 @@ describe('useMoveTodo', () => {
             position: body.position,
           }),
         });
-      })
+      }),
     );
 
     const { wrapper } = createWrapper();
@@ -361,7 +404,7 @@ describe('useMoveTodo', () => {
             position: body.position,
           }),
         });
-      })
+      }),
     );
 
     const { wrapper, queryClient } = createWrapper();
@@ -379,7 +422,7 @@ describe('useMoveTodo', () => {
     });
 
     await waitFor(() => {
-      const cached = queryClient.getQueryData(queryKey) as { id: string; parentId: string | null; position: number }[];
+      const cached = queryClient.getQueryData<Todo[]>(queryKey)!;
       const moved = cached?.find((t) => t.id === '3');
       expect(moved?.parentId).toBeNull();
       expect(moved?.position).toBe(5);

@@ -37,7 +37,10 @@ const mockUser: User = {
   createdAt: '2026-01-01T00:00:00Z',
 };
 
-const createMockMember = (userId: string, role: 'owner' | 'admin' | 'member' | 'viewer'): WorkspaceMember => ({
+const createMockMember = (
+  userId: string,
+  role: 'owner' | 'admin' | 'member' | 'viewer',
+): WorkspaceMember => ({
   userId,
   email: 'user@example.com',
   displayName: 'User Name',
@@ -293,7 +296,7 @@ describe('useWorkspacePermission', () => {
       useAuthStore.setState({ user: mockUser });
 
       // Test each role
-      const roles: Array<{ role: 'owner' | 'admin' | 'member' | 'viewer'; canEdit: boolean }> = [
+      const roles: { role: 'owner' | 'admin' | 'member' | 'viewer'; canEdit: boolean }[] = [
         { role: 'owner', canEdit: true },
         { role: 'admin', canEdit: true },
         { role: 'member', canEdit: true },
@@ -317,7 +320,10 @@ describe('useWorkspacePermission', () => {
     it('should correctly calculate canManageMembers for all roles', async () => {
       useAuthStore.setState({ user: mockUser });
 
-      const roles: Array<{ role: 'owner' | 'admin' | 'member' | 'viewer'; canManageMembers: boolean }> = [
+      const roles: {
+        role: 'owner' | 'admin' | 'member' | 'viewer';
+        canManageMembers: boolean;
+      }[] = [
         { role: 'owner', canManageMembers: true },
         { role: 'admin', canManageMembers: true },
         { role: 'member', canManageMembers: false },
@@ -341,7 +347,7 @@ describe('useWorkspacePermission', () => {
     it('should correctly calculate canDelete for all roles', async () => {
       useAuthStore.setState({ user: mockUser });
 
-      const roles: Array<{ role: 'owner' | 'admin' | 'member' | 'viewer'; canDelete: boolean }> = [
+      const roles: { role: 'owner' | 'admin' | 'member' | 'viewer'; canDelete: boolean }[] = [
         { role: 'owner', canDelete: true },
         { role: 'admin', canDelete: false },
         { role: 'member', canDelete: false },
