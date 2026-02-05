@@ -28,7 +28,7 @@ describe('InviteMemberDialog', () => {
     mockUseCreateInvitation.mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false,
-    } as ReturnType<typeof useCreateInvitation>);
+    } as unknown as ReturnType<typeof useCreateInvitation>);
   });
 
   it('should render when isOpen is true', () => {
@@ -173,7 +173,7 @@ describe('InviteMemberDialog', () => {
     mockUseCreateInvitation.mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: true,
-    } as ReturnType<typeof useCreateInvitation>);
+    } as unknown as ReturnType<typeof useCreateInvitation>);
 
     render(<InviteMemberDialog {...defaultProps} />);
 

@@ -98,7 +98,7 @@ describe('NotificationItem', () => {
     const notification = createMockNotification({
       metadata: {
         actorName: 'John Doe',
-        actorAvatarUrl: null,
+        actorAvatarUrl: undefined,
       },
     });
 

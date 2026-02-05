@@ -110,7 +110,7 @@ export function createMockNotification(overrides?: Partial<Notification>): Notif
     entityId: 'entity-1',
     metadata: {
       actorName: 'Test Actor',
-      actorAvatarUrl: null,
+      actorAvatarUrl: undefined,
       entityTitle: 'Test Task',
     },
     isRead: false,

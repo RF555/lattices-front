@@ -7,7 +7,7 @@ import {
 
 // ─── Types ────────────────────────────────────────────────────────────
 
-export type ConnectionStatus = 'connected' | 'connecting' | 'disconnected';
+export type ConnectionStatus = 'idle' | 'connected' | 'connecting' | 'disconnected';
 
 export type PostgresChangeEvent = 'INSERT' | 'UPDATE' | 'DELETE';
 
@@ -47,7 +47,8 @@ class RealtimeManager {
   private client: SupabaseClient | null = null;
   private channels = new Map<string, RealtimeChannel>();
   private presenceChannels = new Map<string, RealtimeChannel>();
-  private connectionStatus: ConnectionStatus = 'disconnected';
+  private connectedChannels = new Set<string>();
+  private connectionStatus: ConnectionStatus = 'idle';
   private connectionCallbacks: ConnectionCallbacks = {};
 
   /**
@@ -101,6 +102,19 @@ class RealtimeManager {
     this.connectionCallbacks.onStatusChange?.(status);
   }
 
+  /**
+   * Derive overall connection status from per-channel state.
+   * 'connected' if ANY channel is subscribed, 'connecting' if channels exist
+   * but none subscribed yet, 'disconnected' if all channels failed.
+   */
+  private updateConnectionStatus(): void {
+    if (this.connectedChannels.size > 0) {
+      this.setStatus('connected');
+    } else if (this.channels.size > 0) {
+      this.setStatus('disconnected');
+    }
+  }
+
   // ── Workspace subscription (Postgres Changes) ─────────────────────
 
   subscribeToWorkspace(workspaceId: string, callbacks: RealtimeCallbacks): void {
@@ -112,8 +126,6 @@ class RealtimeManager {
     // Avoid duplicate subscriptions
     const channelName = `workspace:${workspaceId}`;
     if (this.channels.has(channelName)) return;
-
-    this.setStatus('connecting');
 
     const channel = this.client.channel(channelName);
 
@@ -173,17 +185,17 @@ class RealtimeManager {
       );
     }
 
+    this.channels.set(channelName, channel);
+    this.setStatus('connecting');
+
     channel.subscribe((status) => {
       if (status === 'SUBSCRIBED') {
-        this.setStatus('connected');
-      } else if (status === 'CHANNEL_ERROR') {
-        this.setStatus('disconnected');
-      } else if (status === 'TIMED_OUT') {
-        this.setStatus('disconnected');
+        this.connectedChannels.add(channelName);
+      } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        this.connectedChannels.delete(channelName);
       }
+      this.updateConnectionStatus();
     });
-
-    this.channels.set(channelName, channel);
   }
 
   unsubscribeFromWorkspace(workspaceId: string): void {
@@ -192,6 +204,8 @@ class RealtimeManager {
     if (channel) {
       this.client?.removeChannel(channel);
       this.channels.delete(channelName);
+      this.connectedChannels.delete(channelName);
+      this.updateConnectionStatus();
     }
   }
 
@@ -287,16 +301,17 @@ class RealtimeManager {
       );
     }
 
+    this.channels.set(channelName, channel);
+
     channel.subscribe((status) => {
       if (status === 'SUBSCRIBED') {
-        this.setStatus('connected');
+        this.connectedChannels.add(channelName);
       } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-        this.setStatus('disconnected');
+        this.connectedChannels.delete(channelName);
       }
+      this.updateConnectionStatus();
       callbacks.onSubscriptionStatus?.(status as 'SUBSCRIBED' | 'CHANNEL_ERROR' | 'TIMED_OUT' | 'CLOSED');
     });
-
-    this.channels.set(channelName, channel);
   }
 
   unsubscribeFromNotifications(userId: string): void {
@@ -305,6 +320,8 @@ class RealtimeManager {
     if (channel) {
       this.client?.removeChannel(channel);
       this.channels.delete(channelName);
+      this.connectedChannels.delete(channelName);
+      this.updateConnectionStatus();
     }
   }
 
@@ -324,7 +341,8 @@ class RealtimeManager {
     }
     this.presenceChannels.clear();
 
-    this.setStatus('disconnected');
+    this.connectedChannels.clear();
+    this.setStatus('idle');
   }
 }
 

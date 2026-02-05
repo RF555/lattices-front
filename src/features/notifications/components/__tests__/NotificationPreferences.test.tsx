@@ -38,11 +38,11 @@ describe('NotificationPreferences', () => {
     mockUseNotificationPreferences.mockReturnValue({
       data: [],
       isLoading: false,
-    } as ReturnType<typeof useNotificationPreferences>);
+    } as unknown as ReturnType<typeof useNotificationPreferences>);
 
     mockUseUpdateNotificationPreferences.mockReturnValue({
       mutate: mockUpdatePreferenceMutate,
-    } as ReturnType<typeof useUpdateNotificationPreferences>);
+    } as unknown as ReturnType<typeof useUpdateNotificationPreferences>);
   });
 
   it('should render the preferences title', () => {
@@ -54,7 +54,7 @@ describe('NotificationPreferences', () => {
     mockUseNotificationPreferences.mockReturnValue({
       data: undefined,
       isLoading: true,
-    } as ReturnType<typeof useNotificationPreferences>);
+    } as unknown as ReturnType<typeof useNotificationPreferences>);
 
     render(<NotificationPreferences />);
 
@@ -122,7 +122,7 @@ describe('NotificationPreferences', () => {
     mockUseNotificationPreferences.mockReturnValue({
       data: preferences,
       isLoading: false,
-    } as ReturnType<typeof useNotificationPreferences>);
+    } as unknown as ReturnType<typeof useNotificationPreferences>);
 
     render(<NotificationPreferences />);
 
@@ -147,7 +147,7 @@ describe('NotificationPreferences', () => {
     mockUseNotificationPreferences.mockReturnValue({
       data: preferences,
       isLoading: false,
-    } as ReturnType<typeof useNotificationPreferences>);
+    } as unknown as ReturnType<typeof useNotificationPreferences>);
 
     render(<NotificationPreferences />);
 
@@ -172,8 +172,6 @@ describe('NotificationPreferences', () => {
   });
 
   it('should not allow toggling mandatory notification types', async () => {
-    const user = userEvent.setup();
-
     render(<NotificationPreferences />);
 
     // Find "Added to workspace" (member.added - mandatory)
@@ -224,7 +222,7 @@ describe('NotificationPreferences', () => {
     mockUseNotificationPreferences.mockReturnValue({
       data: [],
       isLoading: false,
-    } as ReturnType<typeof useNotificationPreferences>);
+    } as unknown as ReturnType<typeof useNotificationPreferences>);
 
     render(<NotificationPreferences />);
 
@@ -251,7 +249,7 @@ describe('NotificationPreferences', () => {
     mockUseNotificationPreferences.mockReturnValue({
       data: preferences,
       isLoading: false,
-    } as ReturnType<typeof useNotificationPreferences>);
+    } as unknown as ReturnType<typeof useNotificationPreferences>);
 
     render(<NotificationPreferences />);
 

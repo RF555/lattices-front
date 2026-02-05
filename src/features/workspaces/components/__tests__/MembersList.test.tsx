@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
-import userEvent from '@testing-library/user-event';
 import { MembersList } from '../MembersList/MembersList';
 import type { WorkspaceMember } from '../../types/workspace';
 
@@ -53,10 +52,14 @@ vi.mock('../../hooks/useWorkspaceMembers', () => ({
 
 vi.mock('../../hooks/useWorkspacePermission', () => ({
   useWorkspacePermission: vi.fn(() => ({
-    canView: true,
+    role: 'admin' as const,
     canEdit: true,
     canManageMembers: true,
-    canManageWorkspace: true,
+    canDelete: true,
+    isOwner: false,
+    isAdmin: true,
+    isMember: false,
+    isViewer: false,
   })),
 }));
 
@@ -94,12 +97,16 @@ describe('MembersList', () => {
     mockUseWorkspaceMembers.mockReturnValue({
       data: mockMembers,
       isLoading: false,
-    } as ReturnType<typeof useWorkspaceMembers>);
+    } as unknown as ReturnType<typeof useWorkspaceMembers>);
     mockUseWorkspacePermission.mockReturnValue({
-      canView: true,
+      role: 'admin' as const,
       canEdit: true,
       canManageMembers: true,
-      canManageWorkspace: true,
+      canDelete: true,
+      isOwner: false,
+      isAdmin: true,
+      isMember: false,
+      isViewer: false,
     });
   });
 
@@ -126,7 +133,7 @@ describe('MembersList', () => {
     mockUseWorkspaceMembers.mockReturnValue({
       data: undefined,
       isLoading: true,
-    } as ReturnType<typeof useWorkspaceMembers>);
+    } as unknown as ReturnType<typeof useWorkspaceMembers>);
 
     render(<MembersList workspaceId="ws-1" />);
     expect(screen.queryByText('Alice Owner')).not.toBeInTheDocument();
@@ -136,7 +143,7 @@ describe('MembersList', () => {
     mockUseWorkspaceMembers.mockReturnValue({
       data: [],
       isLoading: false,
-    } as ReturnType<typeof useWorkspaceMembers>);
+    } as unknown as ReturnType<typeof useWorkspaceMembers>);
 
     render(<MembersList workspaceId="ws-1" />);
     expect(screen.getByText(/no members/i)).toBeInTheDocument();
@@ -149,10 +156,14 @@ describe('MembersList', () => {
 
   it('should hide Invite button when user cannot manage members', () => {
     mockUseWorkspacePermission.mockReturnValue({
-      canView: true,
+      role: 'viewer' as const,
       canEdit: false,
       canManageMembers: false,
-      canManageWorkspace: false,
+      canDelete: false,
+      isOwner: false,
+      isAdmin: false,
+      isMember: false,
+      isViewer: true,
     });
 
     render(<MembersList workspaceId="ws-1" />);
@@ -160,7 +171,6 @@ describe('MembersList', () => {
   });
 
   it('should show action buttons for manageable users when user is admin+', async () => {
-    const user = userEvent.setup();
     render(<MembersList workspaceId="ws-1" />);
 
     // Should have action menu buttons for non-owner members

@@ -139,7 +139,7 @@ export const NOTIFICATION_CATEGORIES = {
 } as const;
 
 // Types that are mandatory (cannot be turned off)
-export const MANDATORY_NOTIFICATION_TYPES = new Set([
+export const MANDATORY_NOTIFICATION_TYPES: Set<string> = new Set([
   NOTIFICATION_TYPES.MEMBER_ADDED,
   NOTIFICATION_TYPES.MEMBER_REMOVED,
   NOTIFICATION_TYPES.MEMBER_ROLE_CHANGED,

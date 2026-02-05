@@ -9,12 +9,15 @@ import {
 } from '@lib/auth';
 import { apiClient } from '@lib/api/client';
 import { realtimeManager } from '@lib/realtime';
+import { queryClient } from '@/app/providers/QueryProvider';
+import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
 
 interface AuthState {
   user: User | null;
   tokens: AuthTokens | null;
   isLoading: boolean;
   isInitialized: boolean;
+  isExplicitLogout: boolean;
   error: string | null;
 }
 
@@ -33,6 +36,7 @@ const initialState: AuthState = {
   tokens: null,
   isLoading: false,
   isInitialized: false,
+  isExplicitLogout: false,
   error: null,
 };
 
@@ -59,7 +63,7 @@ export const useAuthStore = create<AuthStore>()(
             return newTokens.accessToken;
           } catch {
             // Refresh failed - force logout
-            apiClient.setTokenGetter(() => null);
+            queryClient.clear();
             set({ ...initialState, isInitialized: true });
             return null;
           }
@@ -90,8 +94,9 @@ export const useAuthStore = create<AuthStore>()(
 
         try {
           const { user, tokens } = await authProvider.login(credentials);
+          queryClient.clear();
           realtimeManager.setAuth(tokens.accessToken);
-          set({ user, tokens, isLoading: false });
+          set({ user, tokens, isLoading: false, isExplicitLogout: false });
         } catch (error) {
           set({
             isLoading: false,
@@ -106,8 +111,9 @@ export const useAuthStore = create<AuthStore>()(
 
         try {
           const { user, tokens } = await authProvider.register(credentials);
+          queryClient.clear();
           realtimeManager.setAuth(tokens.accessToken);
-          set({ user, tokens, isLoading: false });
+          set({ user, tokens, isLoading: false, isExplicitLogout: false });
         } catch (error) {
           set({
             isLoading: false,
@@ -124,10 +130,12 @@ export const useAuthStore = create<AuthStore>()(
           realtimeManager.cleanup();
           await authProvider.logout();
         } finally {
-          apiClient.setTokenGetter(() => null);
+          queryClient.clear();
+          useWorkspaceUiStore.getState().clearWorkspace();
           set({
             ...initialState,
             isInitialized: true,
+            isExplicitLogout: true,
           });
         }
       },
@@ -149,3 +157,4 @@ export const useUser = () => useAuthStore((state) => state.user);
 export const useIsAuthenticated = () => useAuthStore((state) => !!state.user);
 export const useAuthLoading = () => useAuthStore((state) => state.isLoading);
 export const useAuthError = () => useAuthStore((state) => state.error);
+export const useIsExplicitLogout = () => useAuthStore((state) => state.isExplicitLogout);

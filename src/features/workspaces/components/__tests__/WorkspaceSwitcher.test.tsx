@@ -34,6 +34,7 @@ vi.mock('../../hooks/useActiveWorkspace', () => ({
     activeWorkspace: mockWorkspaces[0],
     workspaces: mockWorkspaces,
     setActiveWorkspace: mockSetActiveWorkspace,
+    isAllWorkspaces: false,
     isLoading: false,
   })),
 }));
@@ -50,6 +51,7 @@ describe('WorkspaceSwitcher', () => {
       activeWorkspace: mockWorkspaces[0],
       workspaces: mockWorkspaces,
       setActiveWorkspace: mockSetActiveWorkspace,
+      isAllWorkspaces: false,
       isLoading: false,
     });
   });
@@ -64,6 +66,7 @@ describe('WorkspaceSwitcher', () => {
       activeWorkspace: null,
       workspaces: [],
       setActiveWorkspace: mockSetActiveWorkspace,
+      isAllWorkspaces: false,
       isLoading: true,
     });
 
@@ -76,6 +79,7 @@ describe('WorkspaceSwitcher', () => {
       activeWorkspace: null,
       workspaces: mockWorkspaces,
       setActiveWorkspace: mockSetActiveWorkspace,
+      isAllWorkspaces: false,
       isLoading: false,
     });
 

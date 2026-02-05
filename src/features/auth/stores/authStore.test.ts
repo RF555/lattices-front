@@ -174,7 +174,6 @@ describe('authStore', () => {
   describe('logout', () => {
     it('should logout successfully', async () => {
       const { authProvider } = await import('@lib/auth');
-      const { apiClient } = await import('@lib/api/client');
       vi.mocked(authProvider.logout).mockResolvedValue();
 
       // Set initial logged-in state
@@ -192,12 +191,10 @@ describe('authStore', () => {
       expect(state.tokens).toBeNull();
       expect(state.isLoading).toBe(false);
       expect(state.isInitialized).toBe(true);
-      expect(vi.mocked(apiClient.setTokenGetter)).toHaveBeenCalled();
     });
 
     it('should clear state even if logout fails', async () => {
       const { authProvider } = await import('@lib/auth');
-      const { apiClient } = await import('@lib/api/client');
 
       // Mock logout to resolve (error handling happens inside the provider)
       vi.mocked(authProvider.logout).mockResolvedValue();
@@ -217,7 +214,6 @@ describe('authStore', () => {
       expect(state.user).toBeNull();
       expect(state.tokens).toBeNull();
       expect(state.isInitialized).toBe(true);
-      expect(vi.mocked(apiClient.setTokenGetter)).toHaveBeenCalled();
     });
   });
 

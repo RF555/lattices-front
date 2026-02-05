@@ -552,16 +552,19 @@ export const workspaceHandlers = [
       );
     }
 
-    foundInvitation.status = 'accepted';
+    const invitation = foundInvitation as MockInvitation;
+    const wsId = foundWorkspaceId as string;
+
+    invitation.status = 'accepted';
 
     // Add member to workspace
-    if (!mockMembers[foundWorkspaceId]) mockMembers[foundWorkspaceId] = [];
-    mockMembers[foundWorkspaceId].push({
+    if (!mockMembers[wsId]) mockMembers[wsId] = [];
+    mockMembers[wsId].push({
       user_id: `user-${Date.now()}`,
-      email: foundInvitation.email,
+      email: invitation.email,
       display_name: null,
       avatar_url: null,
-      role: foundInvitation.role,
+      role: invitation.role,
       joined_at: new Date().toISOString(),
     });
 

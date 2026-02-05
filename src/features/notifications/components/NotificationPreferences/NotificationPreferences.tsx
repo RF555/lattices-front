@@ -81,6 +81,7 @@ export function NotificationPreferences() {
               {types.map((typeName) => {
                 const isMandatory = MANDATORY_NOTIFICATION_TYPES.has(typeName);
                 const enabled = isEnabled(typeName, 'in_app');
+                const typeLabel = (t as (key: string) => string)(`typeLabel.${typeName}`);
 
                 return (
                   <div
@@ -89,7 +90,7 @@ export function NotificationPreferences() {
                   >
                     <div className="min-w-0">
                       <p className="text-sm text-gray-900">
-                        {t(`typeLabel.${typeName}`)}
+                        {typeLabel}
                       </p>
                       {isMandatory && (
                         <p className="text-xs text-gray-500 mt-0.5">
@@ -101,7 +102,7 @@ export function NotificationPreferences() {
                       checked={isMandatory || enabled}
                       onChange={() => handleToggle(typeName, 'in_app', enabled)}
                       disabled={isMandatory}
-                      label={t(`typeLabel.${typeName}`)}
+                      label={typeLabel}
                       size="sm"
                     />
                   </div>

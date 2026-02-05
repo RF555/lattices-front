@@ -33,7 +33,7 @@ describe('CreateWorkspaceDialog', () => {
     mockUseCreateWorkspace.mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: false,
-    } as ReturnType<typeof useCreateWorkspace>);
+    } as unknown as ReturnType<typeof useCreateWorkspace>);
   });
 
   it('should not render when isOpen is false', () => {
@@ -235,7 +235,7 @@ describe('CreateWorkspaceDialog', () => {
     mockUseCreateWorkspace.mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: true,
-    } as ReturnType<typeof useCreateWorkspace>);
+    } as unknown as ReturnType<typeof useCreateWorkspace>);
 
     render(<CreateWorkspaceDialog {...defaultProps} />);
 

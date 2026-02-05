@@ -468,7 +468,7 @@ describe('Notification Mutation Hooks', () => {
 
 describe('Notification Hooks Integration', () => {
   it('should work with mutations affecting query data', async () => {
-    const { wrapper, queryClient } = createWrapper();
+    const { wrapper } = createWrapper();
 
     // First, fetch notifications
     const { result: queryResult } = renderHook(() => useNotifications(), { wrapper });
@@ -499,8 +499,6 @@ describe('Notification Hooks Integration', () => {
     const { result: countResult } = renderHook(() => useUnreadCount(), { wrapper });
 
     await waitFor(() => expect(countResult.current.isSuccess).toBe(true));
-
-    const initialUnreadCount = countResult.current.data!;
 
     // Get an unread notification to mark as read
     const { result: notificationsResult } = renderHook(() => useNotifications({ isRead: false }), {

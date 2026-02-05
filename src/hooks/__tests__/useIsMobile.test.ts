@@ -12,7 +12,7 @@ describe('useIsMobile', () => {
   let mediaQueryListeners: Array<(event: MediaQueryListEvent) => void> = [];
   let currentMatches = false;
 
-  const mockMatchMedia = (matches: boolean) => {
+  const mockMatchMedia = (matches: boolean): typeof window.matchMedia => {
     currentMatches = matches;
     return vi.fn((query: string) => ({
       matches: currentMatches,
@@ -31,7 +31,7 @@ describe('useIsMobile', () => {
         }
       }),
       dispatchEvent: vi.fn(),
-    }));
+    })) as unknown as typeof window.matchMedia;
   };
 
   beforeEach(() => {
@@ -119,7 +119,7 @@ describe('useIsMobile', () => {
       addEventListener: addEventListenerSpy,
       removeEventListener: removeEventListenerSpy,
       dispatchEvent: vi.fn(),
-    }));
+    })) as unknown as typeof window.matchMedia;
 
     const { unmount } = renderHook(() => useIsMobile());
 

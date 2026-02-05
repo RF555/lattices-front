@@ -4,14 +4,6 @@ import { ChevronDown, Check, Plus, Users, UsersRound, Activity, Settings, Layers
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 import { useActiveWorkspace } from '../../hooks/useActiveWorkspace';
-import type { WorkspaceRole } from '../../types/workspace';
-
-const ROLE_COLORS: Record<WorkspaceRole, string> = {
-  owner: 'bg-purple-100 text-purple-700',
-  admin: 'bg-blue-100 text-blue-700',
-  member: 'bg-green-100 text-green-700',
-  viewer: 'bg-gray-100 text-gray-600',
-};
 
 interface WorkspaceSwitcherProps {
   onCreateWorkspace: () => void;

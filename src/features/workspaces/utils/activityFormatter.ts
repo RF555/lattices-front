@@ -58,7 +58,8 @@ export function formatAction(entry: ActivityEntry, t: TFunction<'workspaces'>): 
   return actionMap[action] || `${actorName} performed ${action}`;
 }
 
-export function formatRelativeTime(dateString: string, t: TFunction): string {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function formatRelativeTime(dateString: string, t: TFunction<any>): string {
   const date = new Date(dateString);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();

@@ -5,10 +5,6 @@ const API_VERSION = import.meta.env.VITE_API_VERSION || 'v1';
 const API_URL = `${BASE_URL}/api/${API_VERSION}`;
 
 // Helper functions for timestamps
-function daysAgo(days: number): string {
-  return new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
-}
-
 function hoursAgo(hours: number): string {
   return new Date(Date.now() - hours * 60 * 60 * 1000).toISOString();
 }
@@ -70,7 +66,7 @@ let mockNotifications: MockNotification[] = [
     entity_id: 'todo-1',
     metadata: {
       actor_name: 'John Doe',
-      actor_avatar_url: null,
+      actor_avatar_url: undefined,
       entity_title: 'Complete project setup',
     },
     is_read: false,

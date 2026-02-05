@@ -39,7 +39,7 @@ export function GroupManageDialog({ isOpen, onClose, workspaceId, group }: Group
   const createGroup = useCreateGroup(workspaceId);
   const updateGroup = useUpdateGroup(workspaceId, group?.id);
 
-  const schema = createGroupSchema(t);
+  const schema = createGroupSchema(t as (key: string) => string);
   const {
     register,
     handleSubmit,
@@ -93,7 +93,7 @@ export function GroupManageDialog({ isOpen, onClose, workspaceId, group }: Group
             id="group-name"
             placeholder={t('groups.namePlaceholder')}
             {...register('name')}
-            error={errors.name?.message}
+            error={!!errors.name?.message}
           />
         </div>
 
@@ -105,7 +105,7 @@ export function GroupManageDialog({ isOpen, onClose, workspaceId, group }: Group
             id="group-description"
             placeholder={t('groups.descriptionPlaceholder')}
             {...register('description')}
-            error={errors.description?.message}
+            error={!!errors.description?.message}
           />
         </div>
 

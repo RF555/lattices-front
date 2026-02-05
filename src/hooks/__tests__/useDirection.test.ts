@@ -128,7 +128,7 @@ describe('useDirection', () => {
   it('should use i18n.dir() to determine direction', async () => {
     // English uses ltr
     await i18n.changeLanguage('en');
-    const { rerender: rerenderEn } = renderHook(() => useDirection());
+    renderHook(() => useDirection());
     expect(i18n.dir()).toBe('ltr');
     expect(document.documentElement.dir).toBe('ltr');
 

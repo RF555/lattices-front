@@ -22,8 +22,8 @@ export function ConnectionStatus() {
     };
   }, []);
 
-  // Hide when connected
-  if (status === 'connected') return null;
+  // Hide when connected or when no connection has been attempted
+  if (status === 'connected' || status === 'idle') return null;
 
   const isConnecting = status === 'connecting';
 

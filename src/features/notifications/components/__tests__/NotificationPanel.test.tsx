@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@/test/test-utils';
+import { render, screen } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { NotificationPanel } from '../NotificationPanel/NotificationPanel';
 import { createMockNotification } from '@/test/factories';
@@ -55,7 +55,7 @@ describe('NotificationPanel', () => {
         nextCursor: null,
       },
       isLoading: false,
-    } as ReturnType<typeof useNotifications>);
+    } as unknown as ReturnType<typeof useNotifications>);
   });
 
   it('should render the panel header', () => {
@@ -72,7 +72,7 @@ describe('NotificationPanel', () => {
     mockUseNotifications.mockReturnValue({
       data: undefined,
       isLoading: true,
-    } as ReturnType<typeof useNotifications>);
+    } as unknown as ReturnType<typeof useNotifications>);
 
     render(<NotificationPanel onClose={mockOnClose} />);
     // Should show spinner during loading
@@ -108,7 +108,7 @@ describe('NotificationPanel', () => {
         nextCursor: null,
       },
       isLoading: false,
-    } as ReturnType<typeof useNotifications>);
+    } as unknown as ReturnType<typeof useNotifications>);
 
     render(<NotificationPanel onClose={mockOnClose} />);
 
@@ -123,7 +123,7 @@ describe('NotificationPanel', () => {
         id: 'notif-1',
         metadata: {
           actorName: 'John Doe',
-          actorAvatarUrl: null,
+          actorAvatarUrl: undefined,
           entityTitle: 'Test Task',
         },
       }),
@@ -136,7 +136,7 @@ describe('NotificationPanel', () => {
         nextCursor: null,
       },
       isLoading: false,
-    } as ReturnType<typeof useNotifications>);
+    } as unknown as ReturnType<typeof useNotifications>);
 
     render(<NotificationPanel onClose={mockOnClose} />);
     expect(screen.getByText('JO')).toBeInTheDocument();
@@ -222,7 +222,7 @@ describe('NotificationPanel', () => {
         nextCursor: null,
       },
       isLoading: false,
-    } as ReturnType<typeof useNotifications>);
+    } as unknown as ReturnType<typeof useNotifications>);
 
     render(<NotificationPanel onClose={mockOnClose} />);
 
@@ -259,7 +259,7 @@ describe('NotificationPanel', () => {
         nextCursor: null,
       },
       isLoading: false,
-    } as ReturnType<typeof useNotifications>);
+    } as unknown as ReturnType<typeof useNotifications>);
 
     render(<NotificationPanel onClose={mockOnClose} />);
 
@@ -292,7 +292,7 @@ describe('NotificationPanel', () => {
         nextCursor: null,
       },
       isLoading: false,
-    } as ReturnType<typeof useNotifications>);
+    } as unknown as ReturnType<typeof useNotifications>);
 
     render(<NotificationPanel onClose={mockOnClose} />);
 
@@ -307,8 +307,6 @@ describe('NotificationPanel', () => {
   });
 
   it('should show load more button when there is a next cursor', async () => {
-    const user = userEvent.setup();
-
     const notifications = [
       createMockNotification({
         id: 'notif-1',
@@ -326,7 +324,7 @@ describe('NotificationPanel', () => {
         nextCursor: 'cursor-123',
       },
       isLoading: false,
-    } as ReturnType<typeof useNotifications>);
+    } as unknown as ReturnType<typeof useNotifications>);
 
     render(<NotificationPanel onClose={mockOnClose} />);
 
@@ -351,7 +349,7 @@ describe('NotificationPanel', () => {
         nextCursor: null,
       },
       isLoading: false,
-    } as ReturnType<typeof useNotifications>);
+    } as unknown as ReturnType<typeof useNotifications>);
 
     render(<NotificationPanel onClose={mockOnClose} />);
 
