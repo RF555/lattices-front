@@ -1,12 +1,14 @@
 import { useTranslation } from 'react-i18next';
 import { useTags } from '@features/tags/hooks/useTags';
+import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { TagBadge } from '@features/tags/components/TagBadge';
 import { cn } from '@lib/utils/cn';
 
 export function TagFilter() {
   const { t } = useTranslation('tags');
-  const { data: tags = [] } = useTags();
+  const activeWorkspaceId = useActiveWorkspaceId();
+  const { data: tags = [] } = useTags(activeWorkspaceId ?? undefined);
   const filterTagIds = useTodoUiStore((s) => s.filterTagIds);
   const setFilterTagIds = useTodoUiStore((s) => s.setFilterTagIds);
 
