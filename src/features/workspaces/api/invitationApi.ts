@@ -1,6 +1,11 @@
 import { apiClient } from '@lib/api/client';
-import type { ListResponse, SingleResponse } from '@lib/api/types';
-import type { Invitation, WorkspaceMember, WorkspaceRole } from '../types/workspace';
+import type { ListResponse } from '@lib/api/types';
+import type {
+  AcceptInvitationResult,
+  Invitation,
+  InvitationCreatedResult,
+  WorkspaceRole,
+} from '../types/workspace';
 
 /** Raw invitation shape returned by the API (snake_case). */
 interface ApiInvitation {
@@ -15,13 +20,18 @@ interface ApiInvitation {
   expires_at: string;
 }
 
-interface ApiWorkspaceMember {
-  user_id: string;
-  email: string;
-  display_name: string | null;
-  avatar_url: string | null;
-  role: WorkspaceRole;
-  joined_at: string;
+/** Raw response from POST /invitations/accept and POST /invitations/{id}/accept. */
+interface ApiAcceptInvitationResponse {
+  workspace_id: string;
+  workspace_name: string;
+  role: string;
+  message: string;
+}
+
+/** Raw response from POST /workspaces/{id}/invitations (includes token). */
+interface ApiInvitationCreatedResponse {
+  data: ApiInvitation;
+  token: string;
 }
 
 function mapInvitation(raw: ApiInvitation): Invitation {
@@ -38,14 +48,11 @@ function mapInvitation(raw: ApiInvitation): Invitation {
   };
 }
 
-function mapMember(raw: ApiWorkspaceMember): WorkspaceMember {
+function mapAcceptResponse(raw: ApiAcceptInvitationResponse): AcceptInvitationResult {
   return {
-    userId: raw.user_id,
-    email: raw.email,
-    displayName: raw.display_name,
-    avatarUrl: raw.avatar_url,
+    workspaceId: raw.workspace_id,
+    workspaceName: raw.workspace_name,
     role: raw.role,
-    joinedAt: raw.joined_at,
   };
 }
 
@@ -54,12 +61,15 @@ export const invitationApi = {
     workspaceId: string,
     email: string,
     role: WorkspaceRole
-  ): Promise<Invitation> {
-    const response = await apiClient.post<SingleResponse<ApiInvitation>>(
+  ): Promise<InvitationCreatedResult> {
+    const response = await apiClient.post<ApiInvitationCreatedResponse>(
       `/workspaces/${workspaceId}/invitations`,
       { email, role }
     );
-    return mapInvitation(response.data);
+    return {
+      invitation: mapInvitation(response.data),
+      token: response.token,
+    };
   },
 
   async getWorkspaceInvitations(workspaceId: string): Promise<Invitation[]> {
@@ -73,12 +83,19 @@ export const invitationApi = {
     await apiClient.delete(`/workspaces/${workspaceId}/invitations/${invitationId}`);
   },
 
-  async acceptInvitation(token: string): Promise<WorkspaceMember> {
-    const response = await apiClient.post<SingleResponse<ApiWorkspaceMember>>(
+  async acceptInvitation(token: string): Promise<AcceptInvitationResult> {
+    const response = await apiClient.post<ApiAcceptInvitationResponse>(
       '/invitations/accept',
       { token }
     );
-    return mapMember(response.data);
+    return mapAcceptResponse(response);
+  },
+
+  async acceptInvitationById(invitationId: string): Promise<AcceptInvitationResult> {
+    const response = await apiClient.post<ApiAcceptInvitationResponse>(
+      `/invitations/${invitationId}/accept`
+    );
+    return mapAcceptResponse(response);
   },
 
   async getPendingInvitations(): Promise<Invitation[]> {

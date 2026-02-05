@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { InviteMemberDialog } from '../InviteMemberDialog/InviteMemberDialog';
+import type { InvitationCreatedResult } from '../../types/workspace';
 
 const mockMutateAsync = vi.fn();
 vi.mock('../../hooks/useInvitations', () => ({
@@ -22,6 +23,21 @@ describe('InviteMemberDialog', () => {
     workspaceId: 'ws-1',
   };
 
+  const mockCreatedResult: InvitationCreatedResult = {
+    invitation: {
+      id: 'inv-1',
+      workspaceId: 'ws-1',
+      workspaceName: 'Test Workspace',
+      email: 'test@example.com',
+      role: 'member',
+      invitedByName: 'Admin User',
+      status: 'pending',
+      createdAt: '2026-01-01T00:00:00Z',
+      expiresAt: '2026-01-08T00:00:00Z',
+    },
+    token: 'raw-secret-token-abc123',
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
     mockMutateAsync.mockReset();
@@ -30,6 +46,8 @@ describe('InviteMemberDialog', () => {
       isPending: false,
     } as unknown as ReturnType<typeof useCreateInvitation>);
   });
+
+  // --- Form rendering ---
 
   it('should render when isOpen is true', () => {
     render(<InviteMemberDialog {...defaultProps} />);
@@ -72,16 +90,15 @@ describe('InviteMemberDialog', () => {
     expect(options).toContain('admin');
   });
 
+  // --- Form validation ---
+
   it('should show validation error for invalid email', async () => {
     const user = userEvent.setup();
     render(<InviteMemberDialog {...defaultProps} />);
 
-    // Use "bad@x" which passes HTML5 type="email" validation but fails the
-    // component's regex /^[^\s@]+@[^\s@]+\.[^\s@]+$/ (no dot in domain)
     await user.type(screen.getByLabelText(/email/i), 'bad@x');
     await user.click(screen.getByRole('button', { name: /send/i }));
 
-    // i18n resolves auth:validation.emailInvalid to "Please enter a valid email address"
     expect(await screen.findByText(/valid email/i)).toBeInTheDocument();
     expect(mockMutateAsync).not.toHaveBeenCalled();
   });
@@ -94,9 +111,11 @@ describe('InviteMemberDialog', () => {
     expect(mockMutateAsync).not.toHaveBeenCalled();
   });
 
+  // --- Successful submission: invite link display ---
+
   it('should call mutateAsync with correct params on submit', async () => {
     const user = userEvent.setup();
-    mockMutateAsync.mockResolvedValue({});
+    mockMutateAsync.mockResolvedValue(mockCreatedResult);
     render(<InviteMemberDialog {...defaultProps} />);
 
     await user.type(screen.getByLabelText(/email/i), 'newuser@example.com');
@@ -112,18 +131,131 @@ describe('InviteMemberDialog', () => {
     });
   });
 
-  it('should clear form and call onClose on successful submission', async () => {
+  it('should show invite link after successful creation instead of closing', async () => {
     const user = userEvent.setup();
-    mockMutateAsync.mockResolvedValue({});
+    mockMutateAsync.mockResolvedValue(mockCreatedResult);
+    render(<InviteMemberDialog {...defaultProps} />);
+
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.click(screen.getByRole('button', { name: /send/i }));
+
+    // Dialog should stay open and show the link
+    await waitFor(() => {
+      expect(screen.getByText(/raw-secret-token-abc123/)).toBeInTheDocument();
+    });
+
+    // Should NOT have called onClose yet
+    expect(mockOnClose).not.toHaveBeenCalled();
+  });
+
+  it('should display the correct invite URL format', async () => {
+    const user = userEvent.setup();
+    mockMutateAsync.mockResolvedValue(mockCreatedResult);
     render(<InviteMemberDialog {...defaultProps} />);
 
     await user.type(screen.getByLabelText(/email/i), 'test@example.com');
     await user.click(screen.getByRole('button', { name: /send/i }));
 
     await waitFor(() => {
-      expect(mockOnClose).toHaveBeenCalled();
+      // The link should contain the origin + /invite?token=<token>
+      expect(screen.getByText(/\/invite\?token=raw-secret-token-abc123/)).toBeInTheDocument();
     });
   });
+
+  it('should show Copy button in link display state', async () => {
+    const user = userEvent.setup();
+    mockMutateAsync.mockResolvedValue(mockCreatedResult);
+    render(<InviteMemberDialog {...defaultProps} />);
+
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.click(screen.getByRole('button', { name: /send/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /copy/i })).toBeInTheDocument();
+    });
+  });
+
+  it('should show Done button in link display state', async () => {
+    const user = userEvent.setup();
+    mockMutateAsync.mockResolvedValue(mockCreatedResult);
+    render(<InviteMemberDialog {...defaultProps} />);
+
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.click(screen.getByRole('button', { name: /send/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /done/i })).toBeInTheDocument();
+    });
+  });
+
+  it('should call onClose when Done button is clicked in link display state', async () => {
+    const user = userEvent.setup();
+    mockMutateAsync.mockResolvedValue(mockCreatedResult);
+    render(<InviteMemberDialog {...defaultProps} />);
+
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.click(screen.getByRole('button', { name: /send/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /done/i })).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: /done/i }));
+    expect(mockOnClose).toHaveBeenCalled();
+  });
+
+  it('should copy invite link to clipboard when Copy button is clicked', async () => {
+    const user = userEvent.setup();
+    const writeTextMock = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: writeTextMock },
+      writable: true,
+      configurable: true,
+    });
+
+    mockMutateAsync.mockResolvedValue(mockCreatedResult);
+    render(<InviteMemberDialog {...defaultProps} />);
+
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.click(screen.getByRole('button', { name: /send/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /copy/i })).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: /copy/i }));
+
+    expect(writeTextMock).toHaveBeenCalledWith(
+      expect.stringContaining('raw-secret-token-abc123')
+    );
+  });
+
+  it('should show "Copied" feedback after copying link', async () => {
+    const user = userEvent.setup();
+    Object.defineProperty(navigator, 'clipboard', {
+      value: { writeText: vi.fn().mockResolvedValue(undefined) },
+      writable: true,
+      configurable: true,
+    });
+
+    mockMutateAsync.mockResolvedValue(mockCreatedResult);
+    render(<InviteMemberDialog {...defaultProps} />);
+
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.click(screen.getByRole('button', { name: /send/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /copy/i })).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole('button', { name: /copy/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/copied/i)).toBeInTheDocument();
+    });
+  });
+
+  // --- Error handling ---
 
   it('should show error message when submission fails', async () => {
     const user = userEvent.setup();
@@ -161,6 +293,8 @@ describe('InviteMemberDialog', () => {
     expect(mockOnClose).not.toHaveBeenCalled();
   });
 
+  // --- Cancel / close ---
+
   it('should call onClose when cancel is clicked', async () => {
     const user = userEvent.setup();
     render(<InviteMemberDialog {...defaultProps} />);
@@ -168,6 +302,8 @@ describe('InviteMemberDialog', () => {
     await user.click(screen.getByRole('button', { name: /cancel/i }));
     expect(mockOnClose).toHaveBeenCalled();
   });
+
+  // --- Loading state ---
 
   it('should disable submit button when pending', () => {
     mockUseCreateInvitation.mockReturnValue({
@@ -180,5 +316,32 @@ describe('InviteMemberDialog', () => {
     // When isPending, Button renders "Loading..." text and is disabled
     const submitButton = screen.getByRole('button', { name: /loading/i });
     expect(submitButton).toBeDisabled();
+  });
+
+  // --- Reset state on close ---
+
+  it('should reset form state when dialog closes from link display', async () => {
+    const user = userEvent.setup();
+    mockMutateAsync.mockResolvedValue(mockCreatedResult);
+
+    const { rerender } = render(<InviteMemberDialog {...defaultProps} />);
+
+    // Submit successfully to get to link display state
+    await user.type(screen.getByLabelText(/email/i), 'test@example.com');
+    await user.click(screen.getByRole('button', { name: /send/i }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /done/i })).toBeInTheDocument();
+    });
+
+    // Close and reopen
+    await user.click(screen.getByRole('button', { name: /done/i }));
+
+    // Rerender with fresh isOpen
+    rerender(<InviteMemberDialog {...defaultProps} />);
+
+    // Should be back to form state
+    expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /send/i })).toBeInTheDocument();
   });
 });

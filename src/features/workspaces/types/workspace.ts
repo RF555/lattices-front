@@ -41,3 +41,14 @@ export interface Invitation {
   createdAt: string;
   expiresAt: string;
 }
+
+export interface InvitationCreatedResult {
+  invitation: Invitation;
+  token: string;
+}
+
+export interface AcceptInvitationResult {
+  workspaceId: string;
+  workspaceName: string;
+  role: string;
+}

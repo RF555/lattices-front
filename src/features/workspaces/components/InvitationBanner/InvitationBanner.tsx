@@ -1,12 +1,12 @@
 import { useTranslation } from 'react-i18next';
 import { Mail, X } from 'lucide-react';
 import { Button } from '@components/ui/Button';
-import { usePendingInvitations, useAcceptInvitation } from '../../hooks/useInvitations';
+import { usePendingInvitations, useAcceptInvitationById } from '../../hooks/useInvitations';
 
 export function InvitationBanner() {
   const { t } = useTranslation('workspaces');
   const { data: invitations } = usePendingInvitations();
-  const acceptInvitation = useAcceptInvitation();
+  const acceptInvitation = useAcceptInvitationById();
 
   if (!invitations || invitations.length === 0) return null;
 

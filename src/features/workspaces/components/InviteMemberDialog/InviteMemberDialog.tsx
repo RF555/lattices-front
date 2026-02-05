@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Check, Copy, Link } from 'lucide-react';
 import { Modal } from '@components/ui/Modal';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
@@ -20,6 +21,8 @@ export function InviteMemberDialog({ isOpen, onClose, workspaceId }: InviteMembe
   const [email, setEmail] = useState('');
   const [role, setRole] = useState<WorkspaceRole>('member');
   const [error, setError] = useState<string | null>(null);
+  const [inviteLink, setInviteLink] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,12 +37,22 @@ export function InviteMemberDialog({ isOpen, onClose, workspaceId }: InviteMembe
     }
 
     try {
-      await createInvitation.mutateAsync({ workspaceId, email: email.trim(), role });
-      setEmail('');
-      setRole('member');
-      onClose();
+      const result = await createInvitation.mutateAsync({ workspaceId, email: email.trim(), role });
+      const link = `${window.location.origin}/invite?token=${result.token}`;
+      setInviteLink(link);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send invitation');
+    }
+  };
+
+  const handleCopyLink = async () => {
+    if (!inviteLink) return;
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback: select the text in the input
     }
   };
 
@@ -47,8 +60,59 @@ export function InviteMemberDialog({ isOpen, onClose, workspaceId }: InviteMembe
     setEmail('');
     setRole('member');
     setError(null);
+    setInviteLink(null);
+    setCopied(false);
     onClose();
   };
+
+  if (inviteLink) {
+    return (
+      <Modal isOpen={isOpen} onClose={handleClose} title={t('invitation.linkReady', { defaultValue: 'Invitation Created' })}>
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600">
+            {t('invitation.linkDescription', {
+              email,
+              defaultValue: `An invitation has been sent to ${email}. Share this link for quick access:`,
+            })}
+          </p>
+
+          <div className="flex items-center gap-2">
+            <div className="flex-1 relative">
+              <div className="flex items-center gap-2 rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm">
+                <Link className="h-4 w-4 text-gray-400 shrink-0" />
+                <span className="truncate text-gray-700">{inviteLink}</span>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={handleCopyLink}
+              className="shrink-0"
+            >
+              {copied ? (
+                <>
+                  <Check className="h-4 w-4 mr-1" />
+                  {t('invitation.copied', { defaultValue: 'Copied' })}
+                </>
+              ) : (
+                <>
+                  <Copy className="h-4 w-4 mr-1" />
+                  {t('invitation.copyLink', { defaultValue: 'Copy' })}
+                </>
+              )}
+            </Button>
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <Button type="button" onClick={handleClose}>
+              {t('form.done', { defaultValue: 'Done' })}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title={t('members.invite')}>

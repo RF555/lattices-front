@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, act } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { AcceptInvitation } from '../AcceptInvitation/AcceptInvitation';
-import type { WorkspaceMember } from '../../types/workspace';
+import type { AcceptInvitationResult } from '../../types/workspace';
 
 const mockNavigate = vi.fn();
 const mockMutate = vi.fn();
@@ -76,25 +76,43 @@ describe('AcceptInvitation', () => {
     );
   });
 
-  it('should show success state after acceptance', () => {
+  it('should show success state after acceptance with workspace info', () => {
     render(<AcceptInvitation />);
 
     const { onSuccess } = mockMutate.mock.calls[0][1];
-    const mockMember: WorkspaceMember = {
-      userId: 'user-123',
-      email: 'test@example.com',
-      displayName: 'Test User',
-      avatarUrl: null,
+    const mockResult: AcceptInvitationResult = {
+      workspaceId: 'ws-123',
+      workspaceName: 'Test Workspace',
       role: 'member',
-      joinedAt: '2024-01-01T00:00:00Z',
     };
 
     act(() => {
-      onSuccess(mockMember);
+      onSuccess(mockResult);
     });
 
     expect(screen.getByText(/you've joined/i)).toBeInTheDocument();
     expect(screen.getByRole('button')).toBeInTheDocument();
+  });
+
+  it('should set correct workspace ID from AcceptInvitationResult', async () => {
+    const user = userEvent.setup();
+    render(<AcceptInvitation />);
+
+    const { onSuccess } = mockMutate.mock.calls[0][1];
+    const mockResult: AcceptInvitationResult = {
+      workspaceId: 'ws-456',
+      workspaceName: 'My Team',
+      role: 'admin',
+    };
+
+    act(() => {
+      onSuccess(mockResult);
+    });
+
+    await user.click(screen.getByText(/go to workspace/i));
+
+    expect(mockSetActiveWorkspace).toHaveBeenCalledWith('ws-456');
+    expect(mockNavigate).toHaveBeenCalledWith('/app', { replace: true });
   });
 
   it('should navigate to /app when "Go to Workspace" is clicked after success', async () => {
@@ -104,18 +122,15 @@ describe('AcceptInvitation', () => {
     const { onSuccess } = mockMutate.mock.calls[0][1];
     act(() => {
       onSuccess({
-        userId: 'ws-456',
-        email: 'test@example.com',
-        displayName: 'Test User',
-        avatarUrl: null,
+        workspaceId: 'ws-789',
+        workspaceName: 'Another Workspace',
         role: 'member',
-        joinedAt: '2024-01-01T00:00:00Z',
-      } as WorkspaceMember);
+      } as AcceptInvitationResult);
     });
 
     await user.click(screen.getByText(/go to workspace/i));
 
-    expect(mockSetActiveWorkspace).toHaveBeenCalledWith('ws-456');
+    expect(mockSetActiveWorkspace).toHaveBeenCalledWith('ws-789');
     expect(mockNavigate).toHaveBeenCalledWith('/app', { replace: true });
   });
 
@@ -160,6 +175,26 @@ describe('AcceptInvitation', () => {
     });
 
     await user.click(screen.getByText(/go to workspace/i));
+    expect(mockNavigate).toHaveBeenCalledWith('/app', { replace: true });
+  });
+
+  it('should navigate to /app without setting workspace if result has no workspaceId', async () => {
+    const user = userEvent.setup();
+    render(<AcceptInvitation />);
+
+    const { onSuccess } = mockMutate.mock.calls[0][1];
+    act(() => {
+      onSuccess({
+        workspaceId: '',
+        workspaceName: '',
+        role: 'member',
+      } as AcceptInvitationResult);
+    });
+
+    await user.click(screen.getByText(/go to workspace/i));
+
+    // Empty string is falsy, so setActiveWorkspace should not be called
+    expect(mockSetActiveWorkspace).not.toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith('/app', { replace: true });
   });
 });

@@ -503,7 +503,10 @@ export const workspaceHandlers = [
       expires_at: daysAgo(-7), // expires in 7 days
     };
     mockInvitations[workspaceId].push(newInvitation);
-    return HttpResponse.json({ data: newInvitation }, { status: 201 });
+    return HttpResponse.json(
+      { data: newInvitation, token: `mock-token-${newInvitation.id}` },
+      { status: 201 }
+    );
   }),
 
   // Invitations - Revoke
@@ -531,14 +534,20 @@ export const workspaceHandlers = [
     });
   }),
 
-  // Invitations - Accept
-  http.post(`${API_URL}/invitations/:token/accept`, ({ params }) => {
-    // Find invitation by token (in real app, token would be used)
+  // Invitations - Accept by token (POST /invitations/accept with { token } body)
+  http.post(`${API_URL}/invitations/accept`, async ({ request }) => {
+    const body = (await request.json()) as Record<string, unknown>;
+    const token = body.token as string;
+
+    // In mock, tokens are formatted as "mock-token-inv-xxx"
+    // Extract the invitation id from the token
+    const invId = token.replace('mock-token-', '');
+
     let foundInvitation: MockInvitation | null = null;
     let foundWorkspaceId: string | null = null;
 
     Object.entries(mockInvitations).forEach(([workspaceId, invs]) => {
-      const inv = invs.find((i) => i.id === params.token);
+      const inv = invs.find((i) => i.id === invId);
       if (inv) {
         foundInvitation = inv;
         foundWorkspaceId = workspaceId;
@@ -554,10 +563,8 @@ export const workspaceHandlers = [
 
     const invitation = foundInvitation as MockInvitation;
     const wsId = foundWorkspaceId as string;
-
     invitation.status = 'accepted';
 
-    // Add member to workspace
     if (!mockMembers[wsId]) mockMembers[wsId] = [];
     mockMembers[wsId].push({
       user_id: `user-${Date.now()}`,
@@ -568,7 +575,66 @@ export const workspaceHandlers = [
       joined_at: new Date().toISOString(),
     });
 
-    return HttpResponse.json({ data: { success: true } });
+    const workspace = mockWorkspaces.find((w) => w.id === wsId);
+    return HttpResponse.json({
+      workspace_id: wsId,
+      workspace_name: workspace?.name || '',
+      role: invitation.role,
+      message: 'Invitation accepted successfully',
+    });
+  }),
+
+  // Invitations - Accept by ID (POST /invitations/{id}/accept, no body)
+  http.post(`${API_URL}/invitations/:invitationId/accept`, ({ params }) => {
+    const invitationId = params.invitationId as string;
+
+    // Don't match "accept" as invitationId (that's the token-based route)
+    if (invitationId === 'accept') {
+      return HttpResponse.json(
+        { error_code: 'INVITATION_NOT_FOUND', message: 'Invitation not found' },
+        { status: 404 }
+      );
+    }
+
+    let foundInvitation: MockInvitation | null = null;
+    let foundWorkspaceId: string | null = null;
+
+    Object.entries(mockInvitations).forEach(([workspaceId, invs]) => {
+      const inv = invs.find((i) => i.id === invitationId);
+      if (inv) {
+        foundInvitation = inv;
+        foundWorkspaceId = workspaceId;
+      }
+    });
+
+    if (!foundInvitation || !foundWorkspaceId) {
+      return HttpResponse.json(
+        { error_code: 'INVITATION_NOT_FOUND', message: 'Invitation not found' },
+        { status: 404 }
+      );
+    }
+
+    const invitation = foundInvitation as MockInvitation;
+    const wsId = foundWorkspaceId as string;
+    invitation.status = 'accepted';
+
+    if (!mockMembers[wsId]) mockMembers[wsId] = [];
+    mockMembers[wsId].push({
+      user_id: `user-${Date.now()}`,
+      email: invitation.email,
+      display_name: null,
+      avatar_url: null,
+      role: invitation.role,
+      joined_at: new Date().toISOString(),
+    });
+
+    const workspace = mockWorkspaces.find((w) => w.id === wsId);
+    return HttpResponse.json({
+      workspace_id: wsId,
+      workspace_name: workspace?.name || '',
+      role: invitation.role,
+      message: 'Invitation accepted successfully',
+    });
   }),
 
   // Activity - List workspace activity

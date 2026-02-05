@@ -20,6 +20,7 @@ export function AcceptInvitation() {
   const [state, setState] = useState<AcceptState>('loading');
   const [errorMessage, setErrorMessage] = useState('');
   const [workspaceId, setWorkspaceId] = useState<string | null>(null);
+  const [workspaceName, setWorkspaceName] = useState('');
 
   const token = searchParams.get('token');
 
@@ -36,13 +37,10 @@ export function AcceptInvitation() {
     }
 
     acceptInvitation.mutate(token, {
-      onSuccess: (member) => {
+      onSuccess: (result) => {
         setState('success');
-        // The member response should include workspace context
-        // For now we navigate to the app and let it pick up the new workspace
-        if (member) {
-          setWorkspaceId(member.userId); // placeholder - workspace ID will come from the response
-        }
+        setWorkspaceId(result.workspaceId);
+        setWorkspaceName(result.workspaceName);
       },
       onError: (err) => {
         setState('error');
@@ -80,7 +78,7 @@ export function AcceptInvitation() {
           <>
             <CheckCircle className="h-12 w-12 text-green-500 mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              {t('invitation.accepted', { workspace: '' })}
+              {t('invitation.accepted', { workspace: workspaceName })}
             </h2>
             <Button onClick={handleGoToWorkspace} className="mt-4">
               {t('invitation.goToWorkspace')}

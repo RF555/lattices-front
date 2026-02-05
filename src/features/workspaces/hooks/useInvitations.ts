@@ -30,7 +30,6 @@ export function useCreateInvitation() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.workspaces.invitations(workspaceId),
       });
-      toast.success('Invitation sent');
     },
   });
 }
@@ -61,6 +60,20 @@ export function useAcceptInvitation() {
 
   return useMutation({
     mutationFn: (token: string) => invitationApi.acceptInvitation(token),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.invitations.pending() });
+      toast.success('Invitation accepted! Welcome to the workspace.');
+    },
+  });
+}
+
+export function useAcceptInvitationById() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (invitationId: string) => invitationApi.acceptInvitationById(invitationId),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
