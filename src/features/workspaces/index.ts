@@ -42,6 +42,7 @@ export { useWorkspaceActivity, useEntityHistory } from './hooks/useActivity';
 export { useWorkspacePermission } from './hooks/useWorkspacePermission';
 export { useActiveWorkspace } from './hooks/useActiveWorkspace';
 export { useWorkspaceRealtime } from './hooks/useWorkspaceRealtime';
+export { useAllWorkspacesRealtime } from './hooks/useAllWorkspacesRealtime';
 export { usePresence } from './hooks/usePresence';
 export {
   useGroups,
@@ -59,4 +60,6 @@ export {
   useWorkspaceUiStore,
   useActiveWorkspaceId,
   useSidebarOpen,
+  useIsAllWorkspaces,
+  ALL_WORKSPACES_ID,
 } from './stores/workspaceUiStore';

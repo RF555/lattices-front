@@ -6,6 +6,7 @@ import type { Todo, CreateTodoInput, UpdateTodoInput, TodoFilters } from '../typ
 interface ApiTodo {
   id: string;
   parent_id: string | null;
+  workspace_id?: string;
   title: string;
   description: string | null;
   is_completed: boolean;
@@ -25,6 +26,7 @@ function mapTodo(raw: ApiTodo): Todo {
     description: raw.description,
     isCompleted: raw.is_completed,
     parentId: raw.parent_id,
+    workspaceId: raw.workspace_id,
     position: raw.position,
     completedAt: raw.completed_at,
     createdAt: raw.created_at,

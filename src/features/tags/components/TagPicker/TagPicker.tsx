@@ -9,9 +9,10 @@ interface TagPickerProps {
   selectedIds: string[];
   onSelect: (tagId: string) => void;
   onDeselect: (tagId: string) => void;
+  workspaceId?: string;
 }
 
-export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps) {
+export function TagPicker({ selectedIds, onSelect, onDeselect, workspaceId }: TagPickerProps) {
   const { t } = useTranslation('tags');
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -21,8 +22,8 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { data: tags = [] } = useTags();
-  const createMutation = useCreateTag();
+  const { data: tags = [] } = useTags(workspaceId);
+  const createMutation = useCreateTag(workspaceId);
 
   const selectedTags = tags.filter((tag) => selectedIds.includes(tag.id));
   const availableTags = tags.filter(

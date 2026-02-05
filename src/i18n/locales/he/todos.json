@@ -12,7 +12,9 @@
     "removeTags": "הסרת תגיות",
     "addDescription": "+ הוספת תיאור",
     "addTags": "+ הוספת תגיות",
-    "subtaskInfo": "מוסיף כתת-משימה לפריט הנבחר"
+    "subtaskInfo": "מוסיף כתת-משימה לפריט הנבחר",
+    "selectWorkspace": "בחר סביבת עבודה...",
+    "noWorkspaceSelected": "בחר סביבת עבודה כדי ליצור משימה"
   },
   "toolbar": {
     "taskCount_one": "משימה {{count}}",

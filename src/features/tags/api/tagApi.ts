@@ -7,6 +7,7 @@ interface ApiTag {
   id: string;
   name: string;
   color_hex: string;
+  workspace_id?: string;
   usage_count?: number;
   created_at: string;
 }
@@ -16,6 +17,7 @@ function mapTag(raw: ApiTag): Tag {
     id: raw.id,
     name: raw.name,
     colorHex: raw.color_hex,
+    workspaceId: raw.workspace_id,
     usageCount: raw.usage_count,
     createdAt: raw.created_at,
   };

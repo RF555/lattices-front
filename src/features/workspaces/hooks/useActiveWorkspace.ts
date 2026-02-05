@@ -5,7 +5,8 @@ import type { Workspace } from '../types/workspace';
 
 interface ActiveWorkspaceResult {
   activeWorkspace: Workspace | null;
-  setActiveWorkspace: (id: string) => void;
+  setActiveWorkspace: (id: string | null) => void;
+  isAllWorkspaces: boolean;
   workspaces: Workspace[];
   isLoading: boolean;
 }
@@ -13,24 +14,27 @@ interface ActiveWorkspaceResult {
 export function useActiveWorkspace(): ActiveWorkspaceResult {
   const { data: workspaces = [], isLoading } = useWorkspaces();
   const activeWorkspaceId = useWorkspaceUiStore((s) => s.activeWorkspaceId);
+  const hasExplicitSelection = useWorkspaceUiStore((s) => s._hasExplicitSelection);
   const setActiveWorkspace = useWorkspaceUiStore((s) => s.setActiveWorkspace);
 
-  // Auto-select first workspace if none is selected or the selected one no longer exists
+  // Auto-select first workspace only if user hasn't explicitly selected anything yet
   useEffect(() => {
-    if (isLoading || workspaces.length === 0) return;
+    if (isLoading || workspaces.length === 0 || hasExplicitSelection) return;
 
-    const exists = workspaces.some((w) => w.id === activeWorkspaceId);
-    if (!activeWorkspaceId || !exists) {
-      setActiveWorkspace(workspaces[0].id);
-    }
-  }, [workspaces, activeWorkspaceId, isLoading, setActiveWorkspace]);
+    setActiveWorkspace(workspaces[0].id);
+  }, [workspaces, isLoading, hasExplicitSelection, setActiveWorkspace]);
 
-  const activeWorkspace =
-    workspaces.find((w) => w.id === activeWorkspaceId) || null;
+  // null + explicit selection = "All Workspaces" mode
+  const isAllWorkspaces = activeWorkspaceId === null && hasExplicitSelection;
+
+  const activeWorkspace = isAllWorkspaces
+    ? null
+    : workspaces.find((w) => w.id === activeWorkspaceId) || null;
 
   return {
     activeWorkspace,
     setActiveWorkspace,
+    isAllWorkspaces,
     workspaces,
     isLoading,
   };

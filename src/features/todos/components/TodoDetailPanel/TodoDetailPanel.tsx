@@ -8,6 +8,7 @@ import { TodoBreadcrumb } from '../TodoBreadcrumb';
 import { useUpdateTodo } from '../../hooks/useTodos';
 import { TagPicker } from '@features/tags/components/TagPicker';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
+import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { formatDate, formatDateFull } from '@lib/utils/formatDate';
 import type { Todo } from '../../types/todo';
 
@@ -24,6 +25,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   const [isDirty, setIsDirty] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const activeWorkspaceId = useActiveWorkspaceId();
   const updateMutation = useUpdateTodo();
   const updateMutate = updateMutation.mutate;
   const addTagMutation = useAddTagToTodo();
@@ -155,6 +157,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
             onDeselect={(tagId) =>
               removeTagMutation.mutate({ todoId: todo.id, tagId })
             }
+            workspaceId={activeWorkspaceId ?? undefined}
           />
         </div>
 

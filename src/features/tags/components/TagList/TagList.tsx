@@ -7,9 +7,13 @@ import { TagEditModal } from './TagEditModal';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import type { Tag } from '../../types/tag';
 
-export function TagList() {
+interface TagListProps {
+  workspaceId?: string;
+}
+
+export function TagList({ workspaceId }: TagListProps) {
   const { t } = useTranslation('tags');
-  const { data: tags = [], isLoading } = useTags();
+  const { data: tags = [], isLoading } = useTags(workspaceId);
   const deleteMutation = useDeleteTag();
   const [editingTag, setEditingTag] = useState<Tag | null>(null);
   const [deletingTagId, setDeletingTagId] = useState<string | null>(null);

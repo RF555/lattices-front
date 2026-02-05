@@ -5,6 +5,8 @@ import { cn } from '@lib/utils/cn';
 import { useIsMobile } from '@hooks/useIsMobile';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { useToggleTodo, useDeleteTodo, useUpdateTodo } from '../../hooks/useTodos';
+import { useIsAllWorkspaces } from '@features/workspaces/stores/workspaceUiStore';
+import { useWorkspaces } from '@features/workspaces/hooks/useWorkspaces';
 import { TodoCheckbox } from '../TodoTree/TodoCheckbox';
 import { TodoExpandButton } from '../TodoTree/TodoExpandButton';
 import { TodoActions } from '../TodoTree/TodoActions';
@@ -51,8 +53,16 @@ export function TodoNodeContent({
   const deleteMutate = deleteMutation.mutate;
   const updateMutate = updateMutation.mutate;
 
+  const isAllWorkspaces = useIsAllWorkspaces();
+  const { data: workspaces = [] } = useWorkspaces();
+
   const isSelected = selectedId === todo.id;
   const isCompleted = todo.isCompleted;
+
+  // Workspace badge for root-level todos in "All Workspaces" mode
+  const workspaceName = isAllWorkspaces && depth === 0 && todo.workspaceId
+    ? workspaces.find((w) => w.id === todo.workspaceId)?.name
+    : undefined;
 
   const handleToggle = useCallback(() => {
     toggleMutate({ id: todo.id, isCompleted: !todo.isCompleted });
@@ -125,15 +135,23 @@ export function TodoNodeContent({
           />
         ) : (
           <div className="flex-1 min-w-0 flex flex-wrap items-center gap-1 justify-between">
-            <span
-              className={cn(
-                'text-sm truncate',
-                isCompleted && 'line-through text-gray-500'
+            <div className="flex items-center gap-1.5 min-w-0">
+              {/* Workspace badge in All Workspaces mode */}
+              {workspaceName && (
+                <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 shrink-0">
+                  {workspaceName}
+                </span>
               )}
-              onDoubleClick={() => setIsEditing(true)}
-            >
-              {todo.title}
-            </span>
+              <span
+                className={cn(
+                  'text-sm truncate',
+                  isCompleted && 'line-through text-gray-500'
+                )}
+                onDoubleClick={() => setIsEditing(true)}
+              >
+                {todo.title}
+              </span>
+            </div>
             {/* Tag badges (read-only display in tree row) */}
             {todo.tags?.length > 0 && (
               <div className="flex items-center gap-1 shrink-0">

@@ -6,6 +6,10 @@ import { useAuthStore } from '@features/auth/stores/authStore';
 import { useNotificationUiStore } from '../stores/notificationUiStore';
 import { useToastStore } from '@stores/toastStore';
 
+// Minimum interval between reconnection-triggered invalidations (prevents burst
+// API calls when Supabase Realtime connection flaps with exponential backoff).
+const RECONNECT_INVALIDATION_COOLDOWN_MS = 30_000; // 30 seconds
+
 /**
  * Subscribe to Supabase Realtime for notification delivery.
  *
@@ -16,6 +20,7 @@ import { useToastStore } from '@stores/toastStore';
  *
  * Connection handling:
  * - On reconnect, invalidates all notification queries to catch missed events
+ *   (with a 30s cooldown to prevent burst invalidation from connection flapping)
  * - On channel error, increases unread count polling as fallback (30s)
  * - On recovery, restores normal polling interval (60s)
  *
@@ -30,6 +35,8 @@ export function useNotificationRealtime() {
   const showToastRef = useRef(useNotificationUiStore.getState().showToastOnNew);
   // Track whether we've connected before to distinguish reconnect from first connect
   const hasConnectedRef = useRef(false);
+  // Cooldown: track last invalidation timestamp to prevent burst from connection flapping
+  const lastInvalidatedRef = useRef<number>(0);
 
   useEffect(() => {
     const unsub = useNotificationUiStore.subscribe((state) => {
@@ -69,10 +76,15 @@ export function useNotificationRealtime() {
       onSubscriptionStatus: (status) => {
         if (status === 'SUBSCRIBED') {
           if (hasConnectedRef.current) {
-            // Reconnection — invalidate all notification queries to catch missed events
-            queryClient.invalidateQueries({
-              queryKey: queryKeys.notifications.all,
-            });
+            // Reconnection — invalidate all notification queries to catch missed events,
+            // but only if we haven't invalidated recently (prevents burst from flapping)
+            const now = Date.now();
+            if (now - lastInvalidatedRef.current > RECONNECT_INVALIDATION_COOLDOWN_MS) {
+              lastInvalidatedRef.current = now;
+              queryClient.invalidateQueries({
+                queryKey: queryKeys.notifications.all,
+              });
+            }
           }
           hasConnectedRef.current = true;
 

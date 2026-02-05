@@ -2,6 +2,11 @@
   "selectWorkspace": "Select workspace",
   "switchWorkspace": "Switch workspace",
   "createWorkspace": "Create Workspace",
+  "allWorkspaces": "All Workspaces",
+  "allWorkspacesDescription": "View tasks from all workspaces",
+  "switcher": {
+    "manage": "Manage Workspace"
+  },
 
   "form": {
     "name": "Name",
@@ -26,7 +31,8 @@
     "deleteWarning": "Deleting a workspace is permanent and cannot be undone. All tasks, tags, and member associations will be removed.",
     "deleteWorkspace": "Delete Workspace",
     "confirmDelete": "Delete Workspace?",
-    "confirmDeleteMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+    "confirmDeleteMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+    "tags": "Tags"
   },
 
   "sidebar": {

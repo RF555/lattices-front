@@ -10,11 +10,11 @@ export function useTags(workspaceId?: string) {
   });
 }
 
-export function useCreateTag() {
+export function useCreateTag(workspaceId?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateTagInput) => tagApi.create(input),
+    mutationFn: (input: CreateTagInput) => tagApi.create(input, workspaceId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.tags.lists() });
     },
