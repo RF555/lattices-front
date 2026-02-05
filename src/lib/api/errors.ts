@@ -24,7 +24,7 @@ export class ApiException extends Error {
       message: (body?.message as string) || 'An unexpected error occurred',
       code: (body?.error_code as string) || 'UNKNOWN_ERROR',
       status: response.status,
-      details: (body?.details as Record<string, unknown> | undefined) ?? undefined,
+      details: body?.details as Record<string, unknown> | undefined,
     };
     return new ApiException(apiError);
   }

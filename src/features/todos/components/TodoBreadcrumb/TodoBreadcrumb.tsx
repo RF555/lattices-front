@@ -22,7 +22,10 @@ export function TodoBreadcrumb({ todoId }: TodoBreadcrumbProps) {
   if (ancestors.length === 0) return null;
 
   return (
-    <nav aria-label={t('breadcrumb.ariaLabel')} className="flex items-center gap-1 text-xs text-gray-400 overflow-x-auto scrollbar-hide">
+    <nav
+      aria-label={t('breadcrumb.ariaLabel')}
+      className="flex items-center gap-1 text-xs text-gray-400 overflow-x-auto scrollbar-hide"
+    >
       {ancestors.map((ancestor, index) => (
         <span key={ancestor.id} className="flex items-center gap-1 shrink-0">
           {index > 0 && <ChevronRight className="w-3 h-3 shrink-0 rtl:-scale-x-100" />}

@@ -64,11 +64,7 @@ export function SortableTodoTree() {
       let newPosition: number;
 
       // If dropping onto an expanded item with children, add as first child
-      if (
-        expandedIds.has(overId) &&
-        overItem.children &&
-        overItem.children.length > 0
-      ) {
+      if (expandedIds.has(overId) && overItem.children && overItem.children.length > 0) {
         newParentId = overId;
         newPosition = 0;
       } else {
@@ -83,7 +79,7 @@ export function SortableTodoTree() {
         position: newPosition,
       });
     },
-    [flatItems, expandedIds, moveMutation, parentMap]
+    [flatItems, expandedIds, moveMutation, parentMap],
   );
 
   if (isLoading) {
@@ -91,11 +87,7 @@ export function SortableTodoTree() {
   }
 
   if (error) {
-    return (
-      <div className="p-4 text-red-600 bg-red-50 rounded-md">
-        {t('tree.error')}
-      </div>
-    );
+    return <div className="p-4 text-red-600 bg-red-50 rounded-md">{t('tree.error')}</div>;
   }
 
   if (!todos?.length) {
@@ -198,7 +190,7 @@ function computeBranchLines(flatItems: Todo[]): Map<string, number[]> {
 function isDescendantOf(
   ancestorId: string,
   itemId: string,
-  parentMap: Map<string, string | null>
+  parentMap: Map<string, string | null>,
 ): boolean {
   let current = parentMap.get(itemId) ?? null;
   const visited = new Set<string>(); // safety guard against corrupted data

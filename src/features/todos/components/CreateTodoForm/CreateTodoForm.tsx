@@ -4,6 +4,11 @@ import { useCreateTodo } from '../../hooks/useTodos';
 import { useSelectedTodoId } from '../../stores/todoUiStore';
 import { useAddTagToTodo } from '@features/tags/hooks/useTags';
 import { TagPicker } from '@features/tags/components/TagPicker';
+import {
+  useActiveWorkspaceId,
+  useIsAllWorkspaces,
+} from '@features/workspaces/stores/workspaceUiStore';
+import { useWorkspaces } from '@features/workspaces/hooks/useWorkspaces';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Textarea } from '@components/ui/Textarea';
@@ -15,8 +20,17 @@ export function CreateTodoForm() {
   const [showDescription, setShowDescription] = useState(false);
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [showTags, setShowTags] = useState(false);
+  const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string>('');
 
-  const createMutation = useCreateTodo();
+  const activeWorkspaceId = useActiveWorkspaceId();
+  const isAllWorkspaces = useIsAllWorkspaces();
+  const { data: workspaces = [] } = useWorkspaces();
+
+  // In "All Workspaces" mode, use the workspace selected in the form; otherwise use the active workspace
+  const effectiveWorkspaceId = isAllWorkspaces
+    ? selectedWorkspaceId || undefined
+    : (activeWorkspaceId ?? undefined);
+  const createMutation = useCreateTodo(effectiveWorkspaceId);
   const addTagMutation = useAddTagToTodo();
   const selectedId = useSelectedTodoId();
 
@@ -24,6 +38,7 @@ export function CreateTodoForm() {
     e.preventDefault();
 
     if (!title.trim()) return;
+    if (isAllWorkspaces && !selectedWorkspaceId) return;
 
     try {
       // Fix M8: Guard against temp IDs leaking into parentId
@@ -53,7 +68,7 @@ export function CreateTodoForm() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e);
+      void handleSubmit(e);
     }
   };
 
@@ -76,19 +91,47 @@ export function CreateTodoForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(e);
+      }}
+      className="space-y-3"
+    >
+      {isAllWorkspaces && (
+        <select
+          value={selectedWorkspaceId}
+          onChange={(e) => {
+            setSelectedWorkspaceId(e.target.value);
+          }}
+          className="w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1"
+        >
+          <option value="">{t('createForm.selectWorkspace')}</option>
+          {workspaces.map((ws) => (
+            <option key={ws.id} value={ws.id}>
+              {ws.name}
+            </option>
+          ))}
+        </select>
+      )}
+
       <div className="flex items-center gap-2">
         <Input
           type="text"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => {
+            setTitle(e.target.value);
+          }}
           onKeyDown={handleKeyDown}
-          placeholder={selectedId ? t('createForm.placeholderSubtask') : t('createForm.placeholderTask')}
+          placeholder={
+            selectedId ? t('createForm.placeholderSubtask') : t('createForm.placeholderTask')
+          }
           className="flex-1"
         />
         <Button
           type="submit"
-          disabled={!title.trim() || createMutation.isPending}
+          disabled={
+            !title.trim() || createMutation.isPending || (isAllWorkspaces && !selectedWorkspaceId)
+          }
           isLoading={createMutation.isPending}
         >
           {t('createForm.add')}
@@ -99,7 +142,9 @@ export function CreateTodoForm() {
         <div className="animate-in slide-in-from-top-1 fade-in duration-150 space-y-1">
           <Textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
             placeholder={t('createForm.descriptionPlaceholder')}
             className="text-sm"
             rows={2}
@@ -118,8 +163,13 @@ export function CreateTodoForm() {
         <div className="animate-in slide-in-from-top-1 fade-in duration-150 space-y-1">
           <TagPicker
             selectedIds={selectedTagIds}
-            onSelect={(tagId) => setSelectedTagIds((prev) => [...prev, tagId])}
-            onDeselect={(tagId) => setSelectedTagIds((prev) => prev.filter((id) => id !== tagId))}
+            onSelect={(tagId) => {
+              setSelectedTagIds((prev) => [...prev, tagId]);
+            }}
+            onDeselect={(tagId) => {
+              setSelectedTagIds((prev) => prev.filter((id) => id !== tagId));
+            }}
+            workspaceId={effectiveWorkspaceId}
           />
           <button
             type="button"
@@ -152,11 +202,7 @@ export function CreateTodoForm() {
           </button>
         )}
 
-        {selectedId && (
-          <p className="text-xs text-gray-500">
-            {t('createForm.subtaskInfo')}
-          </p>
-        )}
+        {selectedId && <p className="text-xs text-gray-500">{t('createForm.subtaskInfo')}</p>}
       </div>
     </form>
   );

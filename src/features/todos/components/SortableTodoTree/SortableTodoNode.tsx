@@ -29,22 +29,15 @@ export const SortableTodoNode = memo(function SortableTodoNode({
 }: SortableTodoNodeProps) {
   const isMobile = useIsMobile();
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-    isOver,
-  } = useSortable({
-    id: todo.id,
-    data: {
-      type: 'todo',
-      todo,
-      depth,
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging, isOver } =
+    useSortable({
+      id: todo.id,
+      data: {
+        type: 'todo',
+        todo,
+        depth,
+      },
+    });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -56,6 +49,7 @@ export const SortableTodoNode = memo(function SortableTodoNode({
       ref={setNodeRef}
       style={style}
       role="treeitem"
+      aria-selected={false}
       aria-expanded={hasChildren ? isExpanded : undefined}
       className="relative"
     >
@@ -74,7 +68,7 @@ export const SortableTodoNode = memo(function SortableTodoNode({
         hasChildren={hasChildren}
         className={cn(
           isDragging && 'opacity-50 bg-gray-100',
-          isOver && 'ring-2 ring-primary ring-offset-1'
+          isOver && 'ring-2 ring-primary ring-offset-1',
         )}
         leadingSlot={
           <button
@@ -84,7 +78,7 @@ export const SortableTodoNode = memo(function SortableTodoNode({
               'cursor-grab active:cursor-grabbing',
               'p-1 sm:p-0.5 text-gray-400 hover:text-gray-600',
               'sm:opacity-0 sm:group-hover:opacity-100 transition-opacity',
-              'focus:outline-none focus:ring-2 focus:ring-primary rounded'
+              'focus:outline-none focus:ring-2 focus:ring-primary rounded',
             )}
             aria-label="Drag to reorder"
           >

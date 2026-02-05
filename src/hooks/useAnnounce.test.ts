@@ -29,12 +29,11 @@ describe('useAnnounce', () => {
   it('should hide announcer visually but keep it accessible', () => {
     renderHook(() => useAnnounce());
 
-    const announcer = document.querySelector('[aria-live]') as HTMLElement;
+    const announcer = document.querySelector('[aria-live]')!;
     expect(announcer).not.toBeNull();
     expect(announcer.className).toContain('absolute');
     expect(announcer.className).toContain('overflow-hidden');
-    // Browser normalizes rect() to include px units
-    expect(announcer.style.clip).toMatch(/rect\(0(px)?, 0(px)?, 0(px)?, 0(px)?\)/);
+    expect((announcer as HTMLElement).style.clipPath).toBe('inset(50%)');
   });
 
   it('should announce messages', () => {

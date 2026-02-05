@@ -8,7 +8,7 @@ const MOBILE_BREAKPOINT = 640; // Tailwind's `sm` breakpoint
  */
 export function useIsMobile(): boolean {
   const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== 'undefined' ? window.innerWidth < MOBILE_BREAKPOINT : false
+    typeof window !== 'undefined' ? window.innerWidth < MOBILE_BREAKPOINT : false,
   );
 
   useEffect(() => {
@@ -22,7 +22,9 @@ export function useIsMobile(): boolean {
     setIsMobile(mql.matches);
 
     mql.addEventListener('change', handleChange);
-    return () => mql.removeEventListener('change', handleChange);
+    return () => {
+      mql.removeEventListener('change', handleChange);
+    };
   }, []);
 
   return isMobile;

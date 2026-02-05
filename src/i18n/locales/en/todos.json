@@ -12,7 +12,9 @@
     "removeTags": "Remove tags",
     "addDescription": "+ Add description",
     "addTags": "+ Add tags",
-    "subtaskInfo": "Adding as subtask to selected item"
+    "subtaskInfo": "Adding as subtask to selected item",
+    "selectWorkspace": "Select workspace...",
+    "noWorkspaceSelected": "Choose a workspace to create a task"
   },
   "toolbar": {
     "taskCount_one": "{{count}} task",

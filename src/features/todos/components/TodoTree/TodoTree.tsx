@@ -3,14 +3,21 @@ import { useShallow } from 'zustand/react/shallow';
 import { useTranslation } from 'react-i18next';
 import { useTodos } from '../../hooks/useTodos';
 import { useTodoUiStore, useExpandedIds } from '../../stores/todoUiStore';
+import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { filterTodoTree, sortTodoTree } from '../../utils/treeUtils';
 import { TodoNode } from './TodoNode';
 import { TodoTreeEmpty } from './TodoTreeEmpty';
 import { TodoTreeLoading } from './TodoTreeLoading';
+import type { PresenceUser } from '@lib/realtime';
 
-export function TodoTree() {
+interface TodoTreeProps {
+  viewingTask?: Map<string, PresenceUser[]>;
+}
+
+export function TodoTree({ viewingTask }: TodoTreeProps) {
   const { t } = useTranslation('todos');
-  const { data: todos, isLoading, error } = useTodos();
+  const activeWorkspaceId = useActiveWorkspaceId();
+  const { data: todos, isLoading, error } = useTodos(undefined, activeWorkspaceId || undefined);
   const expandedIds = useExpandedIds();
   // Fix M2: Use useShallow to prevent re-renders
   const { searchQuery, filterTagIds, showCompleted, sortBy, sortOrder } = useTodoUiStore(
@@ -20,7 +27,7 @@ export function TodoTree() {
       showCompleted: s.showCompleted,
       sortBy: s.sortBy,
       sortOrder: s.sortOrder,
-    }))
+    })),
   );
 
   const filteredTodos = useMemo(() => {
@@ -33,9 +40,8 @@ export function TodoTree() {
     }
 
     if (filterTagIds.length > 0) {
-      result = filterTodoTree(
-        result,
-        (todo) => filterTagIds.some((tagId) => todo.tags?.some((t) => t.id === tagId))
+      result = filterTodoTree(result, (todo) =>
+        filterTagIds.some((tagId) => todo.tags.some((t) => t.id === tagId)),
       );
     }
 
@@ -46,7 +52,7 @@ export function TodoTree() {
         (todo) =>
           todo.title.toLowerCase().includes(query) ||
           (todo.description?.toLowerCase().includes(query) ?? false) ||
-          (todo.tags?.some((t) => t.name.toLowerCase().includes(query)) ?? false)
+          todo.tags.some((t) => t.name.toLowerCase().includes(query)),
       );
     }
 
@@ -61,11 +67,7 @@ export function TodoTree() {
   }
 
   if (error) {
-    return (
-      <div className="p-4 text-red-600 bg-red-50 rounded-md">
-        {t('tree.error')}
-      </div>
-    );
+    return <div className="p-4 text-red-600 bg-red-50 rounded-md">{t('tree.error')}</div>;
   }
 
   if (!filteredTodos.length) {
@@ -80,6 +82,7 @@ export function TodoTree() {
           todo={todo}
           depth={0}
           isExpanded={expandedIds.has(todo.id)}
+          viewingTask={viewingTask}
         />
       ))}
     </div>

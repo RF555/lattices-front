@@ -1,4 +1,9 @@
-import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import {
+  createClient,
+  type SupabaseClient,
+  type AuthUser,
+  type AuthSession,
+} from '@supabase/supabase-js';
 import type {
   IAuthProvider,
   User,
@@ -20,10 +25,11 @@ export class SupabaseAuthProvider implements IAuthProvider {
 
     if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error(
-        'Supabase configuration missing: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY required'
+        'Supabase configuration missing: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY required',
       );
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Supabase createClient generic inference mismatch
     this.client = createClient(supabaseUrl, supabaseAnonKey);
   }
 
@@ -33,8 +39,9 @@ export class SupabaseAuthProvider implements IAuthProvider {
       password: credentials.password,
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- defensive: Supabase may return null user/session on auth failure
     if (error || !data.user || !data.session) {
-      throw new Error(error?.message || 'Login failed');
+      throw new Error(error?.message ?? 'Login failed');
     }
 
     return {
@@ -111,22 +118,19 @@ export class SupabaseAuthProvider implements IAuthProvider {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private mapUser(supabaseUser: any): User {
+  private mapUser(supabaseUser: AuthUser): User {
+    const metadata = supabaseUser.user_metadata as Record<string, unknown> | undefined;
     return {
       id: supabaseUser.id,
-      email: supabaseUser.email || '',
+      email: supabaseUser.email ?? '',
       name:
-        supabaseUser.user_metadata?.display_name ||
-        supabaseUser.user_metadata?.name ||
-        undefined,
-      avatarUrl: supabaseUser.user_metadata?.avatar_url || undefined,
+        (metadata?.display_name as string | undefined) ?? (metadata?.name as string | undefined),
+      avatarUrl: metadata?.avatar_url as string | undefined,
       createdAt: supabaseUser.created_at,
     };
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private mapTokens(session: any): AuthTokens {
+  private mapTokens(session: AuthSession): AuthTokens {
     return {
       accessToken: session.access_token,
       refreshToken: session.refresh_token,

@@ -10,10 +10,10 @@
  *   render(<MyComponent />)
  */
 
-import { ReactElement, ReactNode } from 'react';
-import { render, RenderOptions } from '@testing-library/react';
+import { type ReactElement, type ReactNode } from 'react';
+import { render, type RenderOptions } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { MemoryRouter, MemoryRouterProps } from 'react-router';
+import { MemoryRouter, type MemoryRouterProps } from 'react-router';
 
 /**
  * Creates a test-specific QueryClient with:
@@ -81,7 +81,7 @@ interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
  */
 function customRender(
   ui: ReactElement,
-  { queryClient, routerProps, ...options }: CustomRenderOptions = {}
+  { queryClient, routerProps, ...options }: CustomRenderOptions = {},
 ) {
   return render(ui, {
     wrapper: ({ children }) => (

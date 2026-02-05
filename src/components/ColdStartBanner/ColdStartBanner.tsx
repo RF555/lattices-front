@@ -17,7 +17,7 @@ export function ColdStartBanner() {
       if (mounted) setBannerState('waking');
     }, 2000);
 
-    wakeUpBackend().then((isAwake) => {
+    void wakeUpBackend().then((isAwake) => {
       if (!mounted) return;
       clearTimeout(delayTimer);
 

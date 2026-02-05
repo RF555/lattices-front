@@ -8,6 +8,7 @@ import { TodoBreadcrumb } from '../TodoBreadcrumb';
 import { useUpdateTodo } from '../../hooks/useTodos';
 import { TagPicker } from '@features/tags/components/TagPicker';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
+import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { formatDate, formatDateFull } from '@lib/utils/formatDate';
 import type { Todo } from '../../types/todo';
 
@@ -24,6 +25,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   const [isDirty, setIsDirty] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  const activeWorkspaceId = useActiveWorkspaceId();
   const updateMutation = useUpdateTodo();
   const updateMutate = updateMutation.mutate;
   const addTagMutation = useAddTagToTodo();
@@ -86,7 +88,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
         handleSave();
       }
     },
-    [handleCancel, handleSave]
+    [handleCancel, handleSave],
   );
 
   const handleContainerClick = useCallback((e: React.MouseEvent) => {
@@ -94,6 +96,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   }, []);
 
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- click handler only stops event propagation to parent row
     <div
       className="border-t border-gray-100 bg-gray-50/50 shadow-panel animate-in slide-in-from-top-1 fade-in duration-200"
       style={{ paddingInlineStart: `${(isMobile ? Math.min(indentPx, 80) : indentPx) + 8}px` }}
@@ -146,15 +149,16 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
 
         {/* Tags section */}
         <div className="space-y-1">
-          <label className="block text-xs font-medium text-gray-500">{t('detail.tags')}</label>
+          <span className="block text-xs font-medium text-gray-500">{t('detail.tags')}</span>
           <TagPicker
-            selectedIds={todo.tags?.map((t) => t.id) ?? []}
-            onSelect={(tagId) =>
-              addTagMutation.mutate({ todoId: todo.id, tagId })
-            }
-            onDeselect={(tagId) =>
-              removeTagMutation.mutate({ todoId: todo.id, tagId })
-            }
+            selectedIds={todo.tags.map((t) => t.id)}
+            onSelect={(tagId) => {
+              addTagMutation.mutate({ todoId: todo.id, tagId });
+            }}
+            onDeselect={(tagId) => {
+              removeTagMutation.mutate({ todoId: todo.id, tagId });
+            }}
+            workspaceId={activeWorkspaceId ?? undefined}
           />
         </div>
 

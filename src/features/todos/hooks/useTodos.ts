@@ -4,18 +4,20 @@ import { todoApi } from '../api/todoApi';
 import { buildTodoTree } from '../utils/treeUtils';
 import type { Todo, CreateTodoInput, UpdateTodoInput, TodoFilters } from '../types/todo';
 
-export function useTodos(filters?: TodoFilters) {
+export function useTodos(filters?: TodoFilters, workspaceId?: string) {
+  const filterKey = { ...(filters || {}), workspaceId };
   return useQuery({
-    queryKey: queryKeys.todos.list(filters || {}),
-    queryFn: () => todoApi.getAll(filters),
+    queryKey: queryKeys.todos.list(filterKey),
+    queryFn: () => todoApi.getAll(filters, workspaceId),
     select: (data) => buildTodoTree(data),
   });
 }
 
-export function useFlatTodos(filters?: TodoFilters) {
+export function useFlatTodos(filters?: TodoFilters, workspaceId?: string) {
+  const filterKey = { ...(filters || {}), workspaceId };
   return useQuery({
-    queryKey: queryKeys.todos.list(filters || {}),
-    queryFn: () => todoApi.getAll(filters),
+    queryKey: queryKeys.todos.list(filterKey),
+    queryFn: () => todoApi.getAll(filters, workspaceId),
   });
 }
 
@@ -23,15 +25,15 @@ export function useTodo(id: string) {
   return useQuery({
     queryKey: queryKeys.todos.detail(id),
     queryFn: () => todoApi.getById(id),
-    enabled: !!id,
+    enabled: id.length > 0,
   });
 }
 
-export function useCreateTodo() {
+export function useCreateTodo(workspaceId?: string) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateTodoInput) => todoApi.create(input),
+    mutationFn: (input: CreateTodoInput) => todoApi.create(input, workspaceId),
 
     onMutate: async (newTodo) => {
       await queryClient.cancelQueries({ queryKey: queryKeys.todos.lists() });
@@ -73,7 +75,7 @@ export function useCreateTodo() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
     },
   });
 }
@@ -97,10 +99,8 @@ export function useUpdateTodo() {
           queryClient.setQueryData<Todo[]>(
             queryKey,
             data.map((todo) =>
-              todo.id === id
-                ? { ...todo, ...input, updatedAt: new Date().toISOString() }
-                : todo
-            )
+              todo.id === id ? { ...todo, ...input, updatedAt: new Date().toISOString() } : todo,
+            ),
           );
         }
       }
@@ -117,7 +117,7 @@ export function useUpdateTodo() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
     },
   });
 }
@@ -150,7 +150,7 @@ export function useDeleteTodo() {
 
           queryClient.setQueryData<Todo[]>(
             queryKey,
-            data.filter((todo) => !idsToRemove.has(todo.id))
+            data.filter((todo) => !idsToRemove.has(todo.id)),
           );
         }
       }
@@ -167,7 +167,7 @@ export function useDeleteTodo() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
     },
   });
 }
@@ -195,12 +195,10 @@ export function useToggleTodo() {
                 ? {
                     ...todo,
                     isCompleted,
-                    completedAt: isCompleted
-                      ? new Date().toISOString()
-                      : null,
+                    completedAt: isCompleted ? new Date().toISOString() : null,
                   }
-                : todo
-            )
+                : todo,
+            ),
           );
         }
       }
@@ -217,7 +215,7 @@ export function useToggleTodo() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
     },
   });
 }
@@ -250,8 +248,8 @@ export function useMoveTodo() {
             data.map((todo) =>
               todo.id === id
                 ? { ...todo, parentId, position, updatedAt: new Date().toISOString() }
-                : todo
-            )
+                : todo,
+            ),
           );
         }
       }
@@ -268,7 +266,7 @@ export function useMoveTodo() {
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
     },
   });
 }

@@ -9,9 +9,10 @@ interface TagPickerProps {
   selectedIds: string[];
   onSelect: (tagId: string) => void;
   onDeselect: (tagId: string) => void;
+  workspaceId?: string;
 }
 
-export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps) {
+export function TagPicker({ selectedIds, onSelect, onDeselect, workspaceId }: TagPickerProps) {
   const { t } = useTranslation('tags');
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -21,19 +22,15 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { data: tags = [] } = useTags();
-  const createMutation = useCreateTag();
+  const { data: tags = [] } = useTags(workspaceId);
+  const createMutation = useCreateTag(workspaceId);
 
   const selectedTags = tags.filter((tag) => selectedIds.includes(tag.id));
   const availableTags = tags.filter(
-    (tag) =>
-      !selectedIds.includes(tag.id) &&
-      tag.name.toLowerCase().includes(search.toLowerCase())
+    (tag) => !selectedIds.includes(tag.id) && tag.name.toLowerCase().includes(search.toLowerCase()),
   );
 
-  const exactMatch = tags.find(
-    (tag) => tag.name.toLowerCase() === search.toLowerCase()
-  );
+  const exactMatch = tags.find((tag) => tag.name.toLowerCase() === search.toLowerCase());
 
   useEffect(() => {
     if (isOpen) {
@@ -43,10 +40,7 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(e.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
         setSearch('');
         setIsCreating(false);
@@ -54,7 +48,9 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
   const handleCreateTag = async () => {
@@ -77,18 +73,33 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
     <div ref={containerRef} className="relative">
       {/* Selected Tags */}
       <div
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-controls="tag-picker-listbox"
+        aria-haspopup="listbox"
+        tabIndex={0}
         className={cn(
           'flex flex-wrap gap-1 p-2 min-h-[38px]',
           'border rounded-md cursor-text',
-          isOpen ? 'border-primary ring-1 ring-primary' : 'border-gray-300'
+          isOpen ? 'border-primary ring-1 ring-primary' : 'border-gray-300',
         )}
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsOpen(true);
+          }
+        }}
       >
         {selectedTags.map((tag) => (
           <TagBadge
             key={tag.id}
             tag={tag}
-            onRemove={() => onDeselect(tag.id)}
+            onRemove={() => {
+              onDeselect(tag.id);
+            }}
           />
         ))}
         {isOpen && (
@@ -96,13 +107,15 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
             ref={inputRef}
             type="text"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
             placeholder={t('picker.searchPlaceholder')}
             className="flex-1 min-w-[100px] outline-none text-sm"
             onKeyDown={(e) => {
               if (e.key === 'Enter' && search && !exactMatch) {
                 e.preventDefault();
-                handleCreateTag();
+                void handleCreateTag();
               }
             }}
           />
@@ -114,7 +127,11 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 w-full min-w-[200px] mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto">
+        <div
+          id="tag-picker-listbox"
+          role="listbox"
+          className="absolute z-10 w-full min-w-[200px] mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto"
+        >
           {/* Available Tags */}
           {availableTags.length > 0 && (
             <div className="p-1">
@@ -153,10 +170,12 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
                         type="button"
                         className={cn(
                           'w-7 h-7 sm:w-5 sm:h-5 rounded-full',
-                          newTagColor === color && 'ring-2 ring-offset-1 ring-gray-400'
+                          newTagColor === color && 'ring-2 ring-offset-1 ring-gray-400',
                         )}
                         style={{ backgroundColor: color }}
-                        onClick={() => setNewTagColor(color)}
+                        onClick={() => {
+                          setNewTagColor(color);
+                        }}
                       />
                     ))}
                   </div>
@@ -164,7 +183,9 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
                     <button
                       type="button"
                       className="flex-1 text-sm px-2 py-1 bg-primary text-white rounded hover:bg-primary/90"
-                      onClick={handleCreateTag}
+                      onClick={() => {
+                        void handleCreateTag();
+                      }}
                       disabled={createMutation.isPending}
                     >
                       {createMutation.isPending ? t('picker.creating') : t('picker.create')}
@@ -172,7 +193,9 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
                     <button
                       type="button"
                       className="text-sm px-2 py-1 border rounded hover:bg-gray-50"
-                      onClick={() => setIsCreating(false)}
+                      onClick={() => {
+                        setIsCreating(false);
+                      }}
                     >
                       {t('actions.cancel', { ns: 'common' })}
                     </button>
@@ -182,7 +205,9 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
                 <button
                   type="button"
                   className="w-full flex items-center gap-2 px-2 py-1.5 text-left text-sm rounded hover:bg-gray-100 text-primary"
-                  onClick={() => setIsCreating(true)}
+                  onClick={() => {
+                    setIsCreating(true);
+                  }}
                 >
                   <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
                     <path
@@ -200,9 +225,7 @@ export function TagPicker({ selectedIds, onSelect, onDeselect }: TagPickerProps)
 
           {/* Empty State */}
           {availableTags.length === 0 && !search && (
-            <div className="p-4 text-center text-sm text-gray-500">
-              {t('picker.emptyState')}
-            </div>
+            <div className="p-4 text-center text-sm text-gray-500">{t('picker.emptyState')}</div>
           )}
         </div>
       )}

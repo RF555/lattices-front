@@ -22,7 +22,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           'px-3 py-2 text-sm shadow-sm',
           'focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary',
           'disabled:bg-gray-50 disabled:text-gray-500',
-          className
+          className,
         )}
         {...props}
       >
@@ -32,17 +32,13 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </option>
         )}
         {options.map((option) => (
-          <option
-            key={option.value}
-            value={option.value}
-            disabled={option.disabled}
-          >
+          <option key={option.value} value={option.value} disabled={option.disabled}>
             {option.label}
           </option>
         ))}
       </select>
     );
-  }
+  },
 );
 
 Select.displayName = 'Select';

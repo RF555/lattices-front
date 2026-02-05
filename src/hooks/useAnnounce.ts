@@ -7,9 +7,8 @@ export function useAnnounce() {
     const announcer = document.createElement('div');
     announcer.setAttribute('aria-live', 'polite');
     announcer.setAttribute('aria-atomic', 'true');
-    announcer.className =
-      'absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0';
-    announcer.style.clip = 'rect(0, 0, 0, 0)';
+    announcer.className = 'absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0';
+    announcer.style.clipPath = 'inset(50%)';
     document.body.appendChild(announcer);
     announcerRef.current = announcer;
 

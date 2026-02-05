@@ -1,0 +1,59 @@
+{
+  "title": "התראות",
+  "empty": "אין התראות עדיין",
+  "allCaughtUp": "הכל נקרא!",
+  "markAllRead": "סמן הכל כנקרא",
+  "seeAll": "ראה את כל ההתראות",
+  "unreadCount": "{{count}} לא נקראו",
+  "loadMore": "טען עוד",
+  "filterAll": "הכל",
+  "filterUnread": "לא נקראו",
+  "newNotification": "התראה חדשה",
+  "dismiss": "בטל",
+  "unknownActor": "מישהו",
+  "unknownEntity": "פריט",
+  "unknownWorkspace": "סביבת עבודה",
+
+  "type": {
+    "task.completed": "{{actorName}} השלים/ה את \"{{entityTitle}}\"",
+    "task.updated": "{{actorName}} עדכן/ה את \"{{entityTitle}}\"",
+    "task.created": "{{actorName}} יצר/ה את \"{{entityTitle}}\"",
+    "task.deleted": "{{actorName}} מחק/ה את \"{{entityTitle}}\"",
+    "member.added": "{{actorName}} הוסיף/ה אותך ל\"{{workspaceName}}\"",
+    "member.removed": "הוסרת מ\"{{workspaceName}}\"",
+    "member.role_changed": "התפקיד שלך ב\"{{workspaceName}}\" שונה ל{{newRole}}",
+    "invitation.received": "{{actorName}} הזמין/ה אותך להצטרף ל\"{{workspaceName}}\"",
+    "invitation.accepted": "{{actorName}} קיבל/ה את ההזמנה שלך ל\"{{workspaceName}}\"",
+    "group.member_added": "{{actorName}} הוסיף/ה אותך לקבוצה \"{{groupName}}\""
+  },
+
+  "preferences": {
+    "title": "העדפות התראות",
+    "type": "סוג התראה",
+    "inApp": "באפליקציה",
+    "email": "אימייל",
+    "comingSoon": "בקרוב",
+    "mandatory": "תמיד פעיל",
+    "save": "שמור העדפות",
+    "taskNotifications": "התראות משימות",
+    "workspaceNotifications": "התראות סביבת עבודה",
+    "invitationNotifications": "התראות הזמנות",
+    "groupNotifications": "התראות קבוצות",
+    "general": "כללי",
+    "showToast": "הצג התראות מוקפצות",
+    "showToastDescription": "הצג הודעה קצרה כשמגיעות התראות חדשות"
+  },
+
+  "typeLabel": {
+    "task.completed": "משימה הושלמה",
+    "task.updated": "משימה עודכנה",
+    "task.created": "משימה נוצרה",
+    "task.deleted": "משימה נמחקה",
+    "member.added": "נוספת לסביבת עבודה",
+    "member.removed": "הוסרת מסביבת עבודה",
+    "member.role_changed": "תפקיד שונה",
+    "invitation.received": "הזמנה התקבלה",
+    "invitation.accepted": "הזמנה אושרה",
+    "group.member_added": "נוספת לקבוצה"
+  }
+}

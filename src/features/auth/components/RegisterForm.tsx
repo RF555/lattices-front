@@ -31,14 +31,19 @@ export function RegisterForm() {
         password: data.password,
         name: data.name || undefined,
       });
-      navigate('/app', { replace: true });
+      void navigate('/app', { replace: true });
     } catch {
       // Error is handled by store
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={(e) => {
+        void handleSubmit(onSubmit)(e);
+      }}
+      className="space-y-6"
+    >
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-gray-700">
           {t('register.name')}
@@ -64,9 +69,7 @@ export function RegisterForm() {
           placeholder={t('register.emailPlaceholder')}
           error={!!errors.email}
         />
-        {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-        )}
+        {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
       </div>
 
       <div>
@@ -81,9 +84,7 @@ export function RegisterForm() {
           placeholder={t('register.passwordPlaceholder')}
           error={!!errors.password}
         />
-        {errors.password && (
-          <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-        )}
+        {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
       </div>
 
       <div>
@@ -103,11 +104,7 @@ export function RegisterForm() {
         )}
       </div>
 
-      {error && (
-        <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">
-          {error}
-        </div>
-      )}
+      {error && <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">{error}</div>}
 
       <Button type="submit" isLoading={isLoading} className="w-full">
         {t('register.createAccount')}

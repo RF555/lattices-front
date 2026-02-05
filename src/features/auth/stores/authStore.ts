@@ -8,12 +8,16 @@ import {
   type RegisterCredentials,
 } from '@lib/auth';
 import { apiClient } from '@lib/api/client';
+import { realtimeManager } from '@lib/realtime';
+import { queryClient } from '@/app/providers/QueryProvider';
+import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
 
 interface AuthState {
   user: User | null;
   tokens: AuthTokens | null;
   isLoading: boolean;
   isInitialized: boolean;
+  isExplicitLogout: boolean;
   error: string | null;
 }
 
@@ -32,6 +36,7 @@ const initialState: AuthState = {
   tokens: null,
   isLoading: false,
   isInitialized: false,
+  isExplicitLogout: false,
   error: null,
 };
 
@@ -53,11 +58,12 @@ export const useAuthStore = create<AuthStore>()(
 
           try {
             const newTokens = await authProvider.refreshToken(currentTokens.refreshToken);
+            realtimeManager.setAuth(newTokens.accessToken);
             set({ tokens: newTokens });
             return newTokens.accessToken;
           } catch {
             // Refresh failed - force logout
-            apiClient.setTokenGetter(() => null);
+            queryClient.clear();
             set({ ...initialState, isInitialized: true });
             return null;
           }
@@ -67,6 +73,7 @@ export const useAuthStore = create<AuthStore>()(
           const session = await authProvider.getSession();
 
           if (session) {
+            realtimeManager.setAuth(session.tokens.accessToken);
             set({
               user: session.user,
               tokens: session.tokens,
@@ -87,7 +94,9 @@ export const useAuthStore = create<AuthStore>()(
 
         try {
           const { user, tokens } = await authProvider.login(credentials);
-          set({ user, tokens, isLoading: false });
+          queryClient.clear();
+          realtimeManager.setAuth(tokens.accessToken);
+          set({ user, tokens, isLoading: false, isExplicitLogout: false });
         } catch (error) {
           set({
             isLoading: false,
@@ -102,7 +111,9 @@ export const useAuthStore = create<AuthStore>()(
 
         try {
           const { user, tokens } = await authProvider.register(credentials);
-          set({ user, tokens, isLoading: false });
+          queryClient.clear();
+          realtimeManager.setAuth(tokens.accessToken);
+          set({ user, tokens, isLoading: false, isExplicitLogout: false });
         } catch (error) {
           set({
             isLoading: false,
@@ -116,12 +127,15 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true });
 
         try {
+          realtimeManager.cleanup();
           await authProvider.logout();
         } finally {
-          apiClient.setTokenGetter(() => null);
+          queryClient.clear();
+          useWorkspaceUiStore.getState().clearWorkspace();
           set({
             ...initialState,
             isInitialized: true,
+            isExplicitLogout: true,
           });
         }
       },
@@ -134,8 +148,8 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({
         tokens: state.tokens,
       }),
-    }
-  )
+    },
+  ),
 );
 
 // Selector hooks
@@ -143,3 +157,4 @@ export const useUser = () => useAuthStore((state) => state.user);
 export const useIsAuthenticated = () => useAuthStore((state) => !!state.user);
 export const useAuthLoading = () => useAuthStore((state) => state.isLoading);
 export const useAuthError = () => useAuthStore((state) => state.error);
+export const useIsExplicitLogout = () => useAuthStore((state) => state.isExplicitLogout);

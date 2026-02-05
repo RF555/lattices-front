@@ -17,12 +17,14 @@ export function LanguageSwitcher() {
         <button
           key={lang.code}
           type="button"
-          onClick={() => i18n.changeLanguage(lang.code)}
+          onClick={() => {
+            void i18n.changeLanguage(lang.code);
+          }}
           className={cn(
             'px-2 py-1 text-xs font-medium rounded transition-colors',
             i18n.resolvedLanguage === lang.code
               ? 'bg-primary text-white'
-              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+              : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100',
           )}
           aria-pressed={i18n.resolvedLanguage === lang.code}
         >

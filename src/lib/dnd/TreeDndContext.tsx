@@ -32,9 +32,7 @@ export function TreeDndContext<T extends TreeNode>({
   const [, setOverId] = useState<string | null>(null);
   const sensors = useDndSensors();
 
-  const activeItem = activeId
-    ? findItemById<T>(items, activeId)
-    : null;
+  const activeItem = activeId ? findItemById<T>(items, activeId) : null;
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -50,7 +48,7 @@ export function TreeDndContext<T extends TreeNode>({
       setOverId(null);
       onDragEnd(event);
     },
-    [onDragEnd]
+    [onDragEnd],
   );
 
   const handleDragCancel = useCallback(() => {
@@ -69,9 +67,7 @@ export function TreeDndContext<T extends TreeNode>({
       onDragCancel={handleDragCancel}
     >
       {children}
-      <DragOverlay>
-        {renderOverlay ? renderOverlay(activeItem) : null}
-      </DragOverlay>
+      <DragOverlay>{renderOverlay ? renderOverlay(activeItem) : null}</DragOverlay>
     </DndContext>
   );
 }

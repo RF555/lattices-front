@@ -1,0 +1,148 @@
+{
+  "selectWorkspace": "Select workspace",
+  "switchWorkspace": "Switch workspace",
+  "createWorkspace": "Create Workspace",
+  "allWorkspaces": "All Workspaces",
+  "allWorkspacesDescription": "View tasks from all workspaces",
+  "switcher": {
+    "manage": "Manage Workspace"
+  },
+
+  "form": {
+    "name": "Name",
+    "namePlaceholder": "My Workspace",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this workspace for?",
+    "cancel": "Cancel",
+    "create": "Create"
+  },
+
+  "validation": {
+    "nameRequired": "Workspace name is required",
+    "nameMaxLength": "Name must be 50 characters or less",
+    "descriptionMaxLength": "Description must be 200 characters or less"
+  },
+
+  "settings": {
+    "title": "Workspace Settings",
+    "general": "General",
+    "saveChanges": "Save Changes",
+    "dangerZone": "Danger Zone",
+    "deleteWarning": "Deleting a workspace is permanent and cannot be undone. All tasks, tags, and member associations will be removed.",
+    "deleteWorkspace": "Delete Workspace",
+    "confirmDelete": "Delete Workspace?",
+    "confirmDeleteMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+    "tags": "Tags"
+  },
+
+  "sidebar": {
+    "navigation": "Workspace",
+    "close": "Close sidebar",
+    "todos": "Tasks",
+    "tags": "Tags",
+    "members": "Members",
+    "activity": "Activity",
+    "groups": "Groups",
+    "settings": "Settings"
+  },
+
+  "members": {
+    "title": "Members",
+    "invite": "Invite Member",
+    "search": "Search members...",
+    "role": "Role",
+    "joined": "Joined",
+    "actions": "Actions",
+    "changeRole": "Change Role",
+    "remove": "Remove",
+    "removeMember": "Remove Member",
+    "removeConfirm": "Remove {{name}} from this workspace?",
+    "removeWarning": "They will lose access to all tasks in this workspace.",
+    "leaveWorkspace": "Leave Workspace",
+    "leaveConfirm": "Are you sure you want to leave this workspace?",
+    "changeRoleConfirm": "Change {{name}}'s role from {{oldRole}} to {{newRole}}?",
+    "transferOwnership": "Transfer Ownership",
+    "transferConfirm": "Transfer ownership to {{name}}? You will become an Admin.",
+    "noMembers": "No members yet"
+  },
+
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "member": "Member",
+    "viewer": "Viewer"
+  },
+
+  "invitation": {
+    "send": "Send Invitation",
+    "email": "Email address",
+    "emailPlaceholder": "colleague@example.com",
+    "role": "Role",
+    "pending": "Pending Invitations",
+    "noPending": "No pending invitations",
+    "revoke": "Revoke",
+    "revokeConfirm": "Revoke invitation to {{email}}?",
+    "invitedBy": "Invited by {{name}}",
+    "expires": "Expires {{date}}",
+    "accept": "Accept",
+    "decline": "Decline",
+    "accepting": "Accepting invitation...",
+    "accepted": "You've joined {{workspace}}!",
+    "goToWorkspace": "Go to Workspace",
+    "expired": "This invitation has expired. Ask the workspace admin for a new one.",
+    "invalid": "Invalid invitation link.",
+    "banner": "You've been invited to {{workspace}}."
+  },
+
+  "activity": {
+    "title": "Activity",
+    "empty": "No activity yet",
+    "loadMore": "Load more",
+    "filter": "Filter",
+    "allTypes": "All activity"
+  },
+
+  "emptyState": {
+    "title": "Welcome to Lattices",
+    "description": "Workspaces help you organize tasks and collaborate with your team. Create your first workspace to get started.",
+    "createFirst": "Create your first workspace"
+  },
+
+  "permissions": {
+    "viewOnly": "View Only",
+    "canEdit": "Can Edit",
+    "insufficientPermissions": "You don't have permission to perform this action"
+  },
+
+  "groups": {
+    "title": "Groups",
+    "create": "Create Group",
+    "edit": "Edit Group",
+    "delete": "Delete Group",
+    "deleteConfirm": "Delete group \"{{name}}\"? Members will not be removed from the workspace.",
+    "name": "Group Name",
+    "namePlaceholder": "e.g. Engineering Team",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this group for?",
+    "members": "Group Members",
+    "addMember": "Add Member",
+    "removeMember": "Remove from Group",
+    "noGroups": "No groups yet",
+    "noMembers": "No members in this group"
+  },
+
+  "realtime": {
+    "onlineCount_one": "{{count}} online",
+    "onlineCount_other": "{{count}} online",
+    "more": "more",
+    "viewingTooltip": "Being viewed by {{names}}",
+    "conflictMessage": "This task was updated by {{name}}. Reload to see changes.",
+    "reload": "Reload",
+    "dismiss": "Dismiss",
+    "status": {
+      "connected": "Connected",
+      "connecting": "Reconnecting...",
+      "disconnected": "Disconnected"
+    }
+  }
+}

@@ -10,6 +10,7 @@ export interface Todo {
   description: string | null;
   isCompleted: boolean;
   parentId: string | null;
+  workspaceId?: string;
   position: number;
   completedAt: string | null;
   createdAt: string;

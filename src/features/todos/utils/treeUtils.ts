@@ -50,13 +50,10 @@ export function buildTodoTree(todos: Todo[]): Todo[] {
  * Flattens a tree back to a flat array.
  * Useful for rendering virtualized lists.
  */
-export function flattenTodoTree(
-  todos: Todo[],
-  expandedIds: Set<string> = new Set()
-): Todo[] {
+export function flattenTodoTree(todos: Todo[], expandedIds = new Set<string>()): Todo[] {
   const result: Todo[] = [];
 
-  const traverse = (nodes: Todo[], depth: number = 0) => {
+  const traverse = (nodes: Todo[], depth = 0) => {
     for (const node of nodes) {
       result.push({ ...node, depth });
 
@@ -126,10 +123,7 @@ export function countTodos(todos: Todo[]): number {
  * Filters todos while preserving tree structure.
  * If a child matches, keeps the parent visible.
  */
-export function filterTodoTree(
-  todos: Todo[],
-  predicate: (todo: Todo) => boolean
-): Todo[] {
+export function filterTodoTree(todos: Todo[], predicate: (todo: Todo) => boolean): Todo[] {
   const filterNodes = (nodes: Todo[]): Todo[] => {
     const result: Todo[] = [];
     for (const node of nodes) {
@@ -154,10 +148,7 @@ export function filterTodoTree(
  * Returns the ancestor chain from root down to (but not including) the given todo.
  * Each entry is { id, title } for breadcrumb rendering.
  */
-export function getAncestorPath(
-  tree: Todo[],
-  targetId: string
-): { id: string; title: string }[] {
+export function getAncestorPath(tree: Todo[], targetId: string): { id: string; title: string }[] {
   const path: { id: string; title: string }[] = [];
 
   const search = (nodes: Todo[], ancestors: { id: string; title: string }[]): boolean => {
@@ -186,7 +177,7 @@ export function getAncestorPath(
 export function sortTodoTree(
   todos: Todo[],
   sortBy: 'position' | 'createdAt' | 'title',
-  sortOrder: 'asc' | 'desc'
+  sortOrder: 'asc' | 'desc',
 ): Todo[] {
   const direction = sortOrder === 'asc' ? 1 : -1;
 
@@ -195,7 +186,7 @@ export function sortTodoTree(
       case 'position':
         return (a.position - b.position) * direction;
       case 'createdAt':
-        return (a.createdAt.localeCompare(b.createdAt)) * direction;
+        return a.createdAt.localeCompare(b.createdAt) * direction;
       case 'title':
         return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }) * direction;
     }
@@ -204,9 +195,7 @@ export function sortTodoTree(
   const sortNodes = (nodes: Todo[]): Todo[] => {
     const sorted = [...nodes].sort(compareFn);
     return sorted.map((node) =>
-      node.children?.length
-        ? { ...node, children: sortNodes(node.children) }
-        : node
+      node.children?.length ? { ...node, children: sortNodes(node.children) } : node,
     );
   };
 

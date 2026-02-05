@@ -24,16 +24,11 @@ export function DropIndicator({ position, depth, isActive }: DropIndicatorProps)
     <div
       className={cn(
         'absolute start-0 end-0 h-0.5 bg-primary',
-        position === 'above' ? '-top-0.5' : '-bottom-0.5'
+        position === 'above' ? '-top-0.5' : '-bottom-0.5',
       )}
       style={{ marginInlineStart: `${indentPx}px` }}
     >
-      <div
-        className={cn(
-          'absolute w-2 h-2 rounded-full bg-primary',
-          '-start-1 -top-[3px]'
-        )}
-      />
+      <div className={cn('absolute w-2 h-2 rounded-full bg-primary', '-start-1 -top-[3px]')} />
     </div>
   );
 }

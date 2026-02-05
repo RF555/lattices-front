@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_VERSION = import.meta.env.VITE_API_VERSION || 'v1';
+const API_URL = `${BASE_URL}/api/${API_VERSION}`;
 
 export const authHandlers = [
   http.post(`${API_URL}/auth/login`, async ({ request }) => {

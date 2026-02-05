@@ -8,10 +8,7 @@ export function TodoTreeLoading() {
         <div key={i} className="flex items-center gap-2 px-2 py-2">
           <div className="w-4 h-4 bg-gray-200 rounded" />
           <div className="w-4 h-4 bg-gray-200 rounded" />
-          <div
-            className="h-4 bg-gray-200 rounded"
-            style={{ width: `${width}%` }}
-          />
+          <div className="h-4 bg-gray-200 rounded" style={{ width: `${width}%` }} />
         </div>
       ))}
     </div>

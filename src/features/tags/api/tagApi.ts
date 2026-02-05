@@ -7,6 +7,7 @@ interface ApiTag {
   id: string;
   name: string;
   color_hex: string;
+  workspace_id?: string;
   usage_count?: number;
   created_at: string;
 }
@@ -16,22 +17,29 @@ function mapTag(raw: ApiTag): Tag {
     id: raw.id,
     name: raw.name,
     colorHex: raw.color_hex,
+    workspaceId: raw.workspace_id,
     usageCount: raw.usage_count,
     createdAt: raw.created_at,
   };
 }
 
 export const tagApi = {
-  async getAll(): Promise<Tag[]> {
-    const response = await apiClient.get<ListResponse<ApiTag>>('/tags');
+  async getAll(workspaceId?: string): Promise<Tag[]> {
+    const params: Record<string, string | boolean | undefined> = {};
+    if (workspaceId) params.workspace_id = workspaceId;
+
+    const response = await apiClient.get<ListResponse<ApiTag>>('/tags', { params });
     return response.data.map(mapTag);
   },
 
-  async create(input: CreateTagInput): Promise<Tag> {
-    const response = await apiClient.post<SingleResponse<ApiTag>>('/tags', {
+  async create(input: CreateTagInput, workspaceId?: string): Promise<Tag> {
+    const body: Record<string, unknown> = {
       name: input.name,
       color_hex: input.colorHex,
-    });
+    };
+    if (workspaceId) body.workspace_id = workspaceId;
+
+    const response = await apiClient.post<SingleResponse<ApiTag>>('/tags', body);
     return mapTag(response.data);
   },
 

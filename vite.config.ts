@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
           filename: 'dist/stats.html',
           open: true,
           gzipSize: true,
-        })
+        }),
       ),
   ],
   resolve: {

@@ -17,7 +17,12 @@ export const VirtualizedTodoRow = memo(function VirtualizedTodoRow({
   const hasChildren = !!todo.children?.length;
 
   return (
-    <div style={style} role="treeitem" aria-expanded={hasChildren ? isExpanded : undefined}>
+    <div
+      style={style}
+      role="treeitem"
+      aria-selected={false}
+      aria-expanded={hasChildren ? isExpanded : undefined}
+    >
       <TodoNodeContent
         todo={todo}
         depth={todo.depth ?? 0}

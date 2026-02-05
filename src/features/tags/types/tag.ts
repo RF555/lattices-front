@@ -2,6 +2,7 @@ export interface Tag {
   id: string;
   name: string;
   colorHex: string;
+  workspaceId?: string;
   usageCount?: number;
   createdAt: string;
 }
@@ -9,6 +10,7 @@ export interface Tag {
 export interface CreateTagInput {
   name: string;
   colorHex?: string;
+  workspaceId?: string;
 }
 
 export interface UpdateTagInput {

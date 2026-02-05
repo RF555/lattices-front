@@ -1,9 +1,14 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
-import { useIsAuthenticated, useAuthLoading } from '@features/auth/stores/authStore';
+import {
+  useIsAuthenticated,
+  useAuthLoading,
+  useIsExplicitLogout,
+} from '@features/auth/stores/authStore';
 
 export function ProtectedRoute() {
   const isAuthenticated = useIsAuthenticated();
   const isLoading = useAuthLoading();
+  const isExplicitLogout = useIsExplicitLogout();
   const location = useLocation();
 
   if (isLoading) {
@@ -15,6 +20,9 @@ export function ProtectedRoute() {
   }
 
   if (!isAuthenticated) {
+    if (isExplicitLogout) {
+      return <Navigate to="/auth/login" replace />;
+    }
     return <Navigate to="/auth/login" state={{ from: location }} replace />;
   }
 

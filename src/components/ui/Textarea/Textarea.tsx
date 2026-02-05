@@ -16,12 +16,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           'disabled:bg-gray-50 disabled:text-gray-500',
           'resize-y min-h-[60px]',
           error && 'border-red-500 focus:border-red-500 focus:ring-red-500',
-          className
+          className,
         )}
         {...props}
       />
     );
-  }
+  },
 );
 
 Textarea.displayName = 'Textarea';

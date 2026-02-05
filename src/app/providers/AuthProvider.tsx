@@ -10,7 +10,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const isInitialized = useAuthStore((state) => state.isInitialized);
 
   useEffect(() => {
-    initialize();
+    void initialize();
   }, [initialize]);
 
   if (!isInitialized) {

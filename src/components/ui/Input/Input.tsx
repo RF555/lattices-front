@@ -15,12 +15,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           'focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 sm:text-sm',
           'disabled:bg-gray-50 disabled:text-gray-500',
           error && 'border-red-500 focus:border-red-500 focus:ring-red-500',
-          className
+          className,
         )}
         {...props}
       />
     );
-  }
+  },
 );
 
 Input.displayName = 'Input';

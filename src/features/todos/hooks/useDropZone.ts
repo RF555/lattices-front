@@ -9,11 +9,7 @@ interface UseDropZoneResult {
   isOver: boolean;
 }
 
-export function useDropZone(
-  todo: Todo,
-  _depth: number,
-  isExpanded: boolean
-): UseDropZoneResult {
+export function useDropZone(todo: Todo, _depth: number, isExpanded: boolean): UseDropZoneResult {
   const { active, over } = useDndContext();
 
   const isOver = over?.id === todo.id;
