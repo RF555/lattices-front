@@ -84,7 +84,7 @@ class RealtimeManager {
     if (!this.client) {
       this.initialize();
     }
-     
+
     void this.client?.realtime.setAuth(accessToken);
   }
 
@@ -122,7 +122,7 @@ class RealtimeManager {
     if (!this.client) {
       this.initialize();
     }
-     
+
     if (!this.client) return;
 
     // Avoid duplicate subscriptions
@@ -217,7 +217,7 @@ class RealtimeManager {
     if (!this.client) {
       this.initialize();
     }
-     
+
     if (!this.client) return;
 
     const channelName = `presence:${workspaceId}`;
@@ -279,7 +279,7 @@ class RealtimeManager {
     if (!this.client) {
       this.initialize();
     }
-     
+
     if (!this.client) return;
 
     const channelName = `notifications:${userId}`;
