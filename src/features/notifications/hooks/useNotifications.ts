@@ -45,8 +45,11 @@ export function useUnreadCount(workspaceId?: string) {
       workspaceId
         ? notificationApi.getUnreadCount(workspaceId)
         : notificationApi.getTotalUnreadCount(),
-    staleTime: 30_000, // 30s
-    refetchInterval: 60_000, // 1 min polling as safety net
+    staleTime: 30_000,
+    refetchOnWindowFocus: true,
+    refetchIntervalInBackground: false,
+    // refetchInterval intentionally omitted — controlled by useNotificationRealtime
+    // via setQueryDefaults based on Realtime connection status
   });
 }
 

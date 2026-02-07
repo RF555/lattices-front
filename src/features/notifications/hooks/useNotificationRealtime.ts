@@ -21,8 +21,8 @@ const RECONNECT_INVALIDATION_COOLDOWN_MS = 30_000; // 30 seconds
  * Connection handling:
  * - On reconnect, invalidates all notification queries to catch missed events
  *   (with a 30s cooldown to prevent burst invalidation from connection flapping)
- * - On channel error, increases unread count polling as fallback (30s)
- * - On recovery, restores normal polling interval (60s)
+ * - On channel error, enables 30s fallback polling for unread count
+ * - On recovery, disables polling (Realtime pushes updates directly)
  *
  * Call this once at a high level (e.g., MainLayout) so the subscription
  * persists across page navigations.
@@ -88,12 +88,12 @@ export function useNotificationRealtime() {
           }
           hasConnectedRef.current = true;
 
-          // Restore normal polling interval for unread count
+          // Realtime is healthy — disable polling (Realtime pushes updates directly)
           queryClient.setQueryDefaults(queryKeys.notifications.totalUnreadCount(), {
-            refetchInterval: 60_000,
+            refetchInterval: false,
           });
         } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
-          // Increase polling frequency as fallback when Realtime is down
+          // Realtime is down — enable 30s fallback polling
           queryClient.setQueryDefaults(queryKeys.notifications.totalUnreadCount(), {
             refetchInterval: 30_000,
           });
