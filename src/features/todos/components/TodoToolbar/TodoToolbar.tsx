@@ -86,12 +86,13 @@ export function TodoToolbar() {
             <select
               value={sortBy}
               onChange={(e) => {
-                setSortBy(e.target.value as 'position' | 'createdAt' | 'title');
+                setSortBy(e.target.value as 'position' | 'createdAt' | 'updatedAt' | 'title');
               }}
               className="text-sm rounded-md border border-gray-300 px-2 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
             >
               <option value="position">{t('toolbar.sortManual')}</option>
               <option value="createdAt">{t('toolbar.sortDate')}</option>
+              <option value="updatedAt">{t('toolbar.sortUpdated')}</option>
               <option value="title">{t('toolbar.sortAlpha')}</option>
             </select>
             <button
@@ -215,12 +216,13 @@ export function TodoToolbar() {
             <select
               value={sortBy}
               onChange={(e) => {
-                setSortBy(e.target.value as 'position' | 'createdAt' | 'title');
+                setSortBy(e.target.value as 'position' | 'createdAt' | 'updatedAt' | 'title');
               }}
               className="flex-1 text-sm rounded-md border border-gray-300 px-2 py-2 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
             >
               <option value="position">{t('toolbar.sortManual')}</option>
               <option value="createdAt">{t('toolbar.sortDate')}</option>
+              <option value="updatedAt">{t('toolbar.sortUpdated')}</option>
               <option value="title">{t('toolbar.sortAlpha')}</option>
             </select>
             <button

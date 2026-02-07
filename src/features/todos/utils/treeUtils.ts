@@ -177,7 +177,7 @@ export function getAncestorPath(tree: Todo[], targetId: string): { id: string; t
  */
 export function sortTodoTree(
   todos: Todo[],
-  sortBy: 'position' | 'createdAt' | 'title',
+  sortBy: 'position' | 'createdAt' | 'updatedAt' | 'title',
   sortOrder: 'asc' | 'desc',
 ): Todo[] {
   const direction = sortOrder === 'asc' ? 1 : -1;
@@ -188,6 +188,8 @@ export function sortTodoTree(
         return (a.position - b.position) * direction;
       case 'createdAt':
         return a.createdAt.localeCompare(b.createdAt) * direction;
+      case 'updatedAt':
+        return a.updatedAt.localeCompare(b.updatedAt) * direction;
       case 'title':
         return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }) * direction;
     }

@@ -7,7 +7,7 @@ interface TodoUiState {
   selectedId: string | null;
   isDetailEditing: boolean;
   showCompleted: boolean;
-  sortBy: 'position' | 'createdAt' | 'title';
+  sortBy: 'position' | 'createdAt' | 'updatedAt' | 'title';
   sortOrder: 'asc' | 'desc';
   searchQuery: string;
   filterTagIds: string[];

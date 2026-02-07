@@ -23,6 +23,7 @@
     "sortManual": "Manual order",
     "sortDate": "Date created",
     "sortAlpha": "Alphabetical",
+    "sortUpdated": "Date updated",
     "searchPlaceholder": "Search tasks...",
     "expandAll": "Expand all",
     "collapseAll": "Collapse all",
