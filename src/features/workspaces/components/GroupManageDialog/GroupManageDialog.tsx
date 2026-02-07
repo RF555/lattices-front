@@ -45,16 +45,16 @@ export function GroupManageDialog({ isOpen, onClose, workspaceId, group }: Group
   } = useForm<GroupFormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      name: group?.name || '',
-      description: group?.description || '',
+      name: group?.name ?? '',
+      description: group?.description ?? '',
     },
   });
 
   useEffect(() => {
     if (isOpen) {
       reset({
-        name: group?.name || '',
-        description: group?.description || '',
+        name: group?.name ?? '',
+        description: group?.description ?? '',
       });
     }
   }, [isOpen, group, reset]);
@@ -62,11 +62,13 @@ export function GroupManageDialog({ isOpen, onClose, workspaceId, group }: Group
   const onSubmit = (data: GroupFormData) => {
     if (isEdit) {
       updateGroup.mutate(
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string from form should be null
         { name: data.name, description: data.description || null },
         { onSuccess: onClose },
       );
     } else {
       createGroup.mutate(
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string from form should be undefined
         { name: data.name, description: data.description || undefined },
         { onSuccess: onClose },
       );

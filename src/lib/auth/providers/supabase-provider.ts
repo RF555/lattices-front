@@ -63,7 +63,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
     });
 
     if (error || !data.user) {
-      throw new Error(error?.message || 'Registration failed');
+      throw new Error(error?.message ?? 'Registration failed');
     }
 
     // No session means email confirmation is required
@@ -85,7 +85,7 @@ export class SupabaseAuthProvider implements IAuthProvider {
     const { data, error } = await this.client.auth.refreshSession();
 
     if (error || !data.session) {
-      throw new Error(error?.message || 'Token refresh failed');
+      throw new Error(error?.message ?? 'Token refresh failed');
     }
 
     return this.mapTokens(data.session);

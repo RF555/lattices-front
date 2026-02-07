@@ -38,7 +38,7 @@ export function useCreateWorkspace() {
         id: `temp-${Date.now()}`,
         name: newWorkspace.name,
         slug: '',
-        description: newWorkspace.description || null,
+        description: newWorkspace.description ?? null,
         createdBy: '',
         memberCount: 1,
         createdAt: new Date().toISOString(),
@@ -78,10 +78,49 @@ export function useUpdateWorkspace() {
     mutationFn: ({ id, input }: { id: string; input: UpdateWorkspaceInput }) =>
       workspaceApi.update(id, input),
 
-    onSuccess: (_, { id }) => {
+    onMutate: async ({ id, input }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.workspaces.lists() });
+      await queryClient.cancelQueries({ queryKey: queryKeys.workspaces.detail(id) });
+
+      const previousList = queryClient.getQueryData<Workspace[]>(queryKeys.workspaces.lists());
+      const previousDetail = queryClient.getQueryData<Workspace>(queryKeys.workspaces.detail(id));
+
+      if (previousList) {
+        queryClient.setQueryData<Workspace[]>(
+          queryKeys.workspaces.lists(),
+          previousList.map((w) =>
+            w.id === id ? { ...w, ...input, updatedAt: new Date().toISOString() } : w,
+          ),
+        );
+      }
+
+      if (previousDetail) {
+        queryClient.setQueryData<Workspace>(queryKeys.workspaces.detail(id), {
+          ...previousDetail,
+          ...input,
+          updatedAt: new Date().toISOString(),
+        });
+      }
+
+      return { previousList, previousDetail, id };
+    },
+
+    onError: (_err, _variables, context) => {
+      if (context?.previousList) {
+        queryClient.setQueryData(queryKeys.workspaces.lists(), context.previousList);
+      }
+      if (context?.previousDetail) {
+        queryClient.setQueryData(queryKeys.workspaces.detail(context.id), context.previousDetail);
+      }
+    },
+
+    onSuccess: () => {
+      toast.success('Workspace updated');
+    },
+
+    onSettled: (_, __, { id }) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
       void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.detail(id) });
-      toast.success('Workspace updated');
     },
   });
 }
@@ -89,18 +128,45 @@ export function useUpdateWorkspace() {
 export function useDeleteWorkspace() {
   const queryClient = useQueryClient();
   const setActiveWorkspace = useWorkspaceUiStore((s) => s.setActiveWorkspace);
+  const activeWorkspaceId = useWorkspaceUiStore((s) => s.activeWorkspaceId);
 
   return useMutation({
     mutationFn: (id: string) => workspaceApi.remove(id),
 
-    onSuccess: (_, deletedId) => {
-      const workspaces = queryClient.getQueryData<Workspace[]>(queryKeys.workspaces.lists());
-      const remaining = workspaces?.filter((w) => w.id !== deletedId);
-      if (remaining && remaining.length > 0) {
-        setActiveWorkspace(remaining[0].id);
+    onMutate: async (id) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.workspaces.lists() });
+
+      const previousList = queryClient.getQueryData<Workspace[]>(queryKeys.workspaces.lists());
+      const previousActiveWorkspaceId = activeWorkspaceId;
+
+      if (previousList) {
+        const remaining = previousList.filter((w) => w.id !== id);
+        queryClient.setQueryData<Workspace[]>(queryKeys.workspaces.lists(), remaining);
+
+        // Switch active workspace if we're deleting the current one
+        if (activeWorkspaceId === id && remaining.length > 0) {
+          setActiveWorkspace(remaining[0].id);
+        }
       }
-      void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
+
+      return { previousList, previousActiveWorkspaceId };
+    },
+
+    onError: (_err, _id, context) => {
+      if (context?.previousList) {
+        queryClient.setQueryData(queryKeys.workspaces.lists(), context.previousList);
+      }
+      if (context?.previousActiveWorkspaceId) {
+        setActiveWorkspace(context.previousActiveWorkspaceId);
+      }
+    },
+
+    onSuccess: () => {
       toast.success('Workspace deleted');
+    },
+
+    onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
     },
   });
 }

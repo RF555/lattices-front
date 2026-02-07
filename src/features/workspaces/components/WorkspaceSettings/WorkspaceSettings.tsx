@@ -18,7 +18,7 @@ export function WorkspaceSettings() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation('workspaces');
-  const { data: workspace, isLoading } = useWorkspace(id || '');
+  const { data: workspace, isLoading } = useWorkspace(id ?? '');
   const updateWorkspace = useUpdateWorkspace();
   const deleteWorkspace = useDeleteWorkspace();
   const { canEdit, canDelete } = useWorkspacePermission(id);
@@ -31,7 +31,7 @@ export function WorkspaceSettings() {
   } = useForm<WorkspaceFormData>({
     resolver: zodResolver(createWorkspaceSchema(t)),
     values: workspace
-      ? { name: workspace.name, description: workspace.description || '' }
+      ? { name: workspace.name, description: workspace.description ?? '' }
       : undefined,
   });
 
@@ -48,6 +48,7 @@ export function WorkspaceSettings() {
       id: workspace.id,
       input: {
         name: data.name,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string from form should be null
         description: data.description || null,
       },
     });

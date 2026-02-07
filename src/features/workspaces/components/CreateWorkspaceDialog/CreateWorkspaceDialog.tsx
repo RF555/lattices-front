@@ -36,6 +36,7 @@ export function CreateWorkspaceDialog({ isOpen, onClose }: CreateWorkspaceDialog
     try {
       const workspace = await createWorkspace.mutateAsync({
         name: data.name,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string from form should be undefined
         description: data.description || undefined,
       });
       setActiveWorkspace(workspace.id);
@@ -94,9 +95,7 @@ export function CreateWorkspaceDialog({ isOpen, onClose }: CreateWorkspaceDialog
           <Button type="button" variant="secondary" onClick={handleClose}>
             {t('form.cancel', { ns: 'common', defaultValue: 'Cancel' })}
           </Button>
-          <Button type="submit" isLoading={createWorkspace.isPending}>
-            {t('form.create')}
-          </Button>
+          <Button type="submit">{t('form.create')}</Button>
         </div>
       </form>
     </Modal>

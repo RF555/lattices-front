@@ -5,10 +5,9 @@ import { cn } from '@lib/utils/cn';
 interface TodoActionsProps {
   onEdit: () => void;
   onDelete: () => void;
-  isDeleting?: boolean;
 }
 
-export function TodoActions({ onEdit, onDelete, isDeleting }: TodoActionsProps) {
+export function TodoActions({ onEdit, onDelete }: TodoActionsProps) {
   const { t } = useTranslation('todos');
 
   return (
@@ -34,11 +33,9 @@ export function TodoActions({ onEdit, onDelete, isDeleting }: TodoActionsProps) 
           e.stopPropagation();
           onDelete();
         }}
-        disabled={isDeleting}
         className={cn(
           'p-1.5 sm:p-1 text-gray-400 hover:text-red-600',
           'focus:outline-none focus:ring-2 focus:ring-red-500 rounded',
-          isDeleting && 'opacity-50 cursor-not-allowed',
         )}
         aria-label={t('actions.deleteTask')}
       >

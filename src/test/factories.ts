@@ -67,7 +67,7 @@ export function createMockWorkspace(overrides?: Partial<Workspace>): Workspace {
 export function createMockMember(overrides?: Partial<WorkspaceMember>): WorkspaceMember {
   const userId = `user-${memberIdCounter++}`;
   const roles: WorkspaceRole[] = ['owner', 'admin', 'member', 'viewer'];
-  const role = overrides?.role || roles[Math.min(memberIdCounter - 1, roles.length - 1)];
+  const role = overrides?.role ?? roles[Math.min(memberIdCounter - 1, roles.length - 1)];
 
   return {
     userId,
@@ -112,7 +112,7 @@ export function createMockNotification(overrides?: Partial<Notification>): Notif
     'invitation.received',
     'task.created',
   ];
-  const type = overrides?.type || types[(notificationIdCounter - 1) % types.length];
+  const type = overrides?.type ?? types[(notificationIdCounter - 1) % types.length];
 
   return {
     id,
@@ -156,7 +156,7 @@ export function createMockGroup(overrides?: Partial<Group>): Group {
 export function createMockGroupMember(overrides?: Partial<GroupMember>): GroupMember {
   const currentId = groupMemberIdCounter++;
   const userId = `user-${currentId}`;
-  const role = overrides?.role || (currentId === 1 ? 'admin' : 'member');
+  const role = overrides?.role ?? (currentId === 1 ? 'admin' : 'member');
 
   return {
     userId,
@@ -176,7 +176,7 @@ export function createMockActivityEntry(overrides?: Partial<ActivityEntry>): Act
   const currentId = activityIdCounter++;
   const id = `act-${currentId}`;
   const actions = ['created', 'updated', 'completed', 'deleted', 'added_member', 'removed_member'];
-  const action = overrides?.action || actions[(currentId - 1) % actions.length];
+  const action = overrides?.action ?? actions[(currentId - 1) % actions.length];
 
   return {
     id,

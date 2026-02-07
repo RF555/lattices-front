@@ -48,8 +48,8 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
   }
 
   // Members available to add (not already in group)
-  const memberIds = new Set(members?.map((m) => m.userId) || []);
-  const availableMembers = workspaceMembers?.filter((wm) => !memberIds.has(wm.userId)) || [];
+  const memberIds = new Set(members?.map((m) => m.userId) ?? []);
+  const availableMembers = workspaceMembers?.filter((wm) => !memberIds.has(wm.userId)) ?? [];
 
   const handleAddMember = (userId: string) => {
     addMember.mutate(
@@ -138,12 +138,12 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
                   />
                 ) : (
                   <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600">
-                    {(member.displayName || member.email).slice(0, 2).toUpperCase()}
+                    {(member.displayName ?? member.email).slice(0, 2).toUpperCase()}
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    {member.displayName || member.email}
+                    {member.displayName ?? member.email}
                   </p>
                   <p className="text-xs text-gray-500 truncate">{member.email}</p>
                 </div>
@@ -203,10 +203,10 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
                   <img src={wm.avatarUrl} alt="" className="h-7 w-7 rounded-full object-cover" />
                 ) : (
                   <div className="h-7 w-7 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600">
-                    {(wm.displayName || wm.email).slice(0, 2).toUpperCase()}
+                    {(wm.displayName ?? wm.email).slice(0, 2).toUpperCase()}
                   </div>
                 )}
-                <span className="text-sm text-gray-900">{wm.displayName || wm.email}</span>
+                <span className="text-sm text-gray-900">{wm.displayName ?? wm.email}</span>
               </button>
             ))}
           </div>
@@ -222,7 +222,7 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
         title={t('groups.removeMember')}
       >
         <p className="text-sm text-gray-600 mb-4">
-          Remove {confirmRemove?.displayName || confirmRemove?.email} from this group?
+          Remove {confirmRemove?.displayName ?? confirmRemove?.email} from this group?
         </p>
         <div className="flex justify-end gap-2">
           <Button

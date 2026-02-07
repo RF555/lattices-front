@@ -5,7 +5,7 @@ import { buildTodoTree } from '../utils/treeUtils';
 import type { Todo, CreateTodoInput, UpdateTodoInput, TodoFilters } from '../types/todo';
 
 export function useTodos(filters?: TodoFilters, workspaceId?: string) {
-  const filterKey = { ...(filters || {}), workspaceId };
+  const filterKey = { ...(filters ?? {}), workspaceId };
   return useQuery({
     queryKey: queryKeys.todos.list(filterKey),
     queryFn: () => todoApi.getAll(filters, workspaceId),
@@ -14,7 +14,7 @@ export function useTodos(filters?: TodoFilters, workspaceId?: string) {
 }
 
 export function useFlatTodos(filters?: TodoFilters, workspaceId?: string) {
-  const filterKey = { ...(filters || {}), workspaceId };
+  const filterKey = { ...(filters ?? {}), workspaceId };
   return useQuery({
     queryKey: queryKeys.todos.list(filterKey),
     queryFn: () => todoApi.getAll(filters, workspaceId),
@@ -45,9 +45,9 @@ export function useCreateTodo(workspaceId?: string) {
       const optimisticTodo: Todo = {
         id: `temp-${Date.now()}`,
         title: newTodo.title,
-        description: newTodo.description || null,
+        description: newTodo.description ?? null,
         isCompleted: false,
-        parentId: newTodo.parentId || null,
+        parentId: newTodo.parentId ?? null,
         position: 999,
         completedAt: null,
         childCount: 0,

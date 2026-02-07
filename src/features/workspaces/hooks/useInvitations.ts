@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
 import { toast } from '@stores/toastStore';
 import { invitationApi } from '../api/invitationApi';
-import type { WorkspaceRole } from '../types/workspace';
+import type { WorkspaceRole, Invitation } from '../types/workspace';
 
 export function useWorkspaceInvitations(workspaceId: string) {
   return useQuery({
@@ -26,7 +26,47 @@ export function useCreateInvitation() {
       role: WorkspaceRole;
     }) => invitationApi.createInvitation(workspaceId, email, role),
 
-    onSuccess: (_, { workspaceId }) => {
+    onMutate: async ({ workspaceId, email, role }) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.workspaces.invitations(workspaceId),
+      });
+
+      const previousInvitations = queryClient.getQueryData<Invitation[]>(
+        queryKeys.workspaces.invitations(workspaceId),
+      );
+
+      const optimisticInvitation: Invitation = {
+        id: `temp-${Date.now()}`,
+        workspaceId,
+        workspaceName: '',
+        email,
+        role,
+        invitedByName: '',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      };
+
+      if (previousInvitations) {
+        queryClient.setQueryData<Invitation[]>(queryKeys.workspaces.invitations(workspaceId), [
+          ...previousInvitations,
+          optimisticInvitation,
+        ]);
+      }
+
+      return { previousInvitations, workspaceId };
+    },
+
+    onError: (_err, _variables, context) => {
+      if (context?.previousInvitations) {
+        queryClient.setQueryData(
+          queryKeys.workspaces.invitations(context.workspaceId),
+          context.previousInvitations,
+        );
+      }
+    },
+
+    onSettled: (_, __, { workspaceId }) => {
       void queryClient.invalidateQueries({
         queryKey: queryKeys.workspaces.invitations(workspaceId),
       });
@@ -41,11 +81,44 @@ export function useRevokeInvitation() {
     mutationFn: ({ workspaceId, invitationId }: { workspaceId: string; invitationId: string }) =>
       invitationApi.revokeInvitation(workspaceId, invitationId),
 
-    onSuccess: (_, { workspaceId }) => {
+    onMutate: async ({ workspaceId, invitationId }) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.workspaces.invitations(workspaceId),
+      });
+
+      const previousInvitations = queryClient.getQueryData<Invitation[]>(
+        queryKeys.workspaces.invitations(workspaceId),
+      );
+
+      if (previousInvitations) {
+        queryClient.setQueryData<Invitation[]>(
+          queryKeys.workspaces.invitations(workspaceId),
+          previousInvitations.map((inv) =>
+            inv.id === invitationId ? { ...inv, status: 'revoked' as const } : inv,
+          ),
+        );
+      }
+
+      return { previousInvitations, workspaceId };
+    },
+
+    onError: (_err, _variables, context) => {
+      if (context?.previousInvitations) {
+        queryClient.setQueryData(
+          queryKeys.workspaces.invitations(context.workspaceId),
+          context.previousInvitations,
+        );
+      }
+    },
+
+    onSuccess: () => {
+      toast.success('Invitation revoked');
+    },
+
+    onSettled: (_, __, { workspaceId }) => {
       void queryClient.invalidateQueries({
         queryKey: queryKeys.workspaces.invitations(workspaceId),
       });
-      toast.success('Invitation revoked');
     },
   });
 }

@@ -17,14 +17,14 @@ export function MemberAvatars({ members, max = 4, size = 'sm' }: MemberAvatarsPr
   const remaining = members.length - max;
 
   const getInitials = (member: WorkspaceMember) => {
-    const name = member.displayName || member.email;
+    const name = member.displayName ?? member.email;
     return name.slice(0, 2).toUpperCase();
   };
 
   return (
     <div className="flex items-center -space-x-1.5">
       {visible.map((member) => (
-        <div key={member.userId} className="relative" title={member.displayName || member.email}>
+        <div key={member.userId} className="relative" title={member.displayName ?? member.email}>
           {member.avatarUrl ? (
             <img
               src={member.avatarUrl}

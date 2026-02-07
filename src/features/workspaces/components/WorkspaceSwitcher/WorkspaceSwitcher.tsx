@@ -69,7 +69,7 @@ export function WorkspaceSwitcher({ onCreateWorkspace }: WorkspaceSwitcherProps)
         aria-haspopup="listbox"
       >
         <span className="max-w-[140px] truncate">
-          {isAllWorkspaces ? t('allWorkspaces') : activeWorkspace?.name || t('selectWorkspace')}
+          {isAllWorkspaces ? t('allWorkspaces') : (activeWorkspace?.name ?? t('selectWorkspace'))}
         </span>
         <ChevronDown
           className={cn('h-4 w-4 text-gray-400 transition-transform', isOpen && 'rotate-180')}

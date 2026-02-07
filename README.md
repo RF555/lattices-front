@@ -173,8 +173,8 @@ Todos are stored flat on the server and assembled into a tree on the client usin
 - Virtual scrolling for large lists (@tanstack/react-virtual)
 - Keyboard navigation (arrow keys, vim bindings, Home/End)
 - Filtering by completion status, tags, and search query
-- Sorting by position, creation date, or alphabetical
-- Inline detail panel showing editable description, tag picker, and timestamps (created, updated, completed)
+- Sorting by position, creation date, date updated, or alphabetical
+- Detail panel with view mode (read-only description, timestamps) and edit mode (parent picker, description, tags with batched save/cancel)
 
 ### Tags
 
@@ -200,7 +200,7 @@ In-app notification center for workspace events (task changes, member updates, i
 - **Notification bell** — Header icon with unread count badge (99+ cap), keyboard shortcut (`N` to toggle)
 - **Notification panel** — Dropdown with All/Unread filter tabs, cursor-based pagination, click-through navigation to entity, mark as read/unread, dismiss, and "mark all as read". Mobile-responsive (full-screen overlay on small screens, dropdown on desktop)
 - **Notification preferences** — Category-based layout (Task, Workspace, Invitation, Group) with per-type toggle switches. Mandatory notification types (member changes, invitations) are always-on. Configurable toast preference for new notifications
-- **Real-time delivery** — Supabase Realtime Postgres Changes on `notification_recipients` table with instant unread count update, lazy list refetch, and optional toast notification. Fallback polling (30s) on connection error, full query invalidation on reconnect
+- **Real-time delivery** — Supabase Realtime Postgres Changes on `notification_recipients` table with instant unread count update, lazy list refetch, and optional toast notification. Realtime-first strategy: no polling when connected, 30s fallback polling on connection error, refetch on tab focus, full query invalidation on reconnect
 - **Entity navigation** — Clicking a notification navigates to the relevant entity (todo, workspace settings, group) and selects the item in the UI
 
 ### Internationalization (i18n)
@@ -225,7 +225,7 @@ The project enforces strict code quality standards via automated tooling:
 - **Flat Fetch, Client Assembly** — API returns flat lists, client builds tree structures
 - **Path aliases** — `@features/*`, `@components/*`, `@lib/*`, `@hooks/*`, `@stores/*`, `@i18n/*`
 - **Barrel exports** — Each module exposes a clean public API via `index.ts`
-- **Optimistic updates** — Mutations update the UI immediately, rolling back on failure
+- **Optimistic updates** — All mutations (todos, tags, workspaces, members, groups, invitations) update the UI immediately, rolling back on failure
 
 ## Testing
 
@@ -246,7 +246,7 @@ pnpm test:coverage # With coverage report
 **Coverage areas:**
 
 - API clients (todoApi, tagApi, workspaceApi, invitationApi, ApiClient)
-- React Query hooks with optimistic updates (useTodos, useTags)
+- React Query hooks with optimistic updates (useTodos, useTags, useWorkspaces, useWorkspaceMembers, useGroups, useInvitations)
 - Zustand stores (todoUiStore, workspaceUiStore, authStore, toastStore)
 - Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, InvitationBanner, AcceptInvitation, CreateWorkspaceDialog, ActivityFeed, NotificationBell, NotificationPanel, NotificationItem, NotificationPreferences, Modal, Input, Button, etc.)
 - Notification hooks (useNotifications, useUnreadCount, useMarkAsRead, useMarkAllAsRead, useDeleteNotification, useNotificationPreferences, useUpdateNotificationPreferences, useNotificationTypes)

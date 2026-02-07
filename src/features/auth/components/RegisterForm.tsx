@@ -29,6 +29,7 @@ export function RegisterForm() {
       await registerUser({
         email: data.email,
         password: data.password,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string from form should be undefined
         name: data.name || undefined,
       });
       void navigate('/app', { replace: true });

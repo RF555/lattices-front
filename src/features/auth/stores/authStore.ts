@@ -9,7 +9,7 @@ import {
 } from '@lib/auth';
 import { apiClient } from '@lib/api/client';
 import { realtimeManager } from '@lib/realtime';
-import { queryClient } from '@/app/providers/QueryProvider';
+import { queryClient } from '@/app/providers/queryClient';
 import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
 
 interface AuthState {
@@ -51,7 +51,7 @@ export const useAuthStore = create<AuthStore>()(
         set({ isLoading: true });
 
         // Wire up token getter and 401 auto-refresh handler
-        apiClient.setTokenGetter(() => get().tokens?.accessToken || null);
+        apiClient.setTokenGetter(() => get().tokens?.accessToken ?? null);
         apiClient.setOnUnauthorized(async () => {
           const currentTokens = get().tokens;
           if (!currentTokens?.refreshToken) return null;

@@ -1,8 +1,8 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import { MainLayout } from '@components/layout/MainLayout';
-import { Spinner } from '@components/ui/Spinner';
 import { ProtectedRoute } from './ProtectedRoute';
 import { PublicRoute } from './PublicRoute';
+import { PageLoader } from './PageLoader';
 
 import { lazy, Suspense } from 'react';
 
@@ -19,12 +19,6 @@ const GroupDetailPage = lazy(() => import('@features/workspaces/pages/GroupDetai
 const AcceptInvitationPage = lazy(() => import('@features/workspaces/pages/AcceptInvitationPage'));
 const NotificationPreferencesPage = lazy(
   () => import('@features/notifications/pages/NotificationPreferencesPage'),
-);
-
-const PageLoader = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <Spinner size="lg" />
-  </div>
 );
 
 export const router = createBrowserRouter([

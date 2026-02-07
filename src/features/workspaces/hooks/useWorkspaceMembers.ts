@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
 import { toast } from '@stores/toastStore';
 import { workspaceApi } from '../api/workspaceApi';
-import type { WorkspaceRole } from '../types/workspace';
+import type { WorkspaceRole, WorkspaceMember, Workspace } from '../types/workspace';
 
 export function useWorkspaceMembers(workspaceId: string) {
   return useQuery({
@@ -48,9 +48,38 @@ export function useUpdateMemberRole() {
       role: WorkspaceRole;
     }) => workspaceApi.updateMemberRole(workspaceId, userId, role),
 
-    onSuccess: (_, { workspaceId }) => {
-      void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.members(workspaceId) });
+    onMutate: async ({ workspaceId, userId, role }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.workspaces.members(workspaceId) });
+
+      const previousMembers = queryClient.getQueryData<WorkspaceMember[]>(
+        queryKeys.workspaces.members(workspaceId),
+      );
+
+      if (previousMembers) {
+        queryClient.setQueryData<WorkspaceMember[]>(
+          queryKeys.workspaces.members(workspaceId),
+          previousMembers.map((m) => (m.userId === userId ? { ...m, role } : m)),
+        );
+      }
+
+      return { previousMembers, workspaceId };
+    },
+
+    onError: (_err, _variables, context) => {
+      if (context?.previousMembers) {
+        queryClient.setQueryData(
+          queryKeys.workspaces.members(context.workspaceId),
+          context.previousMembers,
+        );
+      }
+    },
+
+    onSuccess: () => {
       toast.success('Role updated');
+    },
+
+    onSettled: (_, __, { workspaceId }) => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.members(workspaceId) });
     },
   });
 }
@@ -62,10 +91,56 @@ export function useRemoveMember() {
     mutationFn: ({ workspaceId, userId }: { workspaceId: string; userId: string }) =>
       workspaceApi.removeMember(workspaceId, userId),
 
-    onSuccess: (_, { workspaceId }) => {
+    onMutate: async ({ workspaceId, userId }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.workspaces.members(workspaceId) });
+      await queryClient.cancelQueries({ queryKey: queryKeys.workspaces.lists() });
+
+      const previousMembers = queryClient.getQueryData<WorkspaceMember[]>(
+        queryKeys.workspaces.members(workspaceId),
+      );
+      const previousWorkspaces = queryClient.getQueryData<Workspace[]>(
+        queryKeys.workspaces.lists(),
+      );
+
+      if (previousMembers) {
+        queryClient.setQueryData<WorkspaceMember[]>(
+          queryKeys.workspaces.members(workspaceId),
+          previousMembers.filter((m) => m.userId !== userId),
+        );
+      }
+
+      // Decrement memberCount on the workspace
+      if (previousWorkspaces) {
+        queryClient.setQueryData<Workspace[]>(
+          queryKeys.workspaces.lists(),
+          previousWorkspaces.map((w) =>
+            w.id === workspaceId ? { ...w, memberCount: Math.max(0, w.memberCount - 1) } : w,
+          ),
+        );
+      }
+
+      return { previousMembers, previousWorkspaces, workspaceId };
+    },
+
+    onError: (_err, _variables, context) => {
+      if (context?.previousMembers) {
+        queryClient.setQueryData(
+          queryKeys.workspaces.members(context.workspaceId),
+          context.previousMembers,
+        );
+      }
+      if (context?.previousWorkspaces) {
+        queryClient.setQueryData(queryKeys.workspaces.lists(), context.previousWorkspaces);
+      }
+    },
+
+    onSuccess: () => {
+      toast.success('Member removed');
+    },
+
+    onSettled: (_, __, { workspaceId }) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.members(workspaceId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.lists() });
-      toast.success('Member removed');
     },
   });
 }
@@ -77,10 +152,43 @@ export function useTransferOwnership() {
     mutationFn: ({ workspaceId, newOwnerId }: { workspaceId: string; newOwnerId: string }) =>
       workspaceApi.transferOwnership(workspaceId, newOwnerId),
 
-    onSuccess: (_, { workspaceId }) => {
+    onMutate: async ({ workspaceId, newOwnerId }) => {
+      await queryClient.cancelQueries({ queryKey: queryKeys.workspaces.members(workspaceId) });
+
+      const previousMembers = queryClient.getQueryData<WorkspaceMember[]>(
+        queryKeys.workspaces.members(workspaceId),
+      );
+
+      if (previousMembers) {
+        queryClient.setQueryData<WorkspaceMember[]>(
+          queryKeys.workspaces.members(workspaceId),
+          previousMembers.map((m) => {
+            if (m.role === 'owner') return { ...m, role: 'admin' as WorkspaceRole };
+            if (m.userId === newOwnerId) return { ...m, role: 'owner' as WorkspaceRole };
+            return m;
+          }),
+        );
+      }
+
+      return { previousMembers, workspaceId };
+    },
+
+    onError: (_err, _variables, context) => {
+      if (context?.previousMembers) {
+        queryClient.setQueryData(
+          queryKeys.workspaces.members(context.workspaceId),
+          context.previousMembers,
+        );
+      }
+    },
+
+    onSuccess: () => {
+      toast.success('Ownership transferred');
+    },
+
+    onSettled: (_, __, { workspaceId }) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.members(workspaceId) });
       void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.detail(workspaceId) });
-      toast.success('Ownership transferred');
     },
   });
 }

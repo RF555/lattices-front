@@ -174,9 +174,7 @@ export function InviteMemberDialog({ isOpen, onClose, workspaceId }: InviteMembe
           <Button type="button" variant="secondary" onClick={handleClose}>
             {t('form.cancel')}
           </Button>
-          <Button type="submit" isLoading={createInvitation.isPending}>
-            {t('invitation.send')}
-          </Button>
+          <Button type="submit">{t('invitation.send')}</Button>
         </div>
       </form>
     </Modal>

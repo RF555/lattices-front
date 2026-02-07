@@ -492,7 +492,7 @@ export const workspaceHandlers = [
     const newInvitation: MockInvitation = {
       id: `inv-${Date.now()}`,
       workspace_id: workspaceId,
-      workspace_name: workspace?.name || 'Unknown Workspace',
+      workspace_name: workspace?.name ?? 'Unknown Workspace',
       email: body.email as string,
       role: (body.role as MockInvitation['role']) || 'member',
       invited_by_name: 'John Doe',
@@ -576,7 +576,7 @@ export const workspaceHandlers = [
     const workspace = mockWorkspaces.find((w) => w.id === wsId);
     return HttpResponse.json({
       workspace_id: wsId,
-      workspace_name: workspace?.name || '',
+      workspace_name: workspace?.name ?? '',
       role: invitation.role,
       message: 'Invitation accepted successfully',
     });
@@ -629,7 +629,7 @@ export const workspaceHandlers = [
     const workspace = mockWorkspaces.find((w) => w.id === wsId);
     return HttpResponse.json({
       workspace_id: wsId,
-      workspace_name: workspace?.name || '',
+      workspace_name: workspace?.name ?? '',
       role: invitation.role,
       message: 'Invitation accepted successfully',
     });

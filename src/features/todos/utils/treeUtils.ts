@@ -17,14 +17,15 @@ export function buildTodoTree(todos: Todo[]): Todo[] {
 
   // Second pass: build parent-child relationships
   for (const todo of todos) {
-    const node = todoMap.get(todo.id)!;
+    const node = todoMap.get(todo.id);
+    if (!node) continue;
 
     if (todo.parentId === null) {
       rootTodos.push(node);
     } else {
       const parent = todoMap.get(todo.parentId);
-      if (parent) {
-        parent.children!.push(node);
+      if (parent?.children) {
+        parent.children.push(node);
       } else {
         // Orphan node - add to root
         rootTodos.push(node);
@@ -90,7 +91,7 @@ export function getDescendantIds(todo: Todo): string[] {
   const ids: string[] = [];
 
   const traverse = (node: Todo) => {
-    for (const child of node.children || []) {
+    for (const child of node.children ?? []) {
       ids.push(child.id);
       traverse(child);
     }
@@ -127,7 +128,7 @@ export function filterTodoTree(todos: Todo[], predicate: (todo: Todo) => boolean
   const filterNodes = (nodes: Todo[]): Todo[] => {
     const result: Todo[] = [];
     for (const node of nodes) {
-      const filteredChildren = filterNodes(node.children || []);
+      const filteredChildren = filterNodes(node.children ?? []);
       const nodeMatches = predicate(node);
       const hasMatchingChildren = filteredChildren.length > 0;
 
@@ -176,7 +177,7 @@ export function getAncestorPath(tree: Todo[], targetId: string): { id: string; t
  */
 export function sortTodoTree(
   todos: Todo[],
-  sortBy: 'position' | 'createdAt' | 'title',
+  sortBy: 'position' | 'createdAt' | 'updatedAt' | 'title',
   sortOrder: 'asc' | 'desc',
 ): Todo[] {
   const direction = sortOrder === 'asc' ? 1 : -1;
@@ -187,6 +188,8 @@ export function sortTodoTree(
         return (a.position - b.position) * direction;
       case 'createdAt':
         return a.createdAt.localeCompare(b.createdAt) * direction;
+      case 'updatedAt':
+        return a.updatedAt.localeCompare(b.updatedAt) * direction;
       case 'title':
         return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }) * direction;
     }
@@ -200,4 +203,24 @@ export function sortTodoTree(
   };
 
   return sortNodes(todos);
+}
+
+/**
+ * Gets all descendant IDs from a flat todo list using parentId chains (BFS).
+ * Does NOT require a pre-built tree structure.
+ */
+export function getDescendantIdsFlat(todos: Todo[], targetId: string): Set<string> {
+  const descendants = new Set<string>();
+  const queue = [targetId];
+  while (queue.length > 0) {
+    const currentId = queue.shift();
+    if (currentId === undefined) break;
+    for (const todo of todos) {
+      if (todo.parentId === currentId && !descendants.has(todo.id)) {
+        descendants.add(todo.id);
+        queue.push(todo.id);
+      }
+    }
+  }
+  return descendants;
 }

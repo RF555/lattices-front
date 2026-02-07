@@ -17,7 +17,7 @@ interface TodoTreeProps {
 export function TodoTree({ viewingTask }: TodoTreeProps) {
   const { t } = useTranslation('todos');
   const activeWorkspaceId = useActiveWorkspaceId();
-  const { data: todos, isLoading, error } = useTodos(undefined, activeWorkspaceId || undefined);
+  const { data: todos, isLoading, error } = useTodos(undefined, activeWorkspaceId ?? undefined);
   const expandedIds = useExpandedIds();
   // Fix M2: Use useShallow to prevent re-renders
   const { searchQuery, filterTagIds, showCompleted, sortBy, sortOrder } = useTodoUiStore(
