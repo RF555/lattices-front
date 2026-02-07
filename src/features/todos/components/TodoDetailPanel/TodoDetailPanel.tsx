@@ -23,6 +23,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   const { t } = useTranslation('todos');
   const isMobile = useIsMobile();
   const [description, setDescription] = useState(todo.description ?? '');
+  const [localTagIds, setLocalTagIds] = useState<string[]>(todo.tags.map((t) => t.id));
   const [isDirty, setIsDirty] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -35,17 +36,19 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   const addTagMutation = useAddTagToTodo();
   const removeTagMutation = useRemoveTagFromTodo();
 
-  // Sync description from server when not in edit mode
+  // Sync from server when not in edit mode
   useEffect(() => {
     if (!isDetailEditing) {
       setDescription(todo.description ?? '');
+      setLocalTagIds(todo.tags.map((t) => t.id));
     }
-  }, [todo.description, isDetailEditing]);
+  }, [todo.description, todo.tags, isDetailEditing]);
 
-  // Reset dirty state when switching todos
+  // Reset state when switching todos
   useEffect(() => {
     setIsDirty(false);
-  }, [todo.id]);
+    setLocalTagIds(todo.tags.map((t) => t.id));
+  }, [todo.id, todo.tags]);
 
   // Focus textarea when entering edit mode
   useEffect(() => {
@@ -55,18 +58,43 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   }, [isDetailEditing]);
 
   const handleSave = useCallback(() => {
+    // Save description
     const trimmed = description.trim();
     const value = trimmed || null;
     updateMutate({ id: todo.id, input: { description: value } });
+
+    // Compute tag diffs and fire mutations
+    const serverTagIds = new Set(todo.tags.map((t) => t.id));
+    const localSet = new Set(localTagIds);
+    for (const tagId of localTagIds) {
+      if (!serverTagIds.has(tagId)) {
+        addTagMutation.mutate({ todoId: todo.id, tagId });
+      }
+    }
+    for (const tagId of serverTagIds) {
+      if (!localSet.has(tagId)) {
+        removeTagMutation.mutate({ todoId: todo.id, tagId });
+      }
+    }
+
     setIsDirty(false);
     setDetailEditing(false);
-  }, [updateMutate, todo.id, description, setDetailEditing]);
+  }, [
+    updateMutate,
+    todo,
+    description,
+    localTagIds,
+    addTagMutation,
+    removeTagMutation,
+    setDetailEditing,
+  ]);
 
   const handleCloseEdit = useCallback(() => {
     setDescription(todo.description ?? '');
+    setLocalTagIds(todo.tags.map((t) => t.id));
     setIsDirty(false);
     setDetailEditing(false);
-  }, [todo.description, setDetailEditing]);
+  }, [todo.description, todo.tags, setDetailEditing]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
@@ -132,39 +160,41 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
             </div>
 
             {/* Description section (editable) */}
-            <div className="space-y-2">
-              <Textarea
-                ref={textareaRef}
-                value={description}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-                placeholder={t('detail.descriptionPlaceholder')}
-                className="text-sm bg-white"
-                rows={3}
-              />
-              <div className="flex items-center gap-2">
-                <Button size="sm" onClick={handleSave} disabled={!isDirty}>
-                  {t('actions.save', { ns: 'common' })}
-                </Button>
-                <Button size="sm" variant="ghost" onClick={handleCloseEdit}>
-                  {t('actions.cancel', { ns: 'common' })}
-                </Button>
-              </div>
-            </div>
+            <Textarea
+              ref={textareaRef}
+              value={description}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              placeholder={t('detail.descriptionPlaceholder')}
+              className="text-sm bg-white"
+              rows={3}
+            />
 
             {/* Tags section */}
             <div className="space-y-1">
               <span className="block text-xs font-medium text-gray-500">{t('detail.tags')}</span>
               <TagPicker
-                selectedIds={todo.tags.map((tag) => tag.id)}
+                selectedIds={localTagIds}
                 onSelect={(tagId) => {
-                  addTagMutation.mutate({ todoId: todo.id, tagId });
+                  setLocalTagIds((prev) => [...prev, tagId]);
+                  setIsDirty(true);
                 }}
                 onDeselect={(tagId) => {
-                  removeTagMutation.mutate({ todoId: todo.id, tagId });
+                  setLocalTagIds((prev) => prev.filter((id) => id !== tagId));
+                  setIsDirty(true);
                 }}
                 workspaceId={activeWorkspaceId ?? undefined}
               />
+            </div>
+
+            {/* Save/Cancel buttons */}
+            <div className="flex items-center gap-2">
+              <Button size="sm" onClick={handleSave} disabled={!isDirty}>
+                {t('actions.save', { ns: 'common' })}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={handleCloseEdit}>
+                {t('actions.cancel', { ns: 'common' })}
+              </Button>
             </div>
           </>
         ) : (
