@@ -187,7 +187,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
 
             {/* Description (read-only) */}
             <p className="text-sm text-gray-600 whitespace-pre-wrap min-h-[1.25rem]">
-              {todo.description || (
+              {todo.description ?? (
                 <span className="text-gray-400 italic">{t('detail.noDescription')}</span>
               )}
             </p>

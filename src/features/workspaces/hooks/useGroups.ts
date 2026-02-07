@@ -6,16 +6,16 @@ import type { Group, GroupMember, CreateGroupInput, UpdateGroupInput } from '../
 
 export function useGroups(workspaceId: string | undefined) {
   return useQuery({
-    queryKey: queryKeys.workspaces.groups(workspaceId!),
-    queryFn: () => groupApi.getAll(workspaceId!),
+    queryKey: queryKeys.workspaces.groups(workspaceId ?? ''),
+    queryFn: () => groupApi.getAll(workspaceId ?? ''),
     enabled: !!workspaceId,
   });
 }
 
 export function useGroup(workspaceId: string | undefined, groupId: string | undefined) {
   return useQuery({
-    queryKey: queryKeys.workspaces.groupDetail(workspaceId!, groupId!),
-    queryFn: () => groupApi.getById(workspaceId!, groupId!),
+    queryKey: queryKeys.workspaces.groupDetail(workspaceId ?? '', groupId ?? ''),
+    queryFn: () => groupApi.getById(workspaceId ?? '', groupId ?? ''),
     enabled: !!workspaceId && !!groupId,
   });
 }
@@ -24,7 +24,10 @@ export function useCreateGroup(workspaceId: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: CreateGroupInput) => groupApi.create(workspaceId!, input),
+    mutationFn: (input: CreateGroupInput) => {
+      if (!workspaceId) throw new Error('workspaceId is required');
+      return groupApi.create(workspaceId, input);
+    },
 
     onMutate: async (input) => {
       if (!workspaceId) return;
@@ -80,7 +83,11 @@ export function useUpdateGroup(workspaceId: string | undefined, groupId: string 
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (input: UpdateGroupInput) => groupApi.update(workspaceId!, groupId!, input),
+    mutationFn: (input: UpdateGroupInput) => {
+      if (!workspaceId) throw new Error('workspaceId is required');
+      if (!groupId) throw new Error('groupId is required');
+      return groupApi.update(workspaceId, groupId, input);
+    },
 
     onMutate: async (input) => {
       if (!workspaceId || !groupId) return;
@@ -149,7 +156,10 @@ export function useDeleteGroup(workspaceId: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (groupId: string) => groupApi.delete(workspaceId!, groupId),
+    mutationFn: (groupId: string) => {
+      if (!workspaceId) throw new Error('workspaceId is required');
+      return groupApi.delete(workspaceId, groupId);
+    },
 
     onMutate: async (groupId) => {
       if (!workspaceId) return;
@@ -194,8 +204,8 @@ export function useDeleteGroup(workspaceId: string | undefined) {
 
 export function useGroupMembers(workspaceId: string | undefined, groupId: string | undefined) {
   return useQuery({
-    queryKey: queryKeys.workspaces.groupMembers(workspaceId!, groupId!),
-    queryFn: () => groupApi.getMembers(workspaceId!, groupId!),
+    queryKey: queryKeys.workspaces.groupMembers(workspaceId ?? '', groupId ?? ''),
+    queryFn: () => groupApi.getMembers(workspaceId ?? '', groupId ?? ''),
     enabled: !!workspaceId && !!groupId,
   });
 }
@@ -204,8 +214,11 @@ export function useAddGroupMember(workspaceId: string | undefined, groupId: stri
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ userId, role }: { userId: string; role?: 'admin' | 'member' }) =>
-      groupApi.addMember(workspaceId!, groupId!, userId, role),
+    mutationFn: ({ userId, role }: { userId: string; role?: 'admin' | 'member' }) => {
+      if (!workspaceId) throw new Error('workspaceId is required');
+      if (!groupId) throw new Error('groupId is required');
+      return groupApi.addMember(workspaceId, groupId, userId, role);
+    },
     onSuccess: () => {
       if (workspaceId && groupId) {
         void queryClient.invalidateQueries({
@@ -227,7 +240,11 @@ export function useRemoveGroupMember(workspaceId: string | undefined, groupId: s
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (userId: string) => groupApi.removeMember(workspaceId!, groupId!, userId),
+    mutationFn: (userId: string) => {
+      if (!workspaceId) throw new Error('workspaceId is required');
+      if (!groupId) throw new Error('groupId is required');
+      return groupApi.removeMember(workspaceId, groupId, userId);
+    },
 
     onMutate: async (userId) => {
       if (!workspaceId || !groupId) return;

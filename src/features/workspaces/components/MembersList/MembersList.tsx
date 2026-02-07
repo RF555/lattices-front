@@ -91,7 +91,7 @@ export function MembersList({ workspaceId }: MembersListProps) {
   };
 
   const getInitials = (member: WorkspaceMember) => {
-    const name = member.displayName || member.email;
+    const name = member.displayName ?? member.email;
     return name.slice(0, 2).toUpperCase();
   };
 
@@ -139,7 +139,7 @@ export function MembersList({ workspaceId }: MembersListProps) {
                 )}
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">
-                    {member.displayName || member.email}
+                    {member.displayName ?? member.email}
                     {isCurrentUser && <span className="ml-1 text-xs text-gray-400">(you)</span>}
                   </p>
                   {member.displayName && (
@@ -211,7 +211,7 @@ export function MembersList({ workspaceId }: MembersListProps) {
         }}
         title={t('members.changeRole')}
         message={t('members.changeRoleConfirm', {
-          name: actionMember?.displayName || actionMember?.email,
+          name: actionMember?.displayName ?? actionMember?.email,
           oldRole: actionMember ? t(`roles.${actionMember.role}`) : '',
           newRole: t(`roles.${newRole}`),
         })}
@@ -227,7 +227,7 @@ export function MembersList({ workspaceId }: MembersListProps) {
         title={t('members.removeMember')}
         message={
           t('members.removeConfirm', {
-            name: actionMember?.displayName || actionMember?.email,
+            name: actionMember?.displayName ?? actionMember?.email,
           }) +
           ' ' +
           t('members.removeWarning')

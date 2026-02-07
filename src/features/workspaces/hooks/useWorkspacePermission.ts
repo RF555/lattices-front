@@ -23,7 +23,7 @@ const ROLE_HIERARCHY: Record<WorkspaceRole, number> = {
 
 export function useWorkspacePermission(workspaceId?: string): WorkspacePermissions {
   const user = useAuthStore((s) => s.user);
-  const { data: members } = useWorkspaceMembers(workspaceId || '');
+  const { data: members } = useWorkspaceMembers(workspaceId ?? '');
 
   return useMemo(() => {
     if (!user || !members || !workspaceId) {
@@ -40,7 +40,7 @@ export function useWorkspacePermission(workspaceId?: string): WorkspacePermissio
     }
 
     const currentMember = members.find((m) => m.userId === user.id);
-    const role = currentMember?.role || null;
+    const role = currentMember?.role ?? null;
 
     if (!role) {
       return {

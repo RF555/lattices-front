@@ -40,7 +40,7 @@ export function MainLayout() {
             <NotificationBell />
             {user && (
               <span className="hidden sm:inline text-sm text-gray-600">
-                {user.name || user.email}
+                {user.name ?? user.email}
               </span>
             )}
             <LanguageSwitcher />

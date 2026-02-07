@@ -36,6 +36,7 @@ export function CreateWorkspaceDialog({ isOpen, onClose }: CreateWorkspaceDialog
     try {
       const workspace = await createWorkspace.mutateAsync({
         name: data.name,
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string from form should be undefined
         description: data.description || undefined,
       });
       setActiveWorkspace(workspace.id);

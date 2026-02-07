@@ -29,7 +29,7 @@ export function useActiveWorkspace(): ActiveWorkspaceResult {
 
   const activeWorkspace = isAllWorkspaces
     ? null
-    : workspaces.find((w) => w.id === activeWorkspaceId) || null;
+    : (workspaces.find((w) => w.id === activeWorkspaceId) ?? null);
 
   return {
     activeWorkspace,

@@ -24,7 +24,7 @@ export function PendingInvitations({ workspaceId }: PendingInvitationsProps) {
   const revokeInvitation = useRevokeInvitation();
   const { canManageMembers } = useWorkspacePermission(workspaceId);
 
-  const pendingInvitations = invitations?.filter((inv) => inv.status === 'pending') || [];
+  const pendingInvitations = invitations?.filter((inv) => inv.status === 'pending') ?? [];
 
   if (isLoading) {
     return (

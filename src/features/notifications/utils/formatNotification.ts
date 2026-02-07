@@ -10,17 +10,17 @@ export function formatNotificationMessage(
   t: TFunction<'notifications'>,
 ): string {
   const { type, metadata } = notification;
-  const actorName = metadata.actorName || t('unknownActor', { defaultValue: 'Someone' });
-  const entityTitle = metadata.entityTitle || t('unknownEntity', { defaultValue: 'an item' });
+  const actorName = metadata.actorName ?? t('unknownActor', { defaultValue: 'Someone' });
+  const entityTitle = metadata.entityTitle ?? t('unknownEntity', { defaultValue: 'an item' });
   const workspaceName =
-    metadata.workspaceName || t('unknownWorkspace', { defaultValue: 'a workspace' });
+    metadata.workspaceName ?? t('unknownWorkspace', { defaultValue: 'a workspace' });
 
   return t(`type.${type}`, {
     actorName,
     entityTitle,
     workspaceName,
-    newRole: metadata.newRole || '',
-    groupName: metadata.groupName || '',
+    newRole: metadata.newRole ?? '',
+    groupName: metadata.groupName ?? '',
     defaultValue: `${actorName}: ${type}`,
   });
 }

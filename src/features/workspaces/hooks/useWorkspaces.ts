@@ -38,7 +38,7 @@ export function useCreateWorkspace() {
         id: `temp-${Date.now()}`,
         name: newWorkspace.name,
         slug: '',
-        description: newWorkspace.description || null,
+        description: newWorkspace.description ?? null,
         createdBy: '',
         memberCount: 1,
         createdAt: new Date().toISOString(),

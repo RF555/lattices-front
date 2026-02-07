@@ -184,7 +184,7 @@ export const notificationHandlers = [
     const isRead = url.searchParams.get('is_read');
     const type = url.searchParams.get('type');
     const cursor = url.searchParams.get('cursor');
-    const limit = parseInt(url.searchParams.get('limit') || '20');
+    const limit = parseInt(url.searchParams.get('limit') ?? '20');
 
     let filtered = [...mockNotifications];
 
@@ -227,7 +227,7 @@ export const notificationHandlers = [
     const url = new URL(request.url);
     const isRead = url.searchParams.get('is_read');
     const type = url.searchParams.get('type');
-    const limit = parseInt(url.searchParams.get('limit') || '20');
+    const limit = parseInt(url.searchParams.get('limit') ?? '20');
 
     let filtered = mockNotifications.filter((n) => n.workspace_id === params.workspaceId);
 
@@ -363,8 +363,8 @@ export const notificationHandlers = [
     const existing = mockPreferences.find(
       (p) =>
         p.channel === body.channel &&
-        p.workspace_id === (body.workspace_id || null) &&
-        p.notification_type === (body.notification_type || null),
+        p.workspace_id === (body.workspace_id ?? null) &&
+        p.notification_type === (body.notification_type ?? null),
     );
 
     if (existing) {
@@ -377,8 +377,8 @@ export const notificationHandlers = [
         id: `pref-${Date.now()}`,
         channel: body.channel,
         enabled: body.enabled,
-        workspace_id: body.workspace_id || null,
-        notification_type: body.notification_type || null,
+        workspace_id: body.workspace_id ?? null,
+        notification_type: body.notification_type ?? null,
       };
       mockPreferences.push(newPref);
       return HttpResponse.json({

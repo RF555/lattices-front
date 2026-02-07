@@ -44,7 +44,7 @@ export function TagList({ workspaceId }: TagListProps) {
 
           <div className="flex items-center gap-2">
             <span className="hidden sm:inline text-xs text-gray-400">
-              {tag.usageCount || 0} {t('list.usageCount')}
+              {tag.usageCount ?? 0} {t('list.usageCount')}
             </span>
             <Button
               variant="ghost"

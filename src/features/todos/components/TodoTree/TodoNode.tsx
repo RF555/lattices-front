@@ -20,7 +20,7 @@ export const TodoNode = memo(function TodoNode({
 }: TodoNodeProps) {
   const expandedIds = useTodoUiStore((s) => s.expandedIds);
   const hasChildren = !!todo.children?.length;
-  const viewers = viewingTask?.get(todo.id) || [];
+  const viewers = viewingTask?.get(todo.id) ?? [];
 
   return (
     <div role="treeitem" aria-selected={false} aria-expanded={hasChildren ? isExpanded : undefined}>
@@ -42,10 +42,10 @@ export const TodoNode = memo(function TodoNode({
           className="lattice-branch"
           style={{ '--branch-x': `${(depth + 1) * 24 + 8}px` } as React.CSSProperties}
         >
-          {todo.children!.map((child, index) => (
+          {todo.children?.map((child, index) => (
             <div
               key={child.id}
-              className={`lattice-connector${index === todo.children!.length - 1 ? ' lattice-branch-last' : ''}`}
+              className={`lattice-connector${index === (todo.children?.length ?? 0) - 1 ? ' lattice-branch-last' : ''}`}
               style={{ '--branch-x': `${(depth + 1) * 24 + 8}px` } as React.CSSProperties}
             >
               <TodoNode

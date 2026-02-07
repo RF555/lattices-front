@@ -22,7 +22,7 @@ describe('formatNotificationMessage', () => {
       unknownWorkspace: 'a workspace',
     };
 
-    let result = templates[key] || options?.defaultValue || key;
+    let result = templates[key] ?? options?.defaultValue ?? key;
 
     // Simple template interpolation
     if (typeof result === 'string' && options) {

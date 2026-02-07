@@ -20,7 +20,7 @@ export function RoleSelector({ currentRole, onSelect, disabled }: RoleSelectorPr
         <button
           key={role}
           type="button"
-          disabled={disabled || role === currentRole}
+          disabled={disabled ?? role === currentRole}
           className={cn(
             'flex w-full items-center justify-between px-3 py-1.5 text-left text-sm',
             'hover:bg-gray-50 transition-colors',

@@ -39,8 +39,8 @@ export function usePresence(workspaceId: string | null | undefined): PresenceRes
     // Publish initial presence
     void realtimeManager.updatePresence(workspaceId, {
       userId: user.id,
-      displayName: user.name || user.email,
-      avatarUrl: user.avatarUrl || null,
+      displayName: user.name ?? user.email,
+      avatarUrl: user.avatarUrl ?? null,
       lastSeen: new Date().toISOString(),
       viewingTaskId: null,
     });
@@ -57,8 +57,8 @@ export function usePresence(workspaceId: string | null | undefined): PresenceRes
       viewingTaskRef.current = taskId;
       void realtimeManager.updatePresence(workspaceId, {
         userId: userRef.current.id,
-        displayName: userRef.current.name || userRef.current.email,
-        avatarUrl: userRef.current.avatarUrl || null,
+        displayName: userRef.current.name ?? userRef.current.email,
+        avatarUrl: userRef.current.avatarUrl ?? null,
         lastSeen: new Date().toISOString(),
         viewingTaskId: taskId,
       });
@@ -77,7 +77,7 @@ export function usePresence(workspaceId: string | null | undefined): PresenceRes
     const map = new Map<string, PresenceUser[]>();
     for (const u of onlineUsers) {
       if (u.viewingTaskId) {
-        const existing = map.get(u.viewingTaskId) || [];
+        const existing = map.get(u.viewingTaskId) ?? [];
         existing.push(u);
         map.set(u.viewingTaskId, existing);
       }

@@ -17,14 +17,15 @@ export function buildTodoTree(todos: Todo[]): Todo[] {
 
   // Second pass: build parent-child relationships
   for (const todo of todos) {
-    const node = todoMap.get(todo.id)!;
+    const node = todoMap.get(todo.id);
+    if (!node) continue;
 
     if (todo.parentId === null) {
       rootTodos.push(node);
     } else {
       const parent = todoMap.get(todo.parentId);
-      if (parent) {
-        parent.children!.push(node);
+      if (parent?.children) {
+        parent.children.push(node);
       } else {
         // Orphan node - add to root
         rootTodos.push(node);
@@ -90,7 +91,7 @@ export function getDescendantIds(todo: Todo): string[] {
   const ids: string[] = [];
 
   const traverse = (node: Todo) => {
-    for (const child of node.children || []) {
+    for (const child of node.children ?? []) {
       ids.push(child.id);
       traverse(child);
     }
@@ -127,7 +128,7 @@ export function filterTodoTree(todos: Todo[], predicate: (todo: Todo) => boolean
   const filterNodes = (nodes: Todo[]): Todo[] => {
     const result: Todo[] = [];
     for (const node of nodes) {
-      const filteredChildren = filterNodes(node.children || []);
+      const filteredChildren = filterNodes(node.children ?? []);
       const nodeMatches = predicate(node);
       const hasMatchingChildren = filteredChildren.length > 0;
 
@@ -210,7 +211,8 @@ export function getDescendantIdsFlat(todos: Todo[], targetId: string): Set<strin
   const descendants = new Set<string>();
   const queue = [targetId];
   while (queue.length > 0) {
-    const currentId = queue.shift()!;
+    const currentId = queue.shift();
+    if (currentId === undefined) break;
     for (const todo of todos) {
       if (todo.parentId === currentId && !descendants.has(todo.id)) {
         descendants.add(todo.id);
