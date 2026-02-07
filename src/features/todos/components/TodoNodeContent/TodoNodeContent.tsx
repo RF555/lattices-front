@@ -43,6 +43,7 @@ export function TodoNodeContent({
   const isMobile = useIsMobile();
   const toggleExpanded = useTodoUiStore((s) => s.toggleExpanded);
   const setSelectedId = useTodoUiStore((s) => s.setSelectedId);
+  const setDetailEditing = useTodoUiStore((s) => s.setDetailEditing);
   const selectedId = useTodoUiStore((s) => s.selectedId);
 
   const toggleMutation = useToggleTodo();
@@ -128,11 +129,7 @@ export function TodoNodeContent({
           onToggle={handleExpandToggle}
         />
 
-        <TodoCheckbox
-          checked={isCompleted}
-          onChange={handleToggle}
-          disabled={toggleMutation.isPending}
-        />
+        <TodoCheckbox checked={isCompleted} onChange={handleToggle} />
 
         {isEditing ? (
           <TodoInlineEdit
@@ -163,7 +160,7 @@ export function TodoNodeContent({
             </div>
             {/* Tag badges (read-only display in tree row) */}
             {todo.tags.length > 0 && (
-              <div className="flex items-center gap-1 shrink-0">
+              <div className="flex flex-wrap items-center gap-1 ms-auto justify-end">
                 {todo.tags.map((tag) => (
                   <TagBadge key={tag.id} tag={tag} />
                 ))}
@@ -193,10 +190,12 @@ export function TodoNodeContent({
 
         <TodoActions
           onEdit={() => {
-            setIsEditing(true);
+            if (!isSelected) {
+              setSelectedId(todo.id);
+            }
+            setDetailEditing(true);
           }}
           onDelete={handleDelete}
-          isDeleting={deleteMutation.isPending}
         />
       </div>
 

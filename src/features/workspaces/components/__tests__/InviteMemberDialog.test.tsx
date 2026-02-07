@@ -303,7 +303,7 @@ describe('InviteMemberDialog', () => {
 
   // --- Loading state ---
 
-  it('should disable submit button when pending', () => {
+  it('should keep submit button visible when pending', () => {
     mockUseCreateInvitation.mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: true,
@@ -311,9 +311,9 @@ describe('InviteMemberDialog', () => {
 
     render(<InviteMemberDialog {...defaultProps} />);
 
-    // When isPending, Button renders "Loading..." text and is disabled
-    const submitButton = screen.getByRole('button', { name: /loading/i });
-    expect(submitButton).toBeDisabled();
+    // Submit button remains visible during pending state
+    const submitButton = screen.getByRole('button', { name: /send/i });
+    expect(submitButton).toBeInTheDocument();
   });
 
   // --- Reset state on close ---

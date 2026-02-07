@@ -127,13 +127,7 @@ export function CreateTodoForm() {
           }
           className="flex-1"
         />
-        <Button
-          type="submit"
-          disabled={
-            !title.trim() || createMutation.isPending || (isAllWorkspaces && !selectedWorkspaceId)
-          }
-          isLoading={createMutation.isPending}
-        >
+        <Button type="submit" disabled={!title.trim() || (isAllWorkspaces && !selectedWorkspaceId)}>
           {t('createForm.add')}
         </Button>
       </div>

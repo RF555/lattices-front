@@ -94,9 +94,7 @@ export function CreateWorkspaceDialog({ isOpen, onClose }: CreateWorkspaceDialog
           <Button type="button" variant="secondary" onClick={handleClose}>
             {t('form.cancel', { ns: 'common', defaultValue: 'Cancel' })}
           </Button>
-          <Button type="submit" isLoading={createWorkspace.isPending}>
-            {t('form.create')}
-          </Button>
+          <Button type="submit">{t('form.create')}</Button>
         </div>
       </form>
     </Modal>

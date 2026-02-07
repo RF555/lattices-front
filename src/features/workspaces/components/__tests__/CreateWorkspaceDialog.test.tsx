@@ -231,7 +231,7 @@ describe('CreateWorkspaceDialog', () => {
     expect(screen.getByLabelText(/name/i)).toHaveValue('');
   });
 
-  it('should show loading state while submitting', () => {
+  it('should keep submit button visible while submitting', () => {
     mockUseCreateWorkspace.mockReturnValue({
       mutateAsync: mockMutateAsync,
       isPending: true,
@@ -239,8 +239,8 @@ describe('CreateWorkspaceDialog', () => {
 
     render(<CreateWorkspaceDialog {...defaultProps} />);
 
-    // When isPending, Button renders "Loading..." text
-    const submitButton = screen.getByRole('button', { name: /loading/i });
+    // Submit button remains visible during pending state
+    const submitButton = screen.getByRole('button', { name: /create/i });
     expect(submitButton).toBeInTheDocument();
   });
 

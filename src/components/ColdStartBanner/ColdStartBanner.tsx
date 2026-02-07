@@ -33,8 +33,8 @@ export function ColdStartBanner() {
           if (mounted) setBannerState('hidden');
         }, 1500);
       } else {
-        // Failed: keep showing waking state (will retry on next API call)
-        setBannerState('waking');
+        // All retries failed — hide banner, user will see errors from actual API calls
+        setBannerState('hidden');
       }
     });
 
@@ -47,8 +47,8 @@ export function ColdStartBanner() {
   if (bannerState === 'hidden') return null;
 
   return (
-    <div className="fixed top-0 inset-x-0 z-50">
-      <div className="bg-amber-100 text-amber-800 px-4 py-2 text-center text-sm">
+    <div className="sticky top-0 z-50">
+      <div className="bg-amber-100 text-amber-800 px-4 py-2 text-center text-sm animate-in slide-in-from-top-1 fade-in duration-200">
         {bannerState === 'waking' ? (
           <>
             <span className="inline-block animate-pulse me-2">&#x23F3;</span>

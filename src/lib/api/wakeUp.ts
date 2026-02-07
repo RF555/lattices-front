@@ -1,5 +1,7 @@
 const API_URL = import.meta.env.VITE_API_URL;
-const HEALTH_CHECK_TIMEOUT = 3000;
+const HEALTH_CHECK_TIMEOUT = 10_000;
+const MAX_RETRIES = 10;
+const RETRY_DELAY = 2000;
 
 interface WakeUpState {
   isWakingUp: boolean;
@@ -26,23 +28,31 @@ export async function wakeUpBackend(): Promise<boolean> {
 
   state.isWakingUp = true;
 
-  wakeUpPromise = fetch(`${API_URL}/health`, {
-    method: 'GET',
-    signal: AbortSignal.timeout(HEALTH_CHECK_TIMEOUT),
-  })
-    .then((response) => {
-      state.isAwake = response.ok;
-      state.lastCheck = Date.now();
-      return response.ok;
-    })
-    .catch(() => {
-      state.isAwake = false;
-      return false;
-    })
-    .finally(() => {
-      state.isWakingUp = false;
-      wakeUpPromise = null;
-    });
+  wakeUpPromise = (async () => {
+    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+      try {
+        const response = await fetch(`${API_URL}/health`, {
+          method: 'GET',
+          signal: AbortSignal.timeout(HEALTH_CHECK_TIMEOUT),
+        });
+        if (response.ok) {
+          state.isAwake = true;
+          state.lastCheck = Date.now();
+          return true;
+        }
+      } catch {
+        // timeout or network error, retry
+      }
+      if (attempt < MAX_RETRIES - 1) {
+        await new Promise((r) => setTimeout(r, RETRY_DELAY));
+      }
+    }
+    state.isAwake = false;
+    return false;
+  })().finally(() => {
+    state.isWakingUp = false;
+    wakeUpPromise = null;
+  });
 
   return wakeUpPromise;
 }

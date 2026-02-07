@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 interface TodoUiState {
   expandedIds: Set<string>;
   selectedId: string | null;
+  isDetailEditing: boolean;
   showCompleted: boolean;
   sortBy: 'position' | 'createdAt' | 'title';
   sortOrder: 'asc' | 'desc';
@@ -19,6 +20,7 @@ interface TodoUiActions {
   collapseAll: () => void;
   setExpanded: (id: string, expanded: boolean) => void;
   setSelectedId: (id: string | null) => void;
+  setDetailEditing: (editing: boolean) => void;
   setShowCompleted: (show: boolean) => void;
   setSortBy: (sortBy: TodoUiState['sortBy']) => void;
   setSortOrder: (order: TodoUiState['sortOrder']) => void;
@@ -33,6 +35,7 @@ type TodoUiStore = TodoUiState & TodoUiActions;
 const initialState: TodoUiState = {
   expandedIds: new Set(),
   selectedId: null,
+  isDetailEditing: false,
   showCompleted: true,
   sortBy: 'position',
   sortOrder: 'asc',
@@ -74,7 +77,8 @@ export const useTodoUiStore = create<TodoUiStore>()(
         set({ expandedIds });
       },
 
-      setSelectedId: (id) => set({ selectedId: id }),
+      setSelectedId: (id) => set({ selectedId: id, isDetailEditing: false }),
+      setDetailEditing: (editing) => set({ isDetailEditing: editing }),
       setShowCompleted: (show) => set({ showCompleted: show }),
       setSortBy: (sortBy) => set({ sortBy }),
       setSortOrder: (order) => set({ sortOrder: order }),

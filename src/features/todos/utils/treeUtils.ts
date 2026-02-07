@@ -201,3 +201,22 @@ export function sortTodoTree(
 
   return sortNodes(todos);
 }
+
+/**
+ * Gets all descendant IDs from a flat todo list using parentId chains (BFS).
+ * Does NOT require a pre-built tree structure.
+ */
+export function getDescendantIdsFlat(todos: Todo[], targetId: string): Set<string> {
+  const descendants = new Set<string>();
+  const queue = [targetId];
+  while (queue.length > 0) {
+    const currentId = queue.shift()!;
+    for (const todo of todos) {
+      if (todo.parentId === currentId && !descendants.has(todo.id)) {
+        descendants.add(todo.id);
+        queue.push(todo.id);
+      }
+    }
+  }
+  return descendants;
+}
