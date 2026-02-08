@@ -84,7 +84,7 @@ export function NotificationItem({
         className={cn(
           'shrink-0 rounded p-1 text-gray-400 transition-opacity',
           'hover:bg-gray-200 hover:text-gray-600',
-          'opacity-0 group-hover:opacity-100 focus:opacity-100',
+          'opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100',
         )}
         aria-label={t('dismiss')}
       >

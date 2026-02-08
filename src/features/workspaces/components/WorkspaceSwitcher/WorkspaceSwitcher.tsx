@@ -68,7 +68,7 @@ export function WorkspaceSwitcher({ onCreateWorkspace }: WorkspaceSwitcherProps)
         aria-expanded={isOpen}
         aria-haspopup="listbox"
       >
-        <span className="max-w-[140px] truncate">
+        <span className="max-w-[100px] sm:max-w-[140px] truncate">
           {isAllWorkspaces ? t('allWorkspaces') : (activeWorkspace?.name ?? t('selectWorkspace'))}
         </span>
         <ChevronDown

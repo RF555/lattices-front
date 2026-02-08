@@ -5,7 +5,15 @@
     "taglineRegister": "Tasks with a foundation."
   },
   "nav": {
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "tasks": "Tasks",
+    "workspaces": "Workspaces",
+    "notifications": "Notifications",
+    "more": "More",
+    "settings": "Settings",
+    "language": "Language",
+    "workspaceSettings": "Workspace Settings",
+    "profile": "Profile"
   },
   "actions": {
     "save": "Save",

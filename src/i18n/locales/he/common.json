@@ -5,7 +5,15 @@
     "taglineRegister": "משימות עם בסיס."
   },
   "nav": {
-    "signOut": "התנתקות"
+    "signOut": "התנתקות",
+    "tasks": "משימות",
+    "workspaces": "סביבות עבודה",
+    "notifications": "התראות",
+    "more": "עוד",
+    "settings": "הגדרות",
+    "language": "שפה",
+    "workspaceSettings": "הגדרות סביבת עבודה",
+    "profile": "פרופיל"
   },
   "actions": {
     "save": "שמירה",

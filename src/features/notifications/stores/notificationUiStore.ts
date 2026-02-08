@@ -42,8 +42,3 @@ export const useNotificationUiStore = create<NotificationUiStore>()(
     },
   ),
 );
-
-// Selector hooks
-export const usePanelOpen = () => useNotificationUiStore((state) => state.panelOpen);
-export const useShowToastOnNew = () => useNotificationUiStore((state) => state.showToastOnNew);
-export const usePanelFilter = () => useNotificationUiStore((state) => state.panelFilter);

@@ -17,6 +17,7 @@ const ActivityPage = lazy(() => import('@features/workspaces/pages/ActivityPage'
 const GroupsPage = lazy(() => import('@features/workspaces/pages/GroupsPage'));
 const GroupDetailPage = lazy(() => import('@features/workspaces/pages/GroupDetailPage'));
 const AcceptInvitationPage = lazy(() => import('@features/workspaces/pages/AcceptInvitationPage'));
+const NotificationsPage = lazy(() => import('@features/notifications/pages/NotificationsPage'));
 const NotificationPreferencesPage = lazy(
   () => import('@features/notifications/pages/NotificationPreferencesPage'),
 );
@@ -108,6 +109,14 @@ export const router = createBrowserRouter([
             element: (
               <Suspense fallback={<PageLoader />}>
                 <GroupDetailPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: 'notifications',
+            element: (
+              <Suspense fallback={<PageLoader />}>
+                <NotificationsPage />
               </Suspense>
             ),
           },
