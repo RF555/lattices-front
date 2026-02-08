@@ -80,6 +80,16 @@ describe('Button', () => {
       const button = screen.getByRole('button');
       expect(button).toHaveClass('px-4', 'py-2');
     });
+
+    it('should have WCAG compliant touch target size on mobile for small buttons', () => {
+      render(<Button size="sm">Small Button</Button>);
+      const button = screen.getByRole('button');
+
+      // Mobile: min-h-[44px] meets WCAG 2.5.5 touch target size
+      // Desktop (sm+): sm:min-h-0 allows natural sizing
+      expect(button).toHaveClass('min-h-[44px]');
+      expect(button).toHaveClass('sm:min-h-0');
+    });
   });
 
   describe('Loading State', () => {

@@ -129,4 +129,14 @@ describe('Input', () => {
     expect(input).toHaveClass('py-2');
     expect(input).toHaveClass('shadow-sm');
   });
+
+  it('should have mobile-responsive text size to prevent iOS zoom', () => {
+    render(<Input data-testid="responsive-input" />);
+    const input = screen.getByTestId('responsive-input');
+
+    // Mobile: text-base (16px) prevents iOS Safari auto-zoom
+    // Desktop (sm+): text-sm for consistency with design
+    expect(input).toHaveClass('text-base');
+    expect(input).toHaveClass('sm:text-sm');
+  });
 });

@@ -61,9 +61,17 @@ export default {
         sidebar: '280px',
         'header-sm': '56px',
         header: '64px',
+        'safe-top': 'var(--safe-area-top)',
+        'safe-bottom': 'var(--safe-area-bottom)',
+        'safe-left': 'var(--safe-area-left)',
+        'safe-right': 'var(--safe-area-right)',
+      },
+      height: {
+        screen: '100dvh',
       },
       minHeight: {
         loader: '400px',
+        screen: '100dvh',
       },
     },
   },

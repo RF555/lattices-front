@@ -19,7 +19,7 @@ export function TodoActions({ onEdit, onDelete }: TodoActionsProps) {
           onEdit();
         }}
         className={cn(
-          'p-1.5 sm:p-1 text-gray-400 hover:text-gray-600',
+          'p-2.5 sm:p-1 text-gray-400 hover:text-gray-600',
           'focus:outline-none focus:ring-2 focus:ring-primary rounded',
         )}
         aria-label={t('actions.editTask')}
@@ -34,7 +34,7 @@ export function TodoActions({ onEdit, onDelete }: TodoActionsProps) {
           onDelete();
         }}
         className={cn(
-          'p-1.5 sm:p-1 text-gray-400 hover:text-red-600',
+          'p-2.5 sm:p-1 text-gray-400 hover:text-red-600',
           'focus:outline-none focus:ring-2 focus:ring-red-500 rounded',
         )}
         aria-label={t('actions.deleteTask')}
