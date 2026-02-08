@@ -3,6 +3,7 @@ import { CheckCircle, XCircle, AlertTriangle, Info, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useToastStore, type Toast as ToastType } from '@stores/toastStore';
 import { cn } from '@lib/utils/cn';
+import { TOAST } from '@/constants';
 
 interface ToastProps {
   toast: ToastType;
@@ -31,7 +32,7 @@ export function Toast({ toast }: ToastProps) {
     setIsExiting(true);
     setTimeout(() => {
       removeToast(toast.id);
-    }, 150);
+    }, TOAST.EXIT_ANIMATION_MS);
   };
 
   return (

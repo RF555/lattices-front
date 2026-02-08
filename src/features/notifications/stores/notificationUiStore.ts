@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { STORAGE_KEYS } from '@/constants';
 
 interface NotificationUiState {
   /** Whether the notification panel dropdown is open */
@@ -32,7 +33,7 @@ export const useNotificationUiStore = create<NotificationUiStore>()(
       setPanelFilter: (filter) => set({ panelFilter: filter }),
     }),
     {
-      name: 'notification-ui-storage',
+      name: STORAGE_KEYS.NOTIFICATION_UI,
       storage: createJSONStorage(() => localStorage),
       // Only persist toast preference, not ephemeral panel state
       partialize: (state) => ({

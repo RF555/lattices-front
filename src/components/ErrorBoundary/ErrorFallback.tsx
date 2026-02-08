@@ -10,7 +10,7 @@ export function ErrorFallback({ error, onRetry }: ErrorFallbackProps) {
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] p-8">
+    <div className="flex flex-col items-center justify-center min-h-loader p-8">
       <div className="text-red-500 mb-4">
         <svg className="w-16 h-16" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />

@@ -1,6 +1,8 @@
+import type { Config } from 'tailwindcss';
 import tailwindcssAnimate from 'tailwindcss-animate';
+import { Z_INDEX } from './src/constants/z-index';
+import { BREAKPOINTS } from './src/constants/breakpoints';
 
-/** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
@@ -49,7 +51,21 @@ export default {
         'node-selected': '0 2px 8px 0 rgba(99, 102, 241, 0.12)',
         panel: '0 4px 12px 0 rgba(0, 0, 0, 0.06)',
       },
+      screens: Object.fromEntries(
+        Object.entries(BREAKPOINTS).map(([key, value]) => [key, `${value}px`]),
+      ),
+      zIndex: Object.fromEntries(
+        Object.entries(Z_INDEX).map(([key, value]) => [key.toLowerCase(), String(value)]),
+      ),
+      spacing: {
+        sidebar: '280px',
+        'header-sm': '56px',
+        header: '64px',
+      },
+      minHeight: {
+        loader: '400px',
+      },
     },
   },
   plugins: [tailwindcssAnimate],
-};
+} satisfies Config;

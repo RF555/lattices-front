@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { useShallow } from 'zustand/react/shallow';
+import { STORAGE_KEYS } from '@/constants';
 
 interface TodoUiState {
   expandedIds: Set<string>;
@@ -92,7 +93,7 @@ export const useTodoUiStore = create<TodoUiStore>()(
       toggleToolbar: () => set((state) => ({ toolbarExpanded: !state.toolbarExpanded })),
     }),
     {
-      name: 'todo-ui-storage',
+      name: STORAGE_KEYS.TODO_UI,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         expandedIds: Array.from(state.expandedIds),

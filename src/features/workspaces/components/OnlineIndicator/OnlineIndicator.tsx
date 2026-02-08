@@ -27,7 +27,7 @@ export function OnlineIndicator({ onlineUsers, className }: OnlineIndicatorProps
       </span>
 
       {/* Tooltip */}
-      <div className="absolute bottom-full left-0 mb-1 hidden group-hover:block z-50">
+      <div className="absolute bottom-full left-0 mb-1 hidden group-hover:block z-dropdown">
         <div className="bg-gray-900 text-white text-xs rounded-md px-3 py-2 shadow-lg whitespace-nowrap">
           {onlineUsers.slice(0, 10).map((user) => (
             <div key={user.userId} className="flex items-center gap-2 py-0.5">

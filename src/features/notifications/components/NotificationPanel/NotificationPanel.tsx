@@ -83,7 +83,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
   return (
     <div
       className={cn(
-        'z-50 flex flex-col rounded-lg border border-gray-200 bg-white shadow-lg',
+        'z-notification flex flex-col rounded-lg border border-gray-200 bg-white shadow-lg',
         // Mobile: fixed full-screen overlay; sm+: absolute dropdown
         'fixed inset-0 sm:absolute sm:inset-auto sm:end-0 sm:top-full sm:mt-2',
         'w-full sm:w-96',

@@ -1,4 +1,5 @@
 import { ApiException } from './errors';
+import { HTTP_STATUS, HTTP_HEADERS } from '@/constants';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const API_VERSION = import.meta.env.VITE_API_VERSION || 'v1';
@@ -75,13 +76,13 @@ class ApiClient {
     const url = this.buildUrl(endpoint, params);
 
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      'Content-Type': HTTP_HEADERS.CONTENT_TYPE_JSON,
       ...(config.headers as Record<string, string> | undefined),
     };
 
     const token = this.getAccessToken?.();
     if (token) {
-      headers.Authorization = `Bearer ${token}`;
+      headers.Authorization = `${HTTP_HEADERS.AUTH_PREFIX} ${token}`;
     }
 
     try {
@@ -92,7 +93,7 @@ class ApiClient {
       });
 
       // Handle 204 No Content (e.g., DELETE responses)
-      if (response.status === 204) {
+      if (response.status === HTTP_STATUS.NO_CONTENT) {
         return null as T;
       }
 
@@ -100,7 +101,7 @@ class ApiClient {
 
       if (!response.ok) {
         // Auto-refresh on 401
-        if (response.status === 401 && !_isRetry) {
+        if (response.status === HTTP_STATUS.UNAUTHORIZED && !_isRetry) {
           const newToken = await this.tryRefresh();
           if (newToken) {
             return await this.request<T>(endpoint, config, true);

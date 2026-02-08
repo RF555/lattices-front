@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
 import { todoApi } from '../api/todoApi';
 import { buildTodoTree } from '../utils/treeUtils';
+import { TODO_DEFAULTS } from '../constants';
 import type { Todo, CreateTodoInput, UpdateTodoInput, TodoFilters } from '../types/todo';
 
 export function useTodos(filters?: TodoFilters, workspaceId?: string) {
@@ -48,7 +49,7 @@ export function useCreateTodo(workspaceId?: string) {
         description: newTodo.description ?? null,
         isCompleted: false,
         parentId: newTodo.parentId ?? null,
-        position: 999,
+        position: TODO_DEFAULTS.OPTIMISTIC_POSITION,
         completedAt: null,
         childCount: 0,
         completedChildCount: 0,

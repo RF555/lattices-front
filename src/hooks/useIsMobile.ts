@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
-
-const MOBILE_BREAKPOINT = 640; // Tailwind's `sm` breakpoint
+import { BREAKPOINTS } from '@/constants';
 
 /**
- * Detects whether the viewport is below 640px (Tailwind `sm` breakpoint).
+ * Detects whether the viewport is below the `sm` breakpoint (640px).
  * Uses `window.matchMedia` for efficient, event-driven detection.
  */
 export function useIsMobile(): boolean {
   const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== 'undefined' ? window.innerWidth < MOBILE_BREAKPOINT : false,
+    typeof window !== 'undefined' ? window.innerWidth < BREAKPOINTS.sm : false,
   );
 
   useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const mql = window.matchMedia(`(max-width: ${BREAKPOINTS.sm - 1}px)`);
 
     const handleChange = (e: MediaQueryListEvent) => {
       setIsMobile(e.matches);

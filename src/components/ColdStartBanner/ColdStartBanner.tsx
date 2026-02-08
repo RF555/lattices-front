@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { wakeUpBackend } from '@lib/api/wakeUp';
+import { COLD_START } from '@/constants';
 
 type BannerState = 'hidden' | 'waking' | 'ready';
 
@@ -12,10 +13,10 @@ export function ColdStartBanner() {
     let mounted = true;
     const startTime = Date.now();
 
-    // Show "waking up" banner after 2s if still waiting
+    // Show "waking up" banner after delay if still waiting
     const delayTimer = setTimeout(() => {
       if (mounted) setBannerState('waking');
-    }, 2000);
+    }, COLD_START.SHOW_DELAY_MS);
 
     void wakeUpBackend().then((isAwake) => {
       if (!mounted) return;
@@ -23,7 +24,7 @@ export function ColdStartBanner() {
 
       const elapsed = Date.now() - startTime;
 
-      if (isAwake && elapsed < 2000) {
+      if (isAwake && elapsed < COLD_START.FAST_THRESHOLD_MS) {
         // Fast response: never show the banner
         setBannerState('hidden');
       } else if (isAwake) {
@@ -31,7 +32,7 @@ export function ColdStartBanner() {
         setBannerState('ready');
         setTimeout(() => {
           if (mounted) setBannerState('hidden');
-        }, 1500);
+        }, COLD_START.READY_DISPLAY_MS);
       } else {
         // All retries failed — hide banner, user will see errors from actual API calls
         setBannerState('hidden');
@@ -47,7 +48,7 @@ export function ColdStartBanner() {
   if (bannerState === 'hidden') return null;
 
   return (
-    <div className="sticky top-0 z-50">
+    <div className="sticky top-0 z-banner">
       <div className="bg-amber-100 text-amber-800 px-4 py-2 text-center text-sm animate-in slide-in-from-top-1 fade-in duration-200">
         {bannerState === 'waking' ? (
           <>

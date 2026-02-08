@@ -174,7 +174,7 @@ describe('Modal', () => {
 
     expect(backdrop).toHaveClass('fixed');
     expect(backdrop).toHaveClass('inset-0');
-    expect(backdrop).toHaveClass('z-50');
+    expect(backdrop).toHaveClass('z-modal');
     expect(backdrop).toHaveClass('bg-black/50');
   });
 
