@@ -12,6 +12,8 @@
     "removeTags": "Remove tags",
     "addDescription": "+ Add description",
     "addTags": "+ Add tags",
+    "addParent": "+ Add parent",
+    "removeParent": "Remove parent",
     "subtaskInfo": "Adding as subtask to selected item",
     "selectWorkspace": "Select workspace...",
     "noWorkspaceSelected": "Choose a workspace to create a task"

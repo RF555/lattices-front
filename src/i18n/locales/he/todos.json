@@ -12,6 +12,8 @@
     "removeTags": "הסרת תגיות",
     "addDescription": "+ הוספת תיאור",
     "addTags": "+ הוספת תגיות",
+    "addParent": "+ הוספת משימת אב",
+    "removeParent": "הסרת משימת אב",
     "subtaskInfo": "מוסיף כתת-משימה לפריט הנבחר",
     "selectWorkspace": "בחר סביבת עבודה...",
     "noWorkspaceSelected": "בחר סביבת עבודה כדי ליצור משימה"
