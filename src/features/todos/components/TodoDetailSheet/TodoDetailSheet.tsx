@@ -1,64 +1,60 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Pencil, X } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { BottomSheet } from '@components/ui/BottomSheet';
 import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
-import { useIsMobile } from '@hooks/useIsMobile';
-import { TodoBreadcrumb } from '../TodoBreadcrumb';
-import { useUpdateTodo } from '../../hooks/useTodos';
 import { TagPicker } from '@features/tags/components/TagPicker';
-import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
+import { TagBadge } from '@features/tags/components/TagBadge';
 import { ParentPicker } from '../ParentPicker';
+import { TodoBreadcrumb } from '../TodoBreadcrumb';
+import { TodoCheckbox } from '../TodoTree/TodoCheckbox';
+import { useUpdateTodo, useToggleTodo } from '../../hooks/useTodos';
+import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
-import { useTodoUiStore } from '../../stores/todoUiStore';
 import { formatDate, formatDateFull } from '@lib/utils/formatDate';
 import type { Todo } from '../../types/todo';
 
-interface TodoDetailPanelProps {
+interface TodoDetailSheetProps {
   todo: Todo;
-  indentPx: number;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
+export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetProps) {
   const { t } = useTranslation('todos');
-  const isMobile = useIsMobile();
+  const [isEditing, setIsEditing] = useState(false);
   const [description, setDescription] = useState(todo.description ?? '');
-  const [localTagIds, setLocalTagIds] = useState<string[]>(todo.tags.map((t) => t.id));
+  const [localTagIds, setLocalTagIds] = useState<string[]>(todo.tags.map((tag) => tag.id));
   const [localParentId, setLocalParentId] = useState<string | null>(todo.parentId);
   const [isDirty, setIsDirty] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const isDetailEditing = useTodoUiStore((s) => s.isDetailEditing);
-  const setDetailEditing = useTodoUiStore((s) => s.setDetailEditing);
-
   const activeWorkspaceId = useActiveWorkspaceId();
   const updateMutation = useUpdateTodo();
   const updateMutate = updateMutation.mutate;
+  const toggleMutation = useToggleTodo();
+  const toggleMutate = toggleMutation.mutate;
   const addTagMutation = useAddTagToTodo();
   const removeTagMutation = useRemoveTagFromTodo();
 
-  // Sync from server when not in edit mode
+  // Sync from server state when opening or when todo changes
   useEffect(() => {
-    if (!isDetailEditing) {
+    if (open) {
       setDescription(todo.description ?? '');
-      setLocalTagIds(todo.tags.map((t) => t.id));
+      setLocalTagIds(todo.tags.map((tag) => tag.id));
       setLocalParentId(todo.parentId);
+      setIsDirty(false);
+      setIsEditing(false);
     }
-  }, [todo.description, todo.tags, todo.parentId, isDetailEditing]);
-
-  // Reset state when switching todos
-  useEffect(() => {
-    setIsDirty(false);
-    setLocalTagIds(todo.tags.map((t) => t.id));
-    setLocalParentId(todo.parentId);
-  }, [todo.id, todo.tags, todo.parentId]);
+  }, [open, todo.id, todo.description, todo.tags, todo.parentId]);
 
   // Focus textarea when entering edit mode
   useEffect(() => {
-    if (isDetailEditing) {
+    if (isEditing) {
       textareaRef.current?.focus();
     }
-  }, [isDetailEditing]);
+  }, [isEditing]);
 
   const handleSave = useCallback(() => {
     // Build update input: description + parentId (only if changed)
@@ -73,7 +69,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
     updateMutate({ id: todo.id, input });
 
     // Compute tag diffs and fire mutations
-    const serverTagIds = new Set(todo.tags.map((t) => t.id));
+    const serverTagIds = new Set(todo.tags.map((tag) => tag.id));
     const localSet = new Set(localTagIds);
     for (const tagId of localTagIds) {
       if (!serverTagIds.has(tagId)) {
@@ -87,7 +83,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
     }
 
     setIsDirty(false);
-    setDetailEditing(false);
+    setIsEditing(false);
   }, [
     updateMutate,
     todo,
@@ -96,18 +92,17 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
     localTagIds,
     addTagMutation,
     removeTagMutation,
-    setDetailEditing,
   ]);
 
-  const handleCloseEdit = useCallback(() => {
+  const handleCancel = useCallback(() => {
     setDescription(todo.description ?? '');
-    setLocalTagIds(todo.tags.map((t) => t.id));
+    setLocalTagIds(todo.tags.map((tag) => tag.id));
     setLocalParentId(todo.parentId);
     setIsDirty(false);
-    setDetailEditing(false);
-  }, [todo.description, todo.tags, todo.parentId, setDetailEditing]);
+    setIsEditing(false);
+  }, [todo.description, todo.tags, todo.parentId]);
 
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
     setIsDirty(true);
   }, []);
@@ -115,48 +110,51 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
       e.stopPropagation();
-
-      if (e.key === 'Escape') {
-        handleCloseEdit();
-        return;
-      }
-
       if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         handleSave();
       }
     },
-    [handleCloseEdit, handleSave],
+    [handleSave],
   );
 
-  const handleContainerClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
-  }, []);
+  const handleToggle = useCallback(() => {
+    toggleMutate({ id: todo.id, isCompleted: !todo.isCompleted });
+  }, [toggleMutate, todo.id, todo.isCompleted]);
 
   return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- click handler only stops event propagation to parent row
-    <div
-      className="border-t border-gray-100 bg-gray-50/50 shadow-panel animate-in slide-in-from-top-1 fade-in duration-200"
-      style={{ paddingInlineStart: `${(isMobile ? Math.min(indentPx, 80) : indentPx) + 8}px` }}
-      onClick={handleContainerClick}
+    <BottomSheet
+      open={open}
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          // Reset all local state on dismiss
+          setDescription(todo.description ?? '');
+          setLocalTagIds(todo.tags.map((tag) => tag.id));
+          setLocalParentId(todo.parentId);
+          setIsDirty(false);
+          setIsEditing(false);
+        }
+        onOpenChange(isOpen);
+      }}
+      title={todo.title}
     >
-      <div className="py-3 pe-3 sm:pe-4 space-y-3">
-        {isDetailEditing ? (
+      <div className="px-4 pb-4 space-y-4">
+        {/* Header: title + checkbox */}
+        <div className="flex items-start gap-3">
+          <TodoCheckbox checked={todo.isCompleted} onChange={handleToggle} />
+          <div className="flex-1 min-w-0">
+            <h3 className="text-base font-medium text-gray-900 break-words">{todo.title}</h3>
+            {todo.parentId !== null && (
+              <div className="mt-1">
+                <TodoBreadcrumb todoId={todo.id} />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {isEditing ? (
           /* ───── Edit Mode ───── */
           <>
-            {/* Header: breadcrumb + close button */}
-            <div className="flex items-center justify-between gap-2">
-              <TodoBreadcrumb todoId={todo.id} />
-              <button
-                type="button"
-                onClick={handleCloseEdit}
-                className="p-1 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
-                aria-label={t('detail.closeEdit')}
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
             {/* Parent section */}
             <div className="space-y-1">
               <span className="block text-xs font-medium text-gray-500">{t('detail.parent')}</span>
@@ -172,17 +170,19 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
             </div>
 
             {/* Description section (editable) */}
-            <Textarea
-              ref={textareaRef}
-              value={description}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              placeholder={t('detail.descriptionPlaceholder')}
-              className="text-sm bg-white"
-              rows={3}
-            />
+            <div className="space-y-1">
+              <Textarea
+                ref={textareaRef}
+                value={description}
+                onChange={handleDescriptionChange}
+                onKeyDown={handleKeyDown}
+                placeholder={t('detail.descriptionPlaceholder')}
+                className="text-sm bg-white"
+                rows={3}
+              />
+            </div>
 
-            {/* Tags section */}
+            {/* Tags section (editable) */}
             <div className="space-y-1">
               <span className="block text-xs font-medium text-gray-500">{t('detail.tags')}</span>
               <TagPicker
@@ -200,11 +200,11 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
             </div>
 
             {/* Save/Cancel buttons */}
-            <div className="flex items-center gap-2">
-              <Button size="sm" onClick={handleSave} disabled={!isDirty}>
+            <div className="flex items-center gap-2 pt-2">
+              <Button className="flex-1 min-h-[44px]" onClick={handleSave} disabled={!isDirty}>
                 {t('actions.save', { ns: 'common' })}
               </Button>
-              <Button size="sm" variant="ghost" onClick={handleCloseEdit}>
+              <Button className="flex-1 min-h-[44px]" variant="ghost" onClick={handleCancel}>
                 {t('actions.cancel', { ns: 'common' })}
               </Button>
             </div>
@@ -212,32 +212,38 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
         ) : (
           /* ───── View Mode ───── */
           <>
-            {/* Header: breadcrumb (if has parent) + edit button */}
-            <div className="flex items-center justify-between gap-2">
-              {todo.parentId !== null && <TodoBreadcrumb todoId={todo.id} />}
+            {/* Description (read-only) + Edit button */}
+            <div className="flex items-start justify-between gap-2">
+              <p className="text-sm text-gray-600 whitespace-pre-wrap min-h-[1.25rem] flex-1">
+                {todo.description ?? (
+                  <span className="text-gray-400 italic">{t('detail.noDescription')}</span>
+                )}
+              </p>
               <button
                 type="button"
                 onClick={() => {
-                  setDetailEditing(true);
+                  setIsEditing(true);
                 }}
-                className="p-1 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0 ms-auto"
+                className="p-1.5 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
                 aria-label={t('detail.editMode')}
               >
-                <Pencil className="w-3.5 h-3.5" />
+                <Pencil className="w-4 h-4" />
               </button>
             </div>
 
-            {/* Description (read-only) */}
-            <p className="text-sm text-gray-600 whitespace-pre-wrap min-h-[1.25rem]">
-              {todo.description ?? (
-                <span className="text-gray-400 italic">{t('detail.noDescription')}</span>
-              )}
-            </p>
+            {/* Tags (read-only) */}
+            {todo.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {todo.tags.map((tag) => (
+                  <TagBadge key={tag.id} tag={tag} />
+                ))}
+              </div>
+            )}
           </>
         )}
 
-        {/* Timestamps section (always visible) */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-gray-400">
+        {/* Timestamps (always visible) */}
+        <div className="flex flex-col gap-1 text-xs text-gray-400">
           <span title={formatDateFull(todo.createdAt)}>
             {t('detail.created', { date: formatDate(todo.createdAt) })}
           </span>
@@ -251,6 +257,6 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
           )}
         </div>
       </div>
-    </div>
+    </BottomSheet>
   );
 }

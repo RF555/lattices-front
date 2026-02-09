@@ -109,7 +109,6 @@ describe('Modal', () => {
     // Should have both default and custom classes
     expect(dialog).toHaveClass('custom-modal-class');
     expect(dialog).toHaveClass('bg-white');
-    expect(dialog).toHaveClass('rounded-lg');
     expect(dialog).toHaveClass('shadow-xl');
   });
 
@@ -178,13 +177,35 @@ describe('Modal', () => {
     expect(backdrop).toHaveClass('bg-black/50');
   });
 
-  it('should render dialog with correct positioning', () => {
+  it('should render backdrop with correct positioning', () => {
     render(<Modal {...defaultProps} />);
     const backdrop = screen.getByRole('presentation');
 
     expect(backdrop).toHaveClass('flex');
-    expect(backdrop).toHaveClass('items-center');
     expect(backdrop).toHaveClass('justify-center');
+    // Mobile-first: items-end (bottom), sm:items-center (centered on desktop)
+    expect(backdrop).toHaveClass('items-end');
+    expect(backdrop).toHaveClass('sm:items-center');
+  });
+
+  it('should render dialog with mobile-first responsive classes', () => {
+    render(<Modal {...defaultProps} />);
+    const dialog = screen.getByRole('dialog');
+
+    // Mobile-first: full-width, top-rounded, no horizontal margin
+    expect(dialog).toHaveClass('w-full');
+    expect(dialog).toHaveClass('rounded-t-2xl');
+    expect(dialog).toHaveClass('mx-0');
+    // Desktop: constrained width, fully rounded, horizontal margin
+    expect(dialog).toHaveClass('sm:rounded-lg');
+    expect(dialog).toHaveClass('sm:mx-4');
+    expect(dialog).toHaveClass('sm:max-w-md');
+  });
+
+  it('should render dialog with safe area bottom padding', () => {
+    render(<Modal {...defaultProps} />);
+    const dialog = screen.getByRole('dialog');
+    expect(dialog).toHaveClass('pb-safe');
   });
 
   it('should render multiple children', () => {

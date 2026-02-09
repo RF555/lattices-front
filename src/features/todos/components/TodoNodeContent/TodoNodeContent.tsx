@@ -14,6 +14,7 @@ import { TodoInlineEdit } from '../TodoTree/TodoInlineEdit';
 import { TagBadge } from '@features/tags/components/TagBadge';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import { TodoDetailPanel } from '../TodoDetailPanel';
+import { TodoDetailSheet } from '../TodoDetailSheet';
 import type { Todo } from '../../types/todo';
 
 interface TodoNodeContentProps {
@@ -199,7 +200,20 @@ export function TodoNodeContent({
         />
       </div>
 
-      {isSelected && <TodoDetailPanel todo={todo} indentPx={indentPx} />}
+      {isSelected &&
+        (isMobile ? (
+          <TodoDetailSheet
+            todo={todo}
+            open={isSelected}
+            onOpenChange={(isOpen) => {
+              if (!isOpen) {
+                setSelectedId(null);
+              }
+            }}
+          />
+        ) : (
+          <TodoDetailPanel todo={todo} indentPx={indentPx} />
+        ))}
 
       {showDeleteConfirm && (
         <ConfirmationDialog

@@ -61,7 +61,7 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
 
   return (
     <div
-      className="fixed inset-0 z-modal flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-modal flex items-end sm:items-center justify-center bg-black/50"
       onClick={handleBackdropClick}
       role="presentation"
     >
@@ -74,7 +74,9 @@ export function Modal({ isOpen, onClose, title, children, className }: ModalProp
         tabIndex={-1}
         onKeyDown={handleKeyDown}
         className={cn(
-          'bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6',
+          'bg-white shadow-xl w-full p-6 pb-safe',
+          'rounded-t-2xl sm:rounded-lg',
+          'mx-0 sm:mx-4 sm:max-w-md',
           'focus:outline-none',
           className,
         )}
