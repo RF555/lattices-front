@@ -89,6 +89,11 @@
   "breadcrumb": {
     "ariaLabel": "נתיב ניווט"
   },
+  "swipe": {
+    "delete": "מחיקה",
+    "complete": "השלמה",
+    "uncomplete": "ביטול השלמה"
+  },
   "pullToRefresh": {
     "pull": "משכו לרענון",
     "release": "שחררו לרענון",

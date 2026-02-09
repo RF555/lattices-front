@@ -15,6 +15,7 @@ import { TagBadge } from '@features/tags/components/TagBadge';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import { TodoDetailPanel } from '../TodoDetailPanel';
 import { TodoDetailSheet } from '../TodoDetailSheet';
+import { SwipeableTodoRow } from '../SwipeableTodoRow';
 import type { Todo } from '../../types/todo';
 
 interface TodoNodeContentProps {
@@ -102,103 +103,110 @@ export function TodoNodeContent({
 
   return (
     <>
-      <div
-        role="button"
-        tabIndex={0}
-        className={cn(
-          'group flex items-center gap-1.5 sm:gap-2 px-2 py-2 sm:py-1.5 rounded-md',
-          'hover:bg-gray-50 transition-all',
-          depth === 0 ? 'shadow-node hover:shadow-node-hover' : 'shadow-none hover:shadow-node',
-          isSelected && 'bg-blue-50 hover:bg-blue-100 shadow-node-selected',
-          isCompleted && 'opacity-60',
-          className,
-        )}
-        style={{ paddingInlineStart: `${indentPx + 8}px`, ...style }}
-        onClick={handleSelect}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleSelect();
-          }
-        }}
+      <SwipeableTodoRow
+        todoId={todo.id}
+        onDelete={handleDelete}
+        onToggleComplete={handleToggle}
+        isCompleted={isCompleted}
       >
-        {leadingSlot}
-
-        <TodoExpandButton
-          hasChildren={hasChildren}
-          isExpanded={isExpanded}
-          onToggle={handleExpandToggle}
-        />
-
-        <TodoCheckbox checked={isCompleted} onChange={handleToggle} />
-
-        {isEditing ? (
-          <TodoInlineEdit
-            initialValue={todo.title}
-            onSave={handleTitleSave}
-            onCancel={() => {
-              setIsEditing(false);
-            }}
-          />
-        ) : (
-          <div className="flex-1 min-w-0 flex flex-wrap items-center gap-1 justify-between">
-            <div className="flex items-center gap-1.5 min-w-0">
-              {/* Workspace badge in All Workspaces mode */}
-              {workspaceName && (
-                <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 shrink-0">
-                  {workspaceName}
-                </span>
-              )}
-              {}
-              <span
-                className={cn('text-sm truncate', isCompleted && 'line-through text-gray-500')}
-                onDoubleClick={() => {
-                  setIsEditing(true);
-                }}
-              >
-                {todo.title}
-              </span>
-            </div>
-            {/* Tag badges (read-only display in tree row) */}
-            {todo.tags.length > 0 && (
-              <div className="flex flex-wrap items-center gap-1 ms-auto justify-end">
-                {todo.tags.map((tag) => (
-                  <TagBadge key={tag.id} tag={tag} />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {todo.description != null && (
-          <AlignLeft className="w-3.5 h-3.5 text-gray-300 shrink-0" aria-hidden="true" />
-        )}
-
-        {todo.childCount > 0 && (
-          <span
-            className={cn(
-              'text-xs tabular-nums',
-              todo.completedChildCount === todo.childCount ? 'text-green-600' : 'text-gray-400',
-            )}
-            title={t('nodeContent.subtaskProgress', {
-              completed: todo.completedChildCount,
-              total: todo.childCount,
-            })}
-          >
-            {todo.completedChildCount}/{todo.childCount}
-          </span>
-        )}
-
-        <TodoActions
-          onEdit={() => {
-            if (!isSelected) {
-              setSelectedId(todo.id);
+        <div
+          role="button"
+          tabIndex={0}
+          className={cn(
+            'group flex items-center gap-1.5 sm:gap-2 px-2 py-2 sm:py-1.5 rounded-md',
+            'hover:bg-gray-50 transition-all',
+            depth === 0 ? 'shadow-node hover:shadow-node-hover' : 'shadow-none hover:shadow-node',
+            isSelected && 'bg-blue-50 hover:bg-blue-100 shadow-node-selected',
+            isCompleted && 'opacity-60',
+            className,
+          )}
+          style={{ paddingInlineStart: `${indentPx + 8}px`, ...style }}
+          onClick={handleSelect}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleSelect();
             }
-            setDetailEditing(true);
           }}
-          onDelete={handleDelete}
-        />
-      </div>
+        >
+          {leadingSlot}
+
+          <TodoExpandButton
+            hasChildren={hasChildren}
+            isExpanded={isExpanded}
+            onToggle={handleExpandToggle}
+          />
+
+          <TodoCheckbox checked={isCompleted} onChange={handleToggle} />
+
+          {isEditing ? (
+            <TodoInlineEdit
+              initialValue={todo.title}
+              onSave={handleTitleSave}
+              onCancel={() => {
+                setIsEditing(false);
+              }}
+            />
+          ) : (
+            <div className="flex-1 min-w-0 flex flex-wrap items-center gap-1 justify-between">
+              <div className="flex items-center gap-1.5 min-w-0">
+                {/* Workspace badge in All Workspaces mode */}
+                {workspaceName && (
+                  <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 shrink-0">
+                    {workspaceName}
+                  </span>
+                )}
+                {}
+                <span
+                  className={cn('text-sm truncate', isCompleted && 'line-through text-gray-500')}
+                  onDoubleClick={() => {
+                    setIsEditing(true);
+                  }}
+                >
+                  {todo.title}
+                </span>
+              </div>
+              {/* Tag badges (read-only display in tree row) */}
+              {todo.tags.length > 0 && (
+                <div className="flex flex-wrap items-center gap-1 ms-auto justify-end">
+                  {todo.tags.map((tag) => (
+                    <TagBadge key={tag.id} tag={tag} />
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {todo.description != null && (
+            <AlignLeft className="w-3.5 h-3.5 text-gray-300 shrink-0" aria-hidden="true" />
+          )}
+
+          {todo.childCount > 0 && (
+            <span
+              className={cn(
+                'text-xs tabular-nums',
+                todo.completedChildCount === todo.childCount ? 'text-green-600' : 'text-gray-400',
+              )}
+              title={t('nodeContent.subtaskProgress', {
+                completed: todo.completedChildCount,
+                total: todo.childCount,
+              })}
+            >
+              {todo.completedChildCount}/{todo.childCount}
+            </span>
+          )}
+
+          <TodoActions
+            onEdit={() => {
+              if (!isSelected) {
+                setSelectedId(todo.id);
+              }
+              setDetailEditing(true);
+            }}
+            onDelete={handleDelete}
+          />
+        </div>
+      </SwipeableTodoRow>
 
       {isSelected &&
         (isMobile ? (

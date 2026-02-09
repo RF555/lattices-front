@@ -75,7 +75,7 @@ export const SortableTodoNode = memo(function SortableTodoNode({
             {...attributes}
             {...listeners}
             className={cn(
-              'cursor-grab active:cursor-grabbing',
+              'cursor-grab active:cursor-grabbing touch-none',
               'p-1 sm:p-0.5 text-gray-400 hover:text-gray-600',
               'sm:opacity-0 sm:group-hover:opacity-100 transition-opacity',
               'focus:outline-none focus:ring-2 focus:ring-primary rounded',

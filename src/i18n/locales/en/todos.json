@@ -89,6 +89,11 @@
   "breadcrumb": {
     "ariaLabel": "Breadcrumb"
   },
+  "swipe": {
+    "delete": "Delete",
+    "complete": "Complete",
+    "uncomplete": "Undo complete"
+  },
   "pullToRefresh": {
     "pull": "Pull to refresh",
     "release": "Release to refresh",

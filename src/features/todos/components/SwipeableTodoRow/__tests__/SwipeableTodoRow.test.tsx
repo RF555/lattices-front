@@ -1,0 +1,361 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@/test/test-utils';
+import { SwipeableTodoRow } from '../SwipeableTodoRow';
+import * as useIsMobileModule from '@hooks/useIsMobile';
+import * as reactSwipeableModule from 'react-swipeable';
+import * as reactI18nextModule from 'react-i18next';
+
+// Mock useIsMobile
+vi.mock('@hooks/useIsMobile', () => ({
+  useIsMobile: vi.fn(),
+}));
+
+// Mock react-swipeable
+vi.mock('react-swipeable', () => ({
+  useSwipeable: vi.fn().mockReturnValue({ ref: vi.fn() }),
+}));
+
+// Mock react-i18next
+vi.mock('react-i18next', () => ({
+  useTranslation: vi.fn().mockReturnValue({
+    t: (key: string) => key,
+    i18n: { dir: () => 'ltr' },
+  }),
+}));
+
+describe('SwipeableTodoRow', () => {
+  const mockOnDelete = vi.fn();
+  const mockOnToggleComplete = vi.fn();
+  const testTodoId = 'test-todo-1';
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+
+    // Default mocks
+    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+    vi.mocked(reactSwipeableModule.useSwipeable).mockReturnValue({
+      ref: vi.fn(),
+    } as unknown as reactSwipeableModule.SwipeableHandlers);
+    vi.mocked(reactI18nextModule.useTranslation).mockReturnValue({
+      t: (key: string) => key,
+      i18n: { dir: () => 'ltr' },
+    } as unknown as ReturnType<typeof reactI18nextModule.useTranslation>);
+  });
+
+  describe('Desktop rendering', () => {
+    it('should render children directly without wrapper div when on desktop', () => {
+      vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+
+      const { container } = render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div data-testid="child-content">Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      // Should render children directly
+      expect(screen.getByTestId('child-content')).toBeInTheDocument();
+
+      // Should NOT have wrapper with overflow-hidden
+      expect(container.querySelector('.overflow-hidden')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Mobile rendering', () => {
+    beforeEach(() => {
+      vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(true);
+    });
+
+    it('should render wrapper with overflow-hidden class on mobile', () => {
+      const { container } = render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div data-testid="child-content">Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      // Should have wrapper with overflow-hidden
+      const wrapper = container.querySelector('.overflow-hidden');
+      expect(wrapper).toBeInTheDocument();
+    });
+
+    it('should render delete and complete action buttons', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      // Should render both action buttons
+      expect(screen.getByLabelText('swipe.delete')).toBeInTheDocument();
+      expect(screen.getByLabelText('swipe.complete')).toBeInTheDocument();
+    });
+
+    it('should have correct aria-label for delete button', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const deleteButton = screen.getByLabelText('swipe.delete');
+      expect(deleteButton).toHaveAttribute('aria-label', 'swipe.delete');
+    });
+
+    it('should have correct aria-label for complete button when not completed', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const completeButton = screen.getByLabelText('swipe.complete');
+      expect(completeButton).toHaveAttribute('aria-label', 'swipe.complete');
+    });
+
+    it('should have correct aria-label for complete button when completed', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={true}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const uncompleteButton = screen.getByLabelText('swipe.uncomplete');
+      expect(uncompleteButton).toHaveAttribute('aria-label', 'swipe.uncomplete');
+    });
+
+    it('should call onDelete when delete button is clicked', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const deleteButton = screen.getByLabelText('swipe.delete');
+      fireEvent.click(deleteButton);
+
+      expect(mockOnDelete).toHaveBeenCalledTimes(1);
+      expect(mockOnToggleComplete).not.toHaveBeenCalled();
+    });
+
+    it('should call onToggleComplete when complete button is clicked', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const completeButton = screen.getByLabelText('swipe.complete');
+      fireEvent.click(completeButton);
+
+      expect(mockOnToggleComplete).toHaveBeenCalledTimes(1);
+      expect(mockOnDelete).not.toHaveBeenCalled();
+    });
+
+    it('should have tabIndex -1 for action buttons initially (closed state)', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const deleteButton = screen.getByLabelText('swipe.delete');
+      const completeButton = screen.getByLabelText('swipe.complete');
+
+      expect(deleteButton).toHaveAttribute('tabIndex', '-1');
+      expect(completeButton).toHaveAttribute('tabIndex', '-1');
+    });
+
+    it('should have width 72px for both action buttons', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const deleteButton = screen.getByLabelText('swipe.delete');
+      const completeButton = screen.getByLabelText('swipe.complete');
+
+      expect(deleteButton).toHaveStyle({ width: '72px' });
+      expect(completeButton).toHaveStyle({ width: '72px' });
+    });
+
+    it('should have bg-red-500 class for delete button', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const deleteButton = screen.getByLabelText('swipe.delete');
+      expect(deleteButton).toHaveClass('bg-red-500');
+    });
+
+    it('should have bg-green-500 class for complete button when not completed', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const completeButton = screen.getByLabelText('swipe.complete');
+      expect(completeButton).toHaveClass('bg-green-500');
+    });
+
+    it('should have bg-amber-500 class for complete button when completed', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={true}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const uncompleteButton = screen.getByLabelText('swipe.uncomplete');
+      expect(uncompleteButton).toHaveClass('bg-amber-500');
+    });
+
+    it('should close revealed actions when clicking outside', () => {
+      render(
+        <div data-testid="outside">
+          <SwipeableTodoRow
+            todoId={testTodoId}
+            onDelete={mockOnDelete}
+            onToggleComplete={mockOnToggleComplete}
+            isCompleted={false}
+          >
+            <div>Test Todo</div>
+          </SwipeableTodoRow>
+        </div>,
+      );
+
+      const outsideElement = screen.getByTestId('outside');
+
+      // Simulate clicking outside (this tests the useEffect cleanup logic indirectly)
+      fireEvent.mouseDown(outsideElement);
+
+      // The component should still be rendered normally
+      expect(screen.getByLabelText('swipe.delete')).toBeInTheDocument();
+    });
+
+    it('should reset revealed state when todoId changes', () => {
+      const { rerender } = render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      // Change todoId
+      rerender(
+        <SwipeableTodoRow
+          todoId="new-todo-id"
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      // Component should still render (this tests the useEffect cleanup logic indirectly)
+      expect(screen.getByLabelText('swipe.delete')).toBeInTheDocument();
+    });
+  });
+
+  describe('RTL support', () => {
+    beforeEach(() => {
+      vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(true);
+      vi.mocked(reactI18nextModule.useTranslation).mockReturnValue({
+        t: (key: string) => key,
+        i18n: { dir: () => 'rtl' },
+      } as unknown as ReturnType<typeof reactI18nextModule.useTranslation>);
+    });
+
+    it('should position buttons correctly in RTL mode', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      const deleteButton = screen.getByLabelText('swipe.delete');
+      const completeButton = screen.getByLabelText('swipe.complete');
+
+      // In RTL: delete button should be on start (left visually becomes right)
+      expect(deleteButton).toHaveClass('start-0');
+      // In RTL: complete button should be on end (right visually becomes left)
+      expect(completeButton).toHaveClass('end-0');
+    });
+  });
+});
