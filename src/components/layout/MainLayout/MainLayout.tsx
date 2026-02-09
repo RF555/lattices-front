@@ -13,6 +13,7 @@ import { LanguageSwitcher } from '@components/ui/LanguageSwitcher';
 import { BottomNav } from '@components/layout/BottomNav';
 import { SettingsSheet } from '@components/layout/SettingsSheet';
 import { WorkspaceSheet } from '@components/layout/WorkspaceSheet';
+import { OfflineIndicator } from '@components/OfflineIndicator';
 
 export function MainLayout() {
   const { t } = useTranslation();
@@ -65,6 +66,7 @@ export function MainLayout() {
           </div>
         </div>
       </header>
+      <OfflineIndicator />
       <InvitationBanner />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20 sm:pb-8">
         <Outlet />

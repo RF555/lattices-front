@@ -8,6 +8,7 @@ export const queryClient = new QueryClient({
     queries: {
       staleTime: QUERY_CACHE.STALE_LONG,
       gcTime: QUERY_CACHE.GC_DEFAULT,
+      networkMode: 'offlineFirst',
       retry: (failureCount, error) => {
         // Don't retry on 4xx errors
         if (

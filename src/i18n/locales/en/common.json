@@ -58,6 +58,11 @@
     "NETWORK_ERROR": "Unable to connect to the server",
     "UNKNOWN": "An unexpected error occurred"
   },
+  "pwa": {
+    "updateAvailable": "A new version is available.",
+    "offline": "You're offline. Changes will sync when reconnected.",
+    "backOnline": "You're back online."
+  },
   "time": {
     "justNow": "just now",
     "minutesAgo": "{{count}}m ago",

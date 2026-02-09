@@ -1,10 +1,58 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['icons/icon.svg'],
+      manifest: {
+        name: 'Lattices - Structure for what matters',
+        short_name: 'Lattices',
+        description: 'Hierarchical task management with infinite nesting',
+        theme_color: '#6366f1',
+        background_color: '#f9fafb',
+        display: 'standalone',
+        start_url: '/app',
+        scope: '/',
+        icons: [
+          {
+            src: '/icons/icon.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'any',
+          },
+          {
+            src: '/icons/icon-maskable.svg',
+            sizes: 'any',
+            type: 'image/svg+xml',
+            purpose: 'maskable',
+          },
+        ],
+      },
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,svg,woff,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern: /\/api\//,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24, // 24 hours
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+        ],
+      },
+    }),
     mode === 'analyze' &&
       import('rollup-plugin-visualizer').then((m) =>
         m.visualizer({

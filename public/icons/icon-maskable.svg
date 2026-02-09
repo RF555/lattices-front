@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Full bleed background for maskable icon -->
+  <rect width="512" height="512" fill="#6366f1"/>
+  <!-- 3x3 grid (lattice) pattern - scaled to 80% safe zone -->
+  <g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none">
+    <!-- Vertical lines -->
+    <line x1="208" y1="160" x2="208" y2="352"/>
+    <line x1="256" y1="160" x2="256" y2="352"/>
+    <line x1="304" y1="160" x2="304" y2="352"/>
+    <!-- Horizontal lines -->
+    <line x1="160" y1="208" x2="352" y2="208"/>
+    <line x1="160" y1="256" x2="352" y2="256"/>
+    <line x1="160" y1="304" x2="352" y2="304"/>
+  </g>
+  <!-- Grid intersection dots -->
+  <g fill="#fff">
+    <circle cx="208" cy="208" r="10"/>
+    <circle cx="256" cy="208" r="10"/>
+    <circle cx="304" cy="208" r="10"/>
+    <circle cx="208" cy="256" r="10"/>
+    <circle cx="256" cy="256" r="12"/>
+    <circle cx="304" cy="256" r="10"/>
+    <circle cx="208" cy="304" r="10"/>
+    <circle cx="256" cy="304" r="10"/>
+    <circle cx="304" cy="304" r="10"/>
+  </g>
+</svg>
