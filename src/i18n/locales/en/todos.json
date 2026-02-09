@@ -88,5 +88,10 @@
   },
   "breadcrumb": {
     "ariaLabel": "Breadcrumb"
+  },
+  "pullToRefresh": {
+    "pull": "Pull to refresh",
+    "release": "Release to refresh",
+    "refreshing": "Refreshing..."
   }
 }

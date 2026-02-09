@@ -88,5 +88,10 @@
   },
   "breadcrumb": {
     "ariaLabel": "נתיב ניווט"
+  },
+  "pullToRefresh": {
+    "pull": "משכו לרענון",
+    "release": "שחררו לרענון",
+    "refreshing": "מרענן..."
   }
 }
