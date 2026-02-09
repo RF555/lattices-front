@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCreateTodo } from '../../hooks/useTodos';
 import { useSelectedTodoId } from '../../stores/todoUiStore';
 import { useAddTagToTodo } from '@features/tags/hooks/useTags';
 import { TagPicker } from '@features/tags/components/TagPicker';
+import { ParentPicker } from '../ParentPicker';
 import {
   useActiveWorkspaceId,
   useIsAllWorkspaces,
@@ -20,6 +21,8 @@ export function CreateTodoForm() {
   const [showDescription, setShowDescription] = useState(false);
   const [selectedTagIds, setSelectedTagIds] = useState<string[]>([]);
   const [showTags, setShowTags] = useState(false);
+  const [showParent, setShowParent] = useState(false);
+  const [parentId, setParentId] = useState<string | null>(null);
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string>('');
 
   const activeWorkspaceId = useActiveWorkspaceId();
@@ -34,6 +37,13 @@ export function CreateTodoForm() {
   const addTagMutation = useAddTagToTodo();
   const selectedId = useSelectedTodoId();
 
+  // Sync parent picker when selectedId changes (user clicks a todo in the tree)
+  useEffect(() => {
+    const safeSelectedId = selectedId && !selectedId.startsWith('temp-') ? selectedId : null;
+    setParentId(safeSelectedId);
+    setShowParent(false);
+  }, [selectedId]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -41,13 +51,12 @@ export function CreateTodoForm() {
     if (isAllWorkspaces && !selectedWorkspaceId) return;
 
     try {
-      // Fix M8: Guard against temp IDs leaking into parentId
-      const safeParentId = selectedId && !selectedId.startsWith('temp-') ? selectedId : undefined;
+      const effectiveParentId = parentId ?? undefined;
 
       const newTodo = await createMutation.mutateAsync({
         title: title.trim(),
         description: description.trim() || undefined,
-        parentId: safeParentId,
+        parentId: effectiveParentId,
       });
 
       // Attach selected tags (fire-and-forget; query invalidation handles refresh)
@@ -60,6 +69,8 @@ export function CreateTodoForm() {
       setShowDescription(false);
       setSelectedTagIds([]);
       setShowTags(false);
+      setParentId(null);
+      setShowParent(false);
     } catch {
       // Error handled by TanStack Query
     }
@@ -87,6 +98,15 @@ export function CreateTodoForm() {
       setShowTags(false);
     } else {
       setShowTags(true);
+    }
+  };
+
+  const handleToggleParent = () => {
+    if (showParent) {
+      setParentId(null);
+      setShowParent(false);
+    } else {
+      setShowParent(true);
     }
   };
 
@@ -123,7 +143,7 @@ export function CreateTodoForm() {
           }}
           onKeyDown={handleKeyDown}
           placeholder={
-            selectedId ? t('createForm.placeholderSubtask') : t('createForm.placeholderTask')
+            parentId ? t('createForm.placeholderSubtask') : t('createForm.placeholderTask')
           }
           className="flex-1"
         />
@@ -175,6 +195,24 @@ export function CreateTodoForm() {
         </div>
       )}
 
+      {showParent && (
+        <div className="animate-in slide-in-from-top-1 fade-in duration-150 space-y-1">
+          <ParentPicker
+            todoId="__new__"
+            currentParentId={parentId}
+            workspaceId={effectiveWorkspaceId}
+            onParentChange={setParentId}
+          />
+          <button
+            type="button"
+            onClick={handleToggleParent}
+            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+          >
+            {t('createForm.removeParent')}
+          </button>
+        </div>
+      )}
+
       <div className="flex items-center gap-3">
         {!showDescription && (
           <button
@@ -196,7 +234,25 @@ export function CreateTodoForm() {
           </button>
         )}
 
-        {selectedId && <p className="text-xs text-gray-500">{t('createForm.subtaskInfo')}</p>}
+        {!showParent && parentId && (
+          <button
+            type="button"
+            onClick={handleToggleParent}
+            className="text-xs text-gray-500 hover:text-gray-700 transition-colors py-1"
+          >
+            {t('createForm.subtaskInfo')}
+          </button>
+        )}
+
+        {!showParent && !parentId && (
+          <button
+            type="button"
+            onClick={handleToggleParent}
+            className="text-xs text-gray-400 hover:text-gray-600 transition-colors py-1"
+          >
+            {t('createForm.addParent')}
+          </button>
+        )}
       </div>
     </form>
   );

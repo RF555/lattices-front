@@ -48,6 +48,37 @@ vi.mock('@features/tags/components/TagPicker', () => ({
   ),
 }));
 
+// Mock the ParentPicker component to simplify testing
+vi.mock('../../ParentPicker', () => ({
+  ParentPicker: ({
+    currentParentId,
+    onParentChange,
+  }: {
+    todoId: string;
+    currentParentId: string | null;
+    workspaceId?: string;
+    onParentChange: (parentId: string | null) => void;
+  }) => (
+    <div data-testid="parent-picker">
+      <div>Parent: {currentParentId ?? 'none'}</div>
+      <button
+        onClick={() => {
+          onParentChange('new-parent-1');
+        }}
+      >
+        Select Parent
+      </button>
+      <button
+        onClick={() => {
+          onParentChange(null);
+        }}
+      >
+        Clear Parent
+      </button>
+    </div>
+  ),
+}));
+
 describe('CreateTodoForm', () => {
   beforeEach(() => {
     // Reset store before each test
@@ -77,18 +108,22 @@ describe('CreateTodoForm', () => {
       expect(screen.getByPlaceholderText(/add task\.\.\./i)).toBeInTheDocument();
     });
 
-    it('should show subtask placeholder when a todo is selected', () => {
+    it('should show subtask placeholder when a todo is selected', async () => {
       useTodoUiStore.setState({ selectedId: 'todo-123' });
       render(<CreateTodoForm />);
 
-      expect(screen.getByPlaceholderText(/add subtask\.\.\./i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByPlaceholderText(/add subtask\.\.\./i)).toBeInTheDocument();
+      });
     });
 
-    it('should show subtask info text when a todo is selected', () => {
+    it('should show subtask info text when a todo is selected', async () => {
       useTodoUiStore.setState({ selectedId: 'todo-123' });
       render(<CreateTodoForm />);
 
-      expect(screen.getByText(/adding as subtask to selected item/i)).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText(/adding as subtask to selected item/i)).toBeInTheDocument();
+      });
     });
   });
 
@@ -276,7 +311,8 @@ describe('CreateTodoForm', () => {
 
       render(<CreateTodoForm />);
 
-      const input = screen.getByPlaceholderText(/add subtask/i);
+      // Wait for useEffect to sync selectedId → parentId
+      const input = await screen.findByPlaceholderText(/add subtask/i);
       await user.type(input, 'Subtask');
       await user.click(screen.getByRole('button', { name: /^add$/i }));
 
@@ -318,7 +354,8 @@ describe('CreateTodoForm', () => {
 
       render(<CreateTodoForm />);
 
-      const input = screen.getByPlaceholderText(/add subtask/i);
+      // temp- IDs should not auto-show the parent picker
+      const input = screen.getByPlaceholderText(/add task/i);
       await user.type(input, 'Task with temp parent');
       await user.click(screen.getByRole('button', { name: /^add$/i }));
 
@@ -483,6 +520,163 @@ describe('CreateTodoForm', () => {
         expect(
           screen.queryByPlaceholderText(/add a description \(optional\)/i),
         ).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('Parent Toggle', () => {
+    it('should show "+ Add parent" toggle button initially', () => {
+      render(<CreateTodoForm />);
+
+      expect(screen.getByRole('button', { name: /\+ add parent/i })).toBeInTheDocument();
+    });
+
+    it('should show ParentPicker when toggle is clicked', async () => {
+      const user = userEvent.setup();
+      render(<CreateTodoForm />);
+
+      await user.click(screen.getByRole('button', { name: /\+ add parent/i }));
+
+      expect(screen.getByTestId('parent-picker')).toBeInTheDocument();
+    });
+
+    it('should hide "+ Add parent" toggle when picker is shown', async () => {
+      const user = userEvent.setup();
+      render(<CreateTodoForm />);
+
+      await user.click(screen.getByRole('button', { name: /\+ add parent/i }));
+
+      expect(screen.queryByRole('button', { name: /\+ add parent/i })).not.toBeInTheDocument();
+    });
+
+    it('should show "Remove parent" button when picker is visible', async () => {
+      const user = userEvent.setup();
+      render(<CreateTodoForm />);
+
+      await user.click(screen.getByRole('button', { name: /\+ add parent/i }));
+
+      expect(screen.getByRole('button', { name: /remove parent/i })).toBeInTheDocument();
+    });
+
+    it('should hide ParentPicker and clear parentId when "Remove parent" is clicked', async () => {
+      const user = userEvent.setup();
+      render(<CreateTodoForm />);
+
+      await user.click(screen.getByRole('button', { name: /\+ add parent/i }));
+      await user.click(screen.getByRole('button', { name: /remove parent/i }));
+
+      expect(screen.queryByTestId('parent-picker')).not.toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /\+ add parent/i })).toBeInTheDocument();
+    });
+
+    it('should show subtask info text when selectedId is set', async () => {
+      useTodoUiStore.setState({ selectedId: 'todo-456' });
+      render(<CreateTodoForm />);
+
+      await waitFor(() => {
+        expect(screen.getByText(/adding as subtask to selected item/i)).toBeInTheDocument();
+      });
+      // Picker should NOT auto-open
+      expect(screen.queryByTestId('parent-picker')).not.toBeInTheDocument();
+    });
+
+    it('should open ParentPicker when subtask info text is clicked', async () => {
+      const user = userEvent.setup();
+      useTodoUiStore.setState({ selectedId: 'todo-456' });
+      render(<CreateTodoForm />);
+
+      const infoText = await screen.findByText(/adding as subtask to selected item/i);
+      await user.click(infoText);
+
+      expect(screen.getByTestId('parent-picker')).toBeInTheDocument();
+      expect(screen.getByText('Parent: todo-456')).toBeInTheDocument();
+    });
+
+    it('should reset parent picker on form submission', async () => {
+      const user = userEvent.setup();
+
+      server.use(
+        http.post(`${API_URL}/todos`, async ({ request }) => {
+          const body = (await request.json()) as Record<string, unknown>;
+          return HttpResponse.json(
+            {
+              data: {
+                id: 'new-1',
+                title: body.title,
+                is_completed: false,
+                parent_id: null,
+                position: 0,
+                description: null,
+                completed_at: null,
+                child_count: 0,
+                completed_child_count: 0,
+                tags: [],
+                created_at: '2024-01-01T00:00:00Z',
+                updated_at: '2024-01-01T00:00:00Z',
+              },
+            },
+            { status: 201 },
+          );
+        }),
+      );
+
+      render(<CreateTodoForm />);
+
+      // Open parent picker and select a parent
+      await user.click(screen.getByRole('button', { name: /\+ add parent/i }));
+      expect(screen.getByTestId('parent-picker')).toBeInTheDocument();
+
+      // Submit the form
+      await user.type(screen.getByPlaceholderText(/add task/i), 'Task');
+      await user.click(screen.getByRole('button', { name: /^add$/i }));
+
+      await waitFor(() => {
+        // Parent picker should be hidden after submission
+        expect(screen.queryByTestId('parent-picker')).not.toBeInTheDocument();
+      });
+    });
+
+    it('should submit with explicit parentId from picker', async () => {
+      const user = userEvent.setup();
+      let capturedBody: Record<string, unknown> = {};
+
+      server.use(
+        http.post(`${API_URL}/todos`, async ({ request }) => {
+          capturedBody = (await request.json()) as Record<string, unknown>;
+          return HttpResponse.json(
+            {
+              data: {
+                id: 'new-1',
+                title: capturedBody.title,
+                is_completed: false,
+                parent_id: capturedBody.parent_id,
+                position: 0,
+                description: null,
+                completed_at: null,
+                child_count: 0,
+                completed_child_count: 0,
+                tags: [],
+                created_at: '2024-01-01T00:00:00Z',
+                updated_at: '2024-01-01T00:00:00Z',
+              },
+            },
+            { status: 201 },
+          );
+        }),
+      );
+
+      render(<CreateTodoForm />);
+
+      // Open parent picker and select a parent via the mock
+      await user.click(screen.getByRole('button', { name: /\+ add parent/i }));
+      await user.click(screen.getByRole('button', { name: /select parent/i }));
+
+      // Submit
+      await user.type(screen.getByPlaceholderText(/add subtask/i), 'Child task');
+      await user.click(screen.getByRole('button', { name: /^add$/i }));
+
+      await waitFor(() => {
+        expect(capturedBody.parent_id).toBe('new-parent-1');
       });
     });
   });
