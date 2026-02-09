@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
@@ -52,15 +52,15 @@ export default defineConfig(({ mode }) => ({
           },
         ],
       },
-    }),
+    }) as PluginOption,
     mode === 'analyze' &&
-      import('rollup-plugin-visualizer').then((m) =>
+      (import('rollup-plugin-visualizer').then((m) =>
         m.visualizer({
           filename: 'dist/stats.html',
           open: true,
           gzipSize: true,
         }),
-      ),
+      ) as unknown as PluginOption),
   ],
   resolve: {
     alias: {
