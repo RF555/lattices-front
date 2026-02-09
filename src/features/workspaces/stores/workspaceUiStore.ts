@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { STORAGE_KEYS } from '@/constants';
 
 /** Sentinel value: null activeWorkspaceId means "All Workspaces" when explicitly selected. */
 export const ALL_WORKSPACES_ID = null;
@@ -38,7 +39,7 @@ export const useWorkspaceUiStore = create<WorkspaceUiStore>()(
         set({ activeWorkspaceId: null, _hasExplicitSelection: false, sidebarOpen: false }),
     }),
     {
-      name: 'workspace-ui-storage',
+      name: STORAGE_KEYS.WORKSPACE_UI,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         activeWorkspaceId: state.activeWorkspaceId,

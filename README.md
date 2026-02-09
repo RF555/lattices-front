@@ -16,6 +16,10 @@ Hierarchical task management application built with React, TypeScript, and Vite.
 | i18n           | react-i18next + i18next                 |
 | Drag & Drop    | dnd-kit                                 |
 | Virtualization | @tanstack/react-virtual                 |
+| Bottom Sheets  | vaul                                    |
+| Swipe Gestures | react-swipeable                         |
+| PWA            | vite-plugin-pwa + Workbox               |
+| Offline        | @tanstack/react-query-persist-client    |
 | Testing        | Vitest + React Testing Library + MSW    |
 | Linting        | ESLint 9 (strictTypeChecked) + Prettier |
 | Accessibility  | eslint-plugin-jsx-a11y                  |
@@ -29,20 +33,23 @@ src/
 ├── app/                    # App shell, providers, routing
 │   ├── providers/          # AuthProvider, QueryProvider
 │   └── routes/             # Route definitions, guards
+├── constants/              # Centralized typed constants (timing, z-index, breakpoints, keys)
 ├── components/             # Shared UI components
-│   ├── ui/                 # Atoms: Button, Input, Textarea, Modal, Skeleton, Select...
-│   ├── layout/             # MainLayout, PageLoader
+│   ├── ui/                 # Atoms: Button, Input, Modal, Skeleton, BottomSheet, FAB...
+│   ├── layout/             # MainLayout, PageLoader, BottomNav, SettingsSheet, WorkspaceSheet
 │   ├── feedback/           # ConfirmationDialog
 │   ├── Toast/              # Toast notification system
 │   ├── ErrorBoundary/      # React error boundary
-│   └── ColdStartBanner/    # Cold start detection banner
+│   ├── ColdStartBanner/    # Cold start detection banner
+│   ├── ReloadPrompt/       # PWA service worker update prompt
+│   └── OfflineIndicator/   # Network status banner
 ├── features/               # Feature modules
 │   ├── auth/               # Authentication (login, register, session)
 │   ├── todos/              # Todo CRUD, tree rendering, drag-and-drop
 │   ├── tags/               # Tag management and filtering
 │   ├── workspaces/         # Multi-user workspaces, members, invitations, groups, activity
 │   └── notifications/      # In-app notifications and preferences
-├── hooks/                  # Shared hooks (useAnnounce, useDirection, useFocusTrap, useReducedMotion)
+├── hooks/                  # Shared hooks (useIsMobile, useDirection, usePullToRefresh, useFocusTrap...)
 ├── i18n/                   # Internationalization
 │   ├── i18n.ts             # i18next configuration
 │   ├── i18next.d.ts        # Type-safe translation keys
@@ -53,7 +60,7 @@ src/
 │   ├── dnd/                # dnd-kit configuration and context
 │   ├── realtime/           # Supabase Realtime manager (workspace, presence, notifications)
 │   └── utils/              # cn(), formatDate utilities
-├── stores/                 # Global Zustand stores (toastStore)
+├── stores/                 # Global Zustand stores (toastStore, mobileNavStore)
 ├── mocks/                  # MSW handlers for dev/test
 ├── styles/                 # Global CSS
 └── types/                  # Shared TypeScript types
@@ -142,6 +149,7 @@ React Router 7 with lazy-loaded pages and route guards:
 - `/app/workspaces/:id/activity` — Workspace activity feed
 - `/app/workspaces/:id/groups` — User groups
 - `/app/workspaces/:id/groups/:groupId` — Group detail
+- `/app/notifications` — Notifications page (mobile-first, also accessible on desktop)
 - `/app/settings/notifications` — Notification preferences
 - `/` — Redirects to `/app`
 
@@ -163,18 +171,21 @@ The API client intercepts 401 responses, refreshes the token, and retries the or
   - `workspaceUiStore` — Active workspace ID, sidebar state
   - `notificationUiStore` — Panel open/close, filter (all/unread), toast preference (persisted)
   - `toastStore` — Toast notifications
+  - `mobileNavStore` — Bottom nav sheet states (non-persisted)
 
 ### Todo Tree
 
 Todos are stored flat on the server and assembled into a tree on the client using an O(n) algorithm. The tree supports:
 
 - Recursive rendering with expand/collapse
-- Drag-and-drop reordering (dnd-kit with flat list + CSS indent)
-- Virtual scrolling for large lists (@tanstack/react-virtual)
+- Drag-and-drop reordering (dnd-kit with flat list + CSS indent, `touch-none` drag handles)
+- Virtual scrolling for large lists (@tanstack/react-virtual, threshold-based activation at 50+ items)
 - Keyboard navigation (arrow keys, vim bindings, Home/End)
 - Filtering by completion status, tags, and search query
 - Sorting by position, creation date, date updated, or alphabetical
-- Detail panel with view mode (read-only description, timestamps) and edit mode (parent picker, description, tags with batched save/cancel)
+- Detail panel (desktop: inline panel, mobile: bottom sheet via vaul)
+- Pull-to-refresh on mobile (custom touch gesture hook with 60px threshold)
+- Swipe-to-reveal actions on mobile (swipe left to delete, swipe right to complete, full-swipe auto-trigger at 40%, RTL-aware)
 
 ### Tags
 
@@ -226,10 +237,11 @@ The project enforces strict code quality standards via automated tooling:
 - **Path aliases** — `@features/*`, `@components/*`, `@lib/*`, `@hooks/*`, `@stores/*`, `@i18n/*`
 - **Barrel exports** — Each module exposes a clean public API via `index.ts`
 - **Optimistic updates** — All mutations (todos, tags, workspaces, members, groups, invitations) update the UI immediately, rolling back on failure
+- **Centralized constants** — `src/constants/` with `as const` pattern for timing, z-index, storage keys, API values, keyboard shortcuts, and breakpoints. Semantic Tailwind z-index classes (`z-modal`, `z-toast`, etc.) derived from constants
 
 ## Testing
 
-742 tests across 44 test files using Vitest + React Testing Library + MSW.
+1118 tests across 66 test files using Vitest + React Testing Library + MSW.
 
 ```bash
 pnpm test          # Watch mode
@@ -247,11 +259,11 @@ pnpm test:coverage # With coverage report
 
 - API clients (todoApi, tagApi, workspaceApi, invitationApi, ApiClient)
 - React Query hooks with optimistic updates (useTodos, useTags, useWorkspaces, useWorkspaceMembers, useGroups, useInvitations)
-- Zustand stores (todoUiStore, workspaceUiStore, authStore, toastStore)
-- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, InvitationBanner, AcceptInvitation, CreateWorkspaceDialog, ActivityFeed, NotificationBell, NotificationPanel, NotificationItem, NotificationPreferences, Modal, Input, Button, etc.)
+- Zustand stores (todoUiStore, workspaceUiStore, authStore, toastStore, mobileNavStore)
+- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, InvitationBanner, AcceptInvitation, CreateWorkspaceDialog, ActivityFeed, NotificationBell, NotificationPanel, NotificationItem, NotificationPreferences, NotificationsPage, Modal, Input, Button, BottomSheet, FAB, BottomNav, SettingsSheet, WorkspaceSheet, SwipeableTodoRow, SortableTodoNode, TodoDetailSheet, QuickAddSheet, ReloadPrompt, OfflineIndicator, etc.)
 - Notification hooks (useNotifications, useUnreadCount, useMarkAsRead, useMarkAllAsRead, useDeleteNotification, useNotificationPreferences, useUpdateNotificationPreferences, useNotificationTypes)
 - Notification utilities (formatNotificationMessage, getEntityRoute, getActorInitials)
-- Utility hooks (useWorkspacePermission, useIsMobile, useDirection, useAnnounce)
+- Utility hooks (useWorkspacePermission, useIsMobile, useDirection, useAnnounce, usePullToRefresh, useFocusTrap)
 - Validation schemas (authSchemas, workspaceSchemas)
 - MSW handler integration tests
 

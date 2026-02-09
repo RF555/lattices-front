@@ -10,7 +10,7 @@ export function ToastContainer() {
 
   return (
     <div
-      className="fixed bottom-4 start-4 end-4 sm:start-auto sm:end-4 sm:w-auto z-50 space-y-2"
+      className="fixed bottom-4 start-4 end-4 sm:start-auto sm:end-4 sm:w-auto z-toast space-y-2"
       role="region"
       aria-label={t('notifications.region')}
     >

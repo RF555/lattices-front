@@ -130,7 +130,7 @@ export function TagPicker({ selectedIds, onSelect, onDeselect, workspaceId }: Ta
         <div
           id="tag-picker-listbox"
           role="listbox"
-          className="absolute z-10 w-full min-w-[200px] mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto"
+          className="absolute z-dropdown w-full min-w-[200px] mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto"
         >
           {/* Available Tags */}
           {availableTags.length > 0 && (

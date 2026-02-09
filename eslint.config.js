@@ -11,14 +11,7 @@ export default tseslint.config(
   // Global ignores
   // ---------------------------------------------------------------
   {
-    ignores: [
-      'dist',
-      'coverage',
-      '*.config.{js,ts}',
-      'postcss.config.js',
-      'tailwind.config.js',
-      '*.d.ts',
-    ],
+    ignores: ['dist', 'coverage', '*.config.{js,ts}', 'postcss.config.js', '*.d.ts'],
   },
 
   // ---------------------------------------------------------------

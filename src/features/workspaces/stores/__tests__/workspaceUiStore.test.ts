@@ -6,6 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { STORAGE_KEYS } from '@/constants';
 import { useWorkspaceUiStore, useActiveWorkspaceId, useSidebarOpen } from '../workspaceUiStore';
 
 describe('workspaceUiStore', () => {
@@ -54,7 +55,7 @@ describe('workspaceUiStore', () => {
       store.setActiveWorkspace('ws-persist');
 
       // Check localStorage directly
-      const stored = localStorage.getItem('workspace-ui-storage');
+      const stored = localStorage.getItem(STORAGE_KEYS.WORKSPACE_UI);
       expect(stored).toBeTruthy();
 
       const parsed = JSON.parse(stored!);
@@ -98,7 +99,7 @@ describe('workspaceUiStore', () => {
       const store = useWorkspaceUiStore.getState();
       store.toggleSidebar();
 
-      const stored = localStorage.getItem('workspace-ui-storage');
+      const stored = localStorage.getItem(STORAGE_KEYS.WORKSPACE_UI);
       if (stored) {
         const parsed = JSON.parse(stored);
         // sidebarOpen should not be in the persisted state (partialize excludes it)
@@ -137,13 +138,13 @@ describe('workspaceUiStore', () => {
       store.setActiveWorkspace('ws-to-clear');
 
       // Verify it's stored
-      let stored = localStorage.getItem('workspace-ui-storage');
+      let stored = localStorage.getItem(STORAGE_KEYS.WORKSPACE_UI);
       expect(stored).toBeTruthy();
 
       store.clearWorkspace();
 
       // Check localStorage is updated
-      stored = localStorage.getItem('workspace-ui-storage');
+      stored = localStorage.getItem(STORAGE_KEYS.WORKSPACE_UI);
       if (stored) {
         const parsed = JSON.parse(stored);
         expect(parsed.state.activeWorkspaceId).toBeNull();
@@ -169,7 +170,7 @@ describe('workspaceUiStore', () => {
       store.setActiveWorkspace('ws-persist');
 
       // Simulate store re-initialization by clearing state and letting persist hydrate
-      const stored = localStorage.getItem('workspace-ui-storage');
+      const stored = localStorage.getItem(STORAGE_KEYS.WORKSPACE_UI);
       expect(stored).toBeTruthy();
 
       const parsed = JSON.parse(stored!);
@@ -181,7 +182,7 @@ describe('workspaceUiStore', () => {
       store.setActiveWorkspace('ws-1');
       store.toggleSidebar();
 
-      const stored = localStorage.getItem('workspace-ui-storage');
+      const stored = localStorage.getItem(STORAGE_KEYS.WORKSPACE_UI);
       expect(stored).toBeTruthy();
 
       const parsed = JSON.parse(stored!);

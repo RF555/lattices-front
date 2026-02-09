@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { ELEMENT_IDS } from '@/constants';
 import { useTodoUiStore } from '../stores/todoUiStore';
 import { useToggleTodo, useDeleteTodo } from './useTodos';
 import type { Todo } from '../types/todo';
@@ -132,7 +133,7 @@ export function useTreeKeyboard({ todos, isEnabled = true }: UseTreeKeyboardOpti
         case 'n': {
           if (e.metaKey || e.ctrlKey) {
             e.preventDefault();
-            document.getElementById('create-todo-input')?.focus();
+            document.getElementById(ELEMENT_IDS.CREATE_TODO_INPUT)?.focus();
           }
           break;
         }

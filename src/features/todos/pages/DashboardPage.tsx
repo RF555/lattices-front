@@ -2,7 +2,10 @@ import { useTranslation } from 'react-i18next';
 import { TodoTree } from '../components/TodoTree';
 import { CreateTodoForm } from '../components/CreateTodoForm';
 import { TodoToolbar } from '../components/TodoToolbar';
-import { useMemo } from 'react';
+import { QuickAddSheet } from '../components/QuickAddSheet';
+import { FAB } from '@components/ui/FAB';
+import { useIsMobile } from '@hooks/useIsMobile';
+import { useMemo, useState } from 'react';
 import {
   useActiveWorkspaceId,
   useIsAllWorkspaces,
@@ -22,6 +25,9 @@ export default function DashboardPage() {
 
   // Stable workspace IDs list for multi-workspace realtime
   const allWorkspaceIds = useMemo(() => workspaces.map((w) => w.id), [workspaces]);
+
+  const isMobile = useIsMobile();
+  const [quickAddOpen, setQuickAddOpen] = useState(false);
 
   // Subscribe to realtime: single workspace or all workspaces
   useWorkspaceRealtime(isAllWorkspaces ? null : activeWorkspaceId);
@@ -59,6 +65,18 @@ export default function DashboardPage() {
           <TodoTree viewingTask={viewingTask} />
         </div>
       </div>
+
+      {isMobile && (
+        <>
+          <FAB
+            onClick={() => {
+              setQuickAddOpen(true);
+            }}
+            label={t('createForm.add')}
+          />
+          <QuickAddSheet open={quickAddOpen} onOpenChange={setQuickAddOpen} />
+        </>
+      )}
     </div>
   );
 }

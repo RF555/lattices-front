@@ -1,31 +1,33 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useRef, useMemo } from 'react';
-import { useTodos } from '../../hooks/useTodos';
-import { useTodoUiStore } from '../../stores/todoUiStore';
-import { flattenTodoTree } from '../../utils/treeUtils';
+import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useIsMobile } from '@hooks/useIsMobile';
 import { VirtualizedTodoRow } from './VirtualizedTodoRow';
+import type { Todo } from '../../types/todo';
 
-export function VirtualizedTodoList() {
+interface VirtualizedTodoListProps {
+  items: Todo[];
+}
+
+export function VirtualizedTodoList({ items }: VirtualizedTodoListProps) {
+  const { t } = useTranslation('todos');
   const parentRef = useRef<HTMLDivElement>(null);
-  // Use useTodos() which applies buildTodoTree() to produce tree-structured data
-  const { data: treeTodos = [] } = useTodos();
-  const expandedIds = useTodoUiStore((state) => state.expandedIds);
-
-  // Flatten the tree structure respecting expansion state
-  const visibleItems = useMemo(
-    () => flattenTodoTree(treeTodos, expandedIds),
-    [treeTodos, expandedIds],
-  );
+  const isMobile = useIsMobile();
 
   const virtualizer = useVirtualizer({
-    count: visibleItems.length,
+    count: items.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 40,
-    overscan: 10,
+    estimateSize: () => (isMobile ? 48 : 40),
+    overscan: isMobile ? 5 : 10,
   });
 
   return (
-    <div ref={parentRef} className="h-[600px] overflow-auto" role="tree">
+    <div
+      ref={parentRef}
+      className="h-[calc(100dvh-200px)] sm:h-[600px] overflow-auto"
+      role="tree"
+      aria-label={t('tree.ariaLabel')}
+    >
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,
@@ -34,7 +36,7 @@ export function VirtualizedTodoList() {
         }}
       >
         {virtualizer.getVirtualItems().map((virtualRow) => {
-          const todo = visibleItems[virtualRow.index];
+          const todo = items[virtualRow.index];
           return (
             <VirtualizedTodoRow
               key={todo.id}

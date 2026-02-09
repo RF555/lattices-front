@@ -10,6 +10,10 @@ import { NotificationBell } from '@features/notifications/components/Notificatio
 import { useNotificationRealtime } from '@features/notifications/hooks/useNotificationRealtime';
 import { Button } from '@components/ui/Button';
 import { LanguageSwitcher } from '@components/ui/LanguageSwitcher';
+import { BottomNav } from '@components/layout/BottomNav';
+import { SettingsSheet } from '@components/layout/SettingsSheet';
+import { WorkspaceSheet } from '@components/layout/WorkspaceSheet';
+import { OfflineIndicator } from '@components/OfflineIndicator';
 
 export function MainLayout() {
   const { t } = useTranslation();
@@ -22,7 +26,7 @@ export function MainLayout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-white shadow-sm border-b border-gray-200 pt-safe">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h1 className="flex items-center gap-2 text-lg sm:text-xl font-bold tracking-tight text-gray-900">
@@ -37,27 +41,34 @@ export function MainLayout() {
             />
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
-            <NotificationBell />
+            <div className="hidden sm:block">
+              <NotificationBell />
+            </div>
             {user && (
               <span className="hidden sm:inline text-sm text-gray-600">
                 {user.name ?? user.email}
               </span>
             )}
-            <LanguageSwitcher />
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                void logout();
-              }}
-            >
-              {t('nav.signOut')}
-            </Button>
+            <div className="hidden sm:flex">
+              <LanguageSwitcher />
+            </div>
+            <div className="hidden sm:block">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  void logout();
+                }}
+              >
+                {t('nav.signOut')}
+              </Button>
+            </div>
           </div>
         </div>
       </header>
+      <OfflineIndicator />
       <InvitationBanner />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20 sm:pb-8">
         <Outlet />
       </main>
       <CreateWorkspaceDialog
@@ -66,6 +77,13 @@ export function MainLayout() {
           setShowCreateWorkspace(false);
         }}
       />
+      <BottomNav />
+      <WorkspaceSheet
+        onCreateWorkspace={() => {
+          setShowCreateWorkspace(true);
+        }}
+      />
+      <SettingsSheet />
     </div>
   );
 }

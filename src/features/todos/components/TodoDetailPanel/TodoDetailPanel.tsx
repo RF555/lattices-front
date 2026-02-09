@@ -24,6 +24,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   const isMobile = useIsMobile();
   const [description, setDescription] = useState(todo.description ?? '');
   const [localTagIds, setLocalTagIds] = useState<string[]>(todo.tags.map((t) => t.id));
+  const [localParentId, setLocalParentId] = useState<string | null>(todo.parentId);
   const [isDirty, setIsDirty] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -41,14 +42,16 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
     if (!isDetailEditing) {
       setDescription(todo.description ?? '');
       setLocalTagIds(todo.tags.map((t) => t.id));
+      setLocalParentId(todo.parentId);
     }
-  }, [todo.description, todo.tags, isDetailEditing]);
+  }, [todo.description, todo.tags, todo.parentId, isDetailEditing]);
 
   // Reset state when switching todos
   useEffect(() => {
     setIsDirty(false);
     setLocalTagIds(todo.tags.map((t) => t.id));
-  }, [todo.id, todo.tags]);
+    setLocalParentId(todo.parentId);
+  }, [todo.id, todo.tags, todo.parentId]);
 
   // Focus textarea when entering edit mode
   useEffect(() => {
@@ -58,10 +61,16 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   }, [isDetailEditing]);
 
   const handleSave = useCallback(() => {
-    // Save description
+    // Build update input: description + parentId (only if changed)
     const trimmed = description.trim();
-    const value = trimmed || null;
-    updateMutate({ id: todo.id, input: { description: value } });
+    const descValue = trimmed || null;
+    const input: { description: string | null; parentId?: string | null } = {
+      description: descValue,
+    };
+    if (localParentId !== todo.parentId) {
+      input.parentId = localParentId;
+    }
+    updateMutate({ id: todo.id, input });
 
     // Compute tag diffs and fire mutations
     const serverTagIds = new Set(todo.tags.map((t) => t.id));
@@ -83,6 +92,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
     updateMutate,
     todo,
     description,
+    localParentId,
     localTagIds,
     addTagMutation,
     removeTagMutation,
@@ -92,9 +102,10 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   const handleCloseEdit = useCallback(() => {
     setDescription(todo.description ?? '');
     setLocalTagIds(todo.tags.map((t) => t.id));
+    setLocalParentId(todo.parentId);
     setIsDirty(false);
     setDetailEditing(false);
-  }, [todo.description, todo.tags, setDetailEditing]);
+  }, [todo.description, todo.tags, todo.parentId, setDetailEditing]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
@@ -151,10 +162,11 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
               <span className="block text-xs font-medium text-gray-500">{t('detail.parent')}</span>
               <ParentPicker
                 todoId={todo.id}
-                currentParentId={todo.parentId}
+                currentParentId={localParentId}
                 workspaceId={activeWorkspaceId ?? undefined}
                 onParentChange={(parentId) => {
-                  updateMutate({ id: todo.id, input: { parentId } });
+                  setLocalParentId(parentId);
+                  setIsDirty(true);
                 }}
               />
             </div>

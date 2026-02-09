@@ -1,4 +1,5 @@
 import { apiClient } from '@lib/api/client';
+import { STORAGE_KEYS } from '@/constants';
 import type {
   IAuthProvider,
   User,
@@ -105,7 +106,7 @@ export class JwtAuthProvider implements IAuthProvider {
    */
   private getStoredTokens(): AuthTokens | null {
     try {
-      const raw = localStorage.getItem('auth-storage');
+      const raw = localStorage.getItem(STORAGE_KEYS.AUTH);
       if (!raw) return null;
 
       const parsed = JSON.parse(raw) as Record<string, unknown>;

@@ -5,7 +5,15 @@
     "taglineRegister": "Tasks with a foundation."
   },
   "nav": {
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "tasks": "Tasks",
+    "workspaces": "Workspaces",
+    "notifications": "Notifications",
+    "more": "More",
+    "settings": "Settings",
+    "language": "Language",
+    "workspaceSettings": "Workspace Settings",
+    "profile": "Profile"
   },
   "actions": {
     "save": "Save",
@@ -49,6 +57,11 @@
     "DATABASE_ERROR": "A database error occurred. Please try again later",
     "NETWORK_ERROR": "Unable to connect to the server",
     "UNKNOWN": "An unexpected error occurred"
+  },
+  "pwa": {
+    "updateAvailable": "A new version is available.",
+    "offline": "You're offline. Changes will sync when reconnected.",
+    "backOnline": "You're back online."
   },
   "time": {
     "justNow": "just now",

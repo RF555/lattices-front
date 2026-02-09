@@ -1,7 +1,6 @@
+import { WAKE_UP, API_PATHS } from '@/constants';
+
 const API_URL = import.meta.env.VITE_API_URL;
-const HEALTH_CHECK_TIMEOUT = 10_000;
-const MAX_RETRIES = 10;
-const RETRY_DELAY = 2000;
 
 interface WakeUpState {
   isWakingUp: boolean;
@@ -22,18 +21,18 @@ export async function wakeUpBackend(): Promise<boolean> {
   if (wakeUpPromise) return wakeUpPromise;
 
   // Skip if recently checked
-  if (state.isAwake && Date.now() - state.lastCheck < 60000) {
+  if (state.isAwake && Date.now() - state.lastCheck < WAKE_UP.CACHE_THRESHOLD_MS) {
     return true;
   }
 
   state.isWakingUp = true;
 
   wakeUpPromise = (async () => {
-    for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+    for (let attempt = 0; attempt < WAKE_UP.MAX_RETRIES; attempt++) {
       try {
-        const response = await fetch(`${API_URL}/health`, {
+        const response = await fetch(`${API_URL}${API_PATHS.HEALTH}`, {
           method: 'GET',
-          signal: AbortSignal.timeout(HEALTH_CHECK_TIMEOUT),
+          signal: AbortSignal.timeout(WAKE_UP.TIMEOUT_MS),
         });
         if (response.ok) {
           state.isAwake = true;
@@ -43,8 +42,8 @@ export async function wakeUpBackend(): Promise<boolean> {
       } catch {
         // timeout or network error, retry
       }
-      if (attempt < MAX_RETRIES - 1) {
-        await new Promise((r) => setTimeout(r, RETRY_DELAY));
+      if (attempt < WAKE_UP.MAX_RETRIES - 1) {
+        await new Promise((r) => setTimeout(r, WAKE_UP.RETRY_DELAY_MS));
       }
     }
     state.isAwake = false;

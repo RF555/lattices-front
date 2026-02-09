@@ -168,7 +168,7 @@ export function MembersList({ workspaceId }: MembersListProps) {
                     >
                       <MoreHorizontal className="h-4 w-4" />
                     </button>
-                    <div className="absolute right-0 top-full z-10 hidden group-focus-within:block bg-white rounded-md shadow-lg border border-gray-200 py-1 w-40">
+                    <div className="absolute right-0 top-full z-dropdown hidden group-focus-within:block bg-white rounded-md shadow-lg border border-gray-200 py-1 w-40">
                       <RoleSelector
                         currentRole={member.role}
                         onSelect={(role) => {

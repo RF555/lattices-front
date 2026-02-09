@@ -3,6 +3,7 @@ import { Bell } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 import { useUnreadCount } from '../../hooks/useNotifications';
 import { useNotificationUiStore } from '../../stores/notificationUiStore';
+import { MAX_BADGE_COUNT } from '../../constants';
 import { NotificationPanel } from '../NotificationPanel/NotificationPanel';
 
 export function NotificationBell() {
@@ -71,7 +72,7 @@ export function NotificationBell() {
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
           <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
-            {unreadCount > 99 ? '99+' : unreadCount}
+            {unreadCount > MAX_BADGE_COUNT ? `${MAX_BADGE_COUNT}+` : unreadCount}
           </span>
         )}
       </button>

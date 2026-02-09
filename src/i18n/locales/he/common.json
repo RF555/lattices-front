@@ -5,7 +5,15 @@
     "taglineRegister": "משימות עם בסיס."
   },
   "nav": {
-    "signOut": "התנתקות"
+    "signOut": "התנתקות",
+    "tasks": "משימות",
+    "workspaces": "סביבות עבודה",
+    "notifications": "התראות",
+    "more": "עוד",
+    "settings": "הגדרות",
+    "language": "שפה",
+    "workspaceSettings": "הגדרות סביבת עבודה",
+    "profile": "פרופיל"
   },
   "actions": {
     "save": "שמירה",
@@ -49,6 +57,11 @@
     "DATABASE_ERROR": "אירעה שגיאת מסד נתונים. אנא נסו שוב מאוחר יותר",
     "NETWORK_ERROR": "לא ניתן להתחבר לשרת",
     "UNKNOWN": "אירעה שגיאה בלתי צפויה"
+  },
+  "pwa": {
+    "updateAvailable": "גרסה חדשה זמינה.",
+    "offline": "אתם במצב לא מקוון. שינויים יסונכרנו עם חזרה לרשת.",
+    "backOnline": "חזרתם לרשת."
   },
   "time": {
     "justNow": "עכשיו",

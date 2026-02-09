@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { useIsMobile } from '@hooks/useIsMobile';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { TodoNodeContent } from '../TodoNodeContent';
 import { ViewingIndicator } from '@features/workspaces/components/ViewingIndicator/ViewingIndicator';
@@ -19,8 +20,13 @@ export const TodoNode = memo(function TodoNode({
   viewingTask,
 }: TodoNodeProps) {
   const expandedIds = useTodoUiStore((s) => s.expandedIds);
+  const isMobile = useIsMobile();
   const hasChildren = !!todo.children?.length;
   const viewers = viewingTask?.get(todo.id) ?? [];
+
+  // Branch-x must match the child indentation formula in TodoNodeContent
+  const childIndent = isMobile ? Math.min((depth + 1) * 16, 80) : (depth + 1) * 24;
+  const branchX = `${childIndent + 8}px`;
 
   return (
     <div role="treeitem" aria-selected={false} aria-expanded={hasChildren ? isExpanded : undefined}>
@@ -40,13 +46,13 @@ export const TodoNode = memo(function TodoNode({
         <div
           role="group"
           className="lattice-branch"
-          style={{ '--branch-x': `${(depth + 1) * 24 + 8}px` } as React.CSSProperties}
+          style={{ '--branch-x': branchX } as React.CSSProperties}
         >
           {todo.children?.map((child, index) => (
             <div
               key={child.id}
               className={`lattice-connector${index === (todo.children?.length ?? 0) - 1 ? ' lattice-branch-last' : ''}`}
-              style={{ '--branch-x': `${(depth + 1) * 24 + 8}px` } as React.CSSProperties}
+              style={{ '--branch-x': branchX } as React.CSSProperties}
             >
               <TodoNode
                 todo={child}

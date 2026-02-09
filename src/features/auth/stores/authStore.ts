@@ -11,6 +11,7 @@ import { apiClient } from '@lib/api/client';
 import { realtimeManager } from '@lib/realtime';
 import { queryClient } from '@/app/providers/queryClient';
 import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
+import { STORAGE_KEYS } from '@/constants';
 
 interface AuthState {
   user: User | null;
@@ -143,7 +144,7 @@ export const useAuthStore = create<AuthStore>()(
       clearError: () => set({ error: null }),
     }),
     {
-      name: 'auth-storage',
+      name: STORAGE_KEYS.AUTH,
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         tokens: state.tokens,

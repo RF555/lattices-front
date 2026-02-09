@@ -12,6 +12,8 @@
     "removeTags": "הסרת תגיות",
     "addDescription": "+ הוספת תיאור",
     "addTags": "+ הוספת תגיות",
+    "addParent": "+ הוספת משימת אב",
+    "removeParent": "הסרת משימת אב",
     "subtaskInfo": "מוסיף כתת-משימה לפריט הנבחר",
     "selectWorkspace": "בחר סביבת עבודה...",
     "noWorkspaceSelected": "בחר סביבת עבודה כדי ליצור משימה"
@@ -86,5 +88,15 @@
   },
   "breadcrumb": {
     "ariaLabel": "נתיב ניווט"
+  },
+  "swipe": {
+    "delete": "מחיקה",
+    "complete": "השלמה",
+    "uncomplete": "ביטול השלמה"
+  },
+  "pullToRefresh": {
+    "pull": "משכו לרענון",
+    "release": "שחררו לרענון",
+    "refreshing": "מרענן..."
   }
 }

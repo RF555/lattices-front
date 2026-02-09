@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
+import { QUERY_CACHE } from '@/constants';
 import { notificationApi } from '../api/notificationApi';
 import type { NotificationListResult } from '../types/notification';
 
@@ -31,7 +32,7 @@ export function useNotifications(options?: UseNotificationsOptions) {
         ? notificationApi.getForWorkspace(workspaceId, params)
         : notificationApi.getAll(params);
     },
-    staleTime: 2 * 60 * 1000, // 2 min — Supabase Realtime handles freshness
+    staleTime: QUERY_CACHE.STALE_MEDIUM,
   });
 }
 
@@ -45,7 +46,7 @@ export function useUnreadCount(workspaceId?: string) {
       workspaceId
         ? notificationApi.getUnreadCount(workspaceId)
         : notificationApi.getTotalUnreadCount(),
-    staleTime: 30_000,
+    staleTime: QUERY_CACHE.STALE_SHORT,
     refetchOnWindowFocus: true,
     refetchIntervalInBackground: false,
     // refetchInterval intentionally omitted — controlled by useNotificationRealtime
@@ -280,7 +281,7 @@ export function useNotificationPreferences() {
   return useQuery({
     queryKey: queryKeys.notifications.preferences(),
     queryFn: () => notificationApi.getPreferences(),
-    staleTime: 5 * 60 * 1000, // 5 min
+    staleTime: QUERY_CACHE.STALE_LONG,
   });
 }
 

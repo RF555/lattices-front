@@ -160,7 +160,7 @@ export function ParentPicker({
         <div
           id="parent-picker-tree"
           role="tree"
-          className="absolute z-10 w-full min-w-[200px] mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto"
+          className="absolute z-dropdown w-full min-w-[200px] mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-60 overflow-auto"
         >
           {/* Search input */}
           <div className="p-2 border-b border-gray-100">

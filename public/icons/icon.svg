@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#6366f1"/>
+  <!-- 3x3 grid (lattice) pattern -->
+  <g stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none">
+    <!-- Vertical lines -->
+    <line x1="192" y1="128" x2="192" y2="384"/>
+    <line x1="256" y1="128" x2="256" y2="384"/>
+    <line x1="320" y1="128" x2="320" y2="384"/>
+    <!-- Horizontal lines -->
+    <line x1="128" y1="192" x2="384" y2="192"/>
+    <line x1="128" y1="256" x2="384" y2="256"/>
+    <line x1="128" y1="320" x2="384" y2="320"/>
+  </g>
+  <!-- Grid intersection dots -->
+  <g fill="#fff">
+    <circle cx="192" cy="192" r="12"/>
+    <circle cx="256" cy="192" r="12"/>
+    <circle cx="320" cy="192" r="12"/>
+    <circle cx="192" cy="256" r="12"/>
+    <circle cx="256" cy="256" r="14"/>
+    <circle cx="320" cy="256" r="12"/>
+    <circle cx="192" cy="320" r="12"/>
+    <circle cx="256" cy="320" r="12"/>
+    <circle cx="320" cy="320" r="12"/>
+  </g>
+</svg>

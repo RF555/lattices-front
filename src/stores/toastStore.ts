@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { TOAST } from '@/constants';
 
 export interface Toast {
   id: string;
@@ -25,7 +26,7 @@ export const useToastStore = create<ToastState>((set) => ({
     }));
 
     // Auto-dismiss after duration
-    const duration = toast.duration ?? 4000;
+    const duration = toast.duration ?? TOAST.DEFAULT_DURATION_MS;
     if (duration > 0) {
       setTimeout(() => {
         set((state) => ({
@@ -48,7 +49,9 @@ export const toast = {
     useToastStore.getState().addToast({ type: 'success', message });
   },
   error: (message: string) => {
-    useToastStore.getState().addToast({ type: 'error', message, duration: 6000 });
+    useToastStore
+      .getState()
+      .addToast({ type: 'error', message, duration: TOAST.ERROR_DURATION_MS });
   },
   info: (message: string) => {
     useToastStore.getState().addToast({ type: 'info', message });

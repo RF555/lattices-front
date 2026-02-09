@@ -33,12 +33,7 @@ export {
 export { useNotificationRealtime } from './hooks/useNotificationRealtime';
 
 // Stores
-export {
-  useNotificationUiStore,
-  usePanelOpen,
-  useShowToastOnNew,
-  usePanelFilter,
-} from './stores/notificationUiStore';
+export { useNotificationUiStore } from './stores/notificationUiStore';
 
 // Utils
 export {
@@ -47,8 +42,10 @@ export {
   getActorInitials,
 } from './utils/formatNotification';
 
+// Hooks
+export { useNotificationActions } from './hooks/useNotificationActions';
+
 // Components
 export { NotificationBell } from './components/NotificationBell/NotificationBell';
-export { NotificationPanel } from './components/NotificationPanel/NotificationPanel';
 export { NotificationItem } from './components/NotificationItem/NotificationItem';
 export { NotificationPreferences } from './components/NotificationPreferences/NotificationPreferences';
