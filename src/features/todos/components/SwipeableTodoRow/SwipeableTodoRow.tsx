@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 import { useIsMobile } from '@hooks/useIsMobile';
 
-const REVEAL_THRESHOLD = 80;
-const AUTO_TRIGGER_RATIO = 0.4;
+const REVEAL_THRESHOLD = 100;
+const AUTO_TRIGGER_RATIO = 0.5;
 const ACTION_WIDTH = 72;
 
 type RevealState = 'closed' | 'delete' | 'complete';
@@ -126,7 +126,7 @@ export function SwipeableTodoRow({
     },
     trackMouse: false,
     trackTouch: true,
-    delta: 10,
+    delta: 20,
     preventScrollOnSwipe: true,
   });
 
@@ -155,42 +155,48 @@ export function SwipeableTodoRow({
 
   const translateX = getTranslateX();
 
+  const showActions = translateX !== 0;
+
   return (
     <div ref={containerRef} className="relative overflow-hidden">
-      {/* Delete action (behind the row) */}
-      <button
-        className={cn(
-          'absolute inset-y-0 flex items-center justify-center',
-          'bg-red-500 text-white',
-          isRtl ? 'start-0' : 'end-0',
-        )}
-        style={{ width: `${ACTION_WIDTH}px` }}
-        onClick={() => {
-          handleAction('delete');
-        }}
-        aria-label={t('swipe.delete')}
-        tabIndex={revealed === 'delete' ? 0 : -1}
-      >
-        <Trash2 className="w-5 h-5" />
-      </button>
+      {showActions && (
+        <>
+          {/* Delete action (behind the row) */}
+          <button
+            className={cn(
+              'absolute inset-y-0 flex items-center justify-center',
+              'bg-red-500 text-white',
+              isRtl ? 'start-0' : 'end-0',
+            )}
+            style={{ width: `${ACTION_WIDTH}px` }}
+            onClick={() => {
+              handleAction('delete');
+            }}
+            aria-label={t('swipe.delete')}
+            tabIndex={revealed === 'delete' ? 0 : -1}
+          >
+            <Trash2 className="w-5 h-5" />
+          </button>
 
-      {/* Complete/Uncomplete action (behind the row) */}
-      <button
-        className={cn(
-          'absolute inset-y-0 flex items-center justify-center',
-          'text-white',
-          isCompleted ? 'bg-amber-500' : 'bg-green-500',
-          isRtl ? 'end-0' : 'start-0',
-        )}
-        style={{ width: `${ACTION_WIDTH}px` }}
-        onClick={() => {
-          handleAction('complete');
-        }}
-        aria-label={isCompleted ? t('swipe.uncomplete') : t('swipe.complete')}
-        tabIndex={revealed === 'complete' ? 0 : -1}
-      >
-        {isCompleted ? <Undo2 className="w-5 h-5" /> : <Check className="w-5 h-5" />}
-      </button>
+          {/* Complete/Uncomplete action (behind the row) */}
+          <button
+            className={cn(
+              'absolute inset-y-0 flex items-center justify-center',
+              'text-white',
+              isCompleted ? 'bg-amber-500' : 'bg-green-500',
+              isRtl ? 'end-0' : 'start-0',
+            )}
+            style={{ width: `${ACTION_WIDTH}px` }}
+            onClick={() => {
+              handleAction('complete');
+            }}
+            aria-label={isCompleted ? t('swipe.uncomplete') : t('swipe.complete')}
+            tabIndex={revealed === 'complete' ? 0 : -1}
+          >
+            {isCompleted ? <Undo2 className="w-5 h-5" /> : <Check className="w-5 h-5" />}
+          </button>
+        </>
+      )}
 
       {/* The row content slides over the action buttons */}
       <div
