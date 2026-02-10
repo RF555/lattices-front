@@ -31,8 +31,10 @@ vi.mock('react-i18next', () => ({
 /** Trigger swipe start + movement to make action buttons visible */
 function revealActions() {
   act(() => {
-    capturedSwipeConfig.onSwipeStart?.();
-    capturedSwipeConfig.onSwiping?.({ deltaX: -100 } as unknown);
+    capturedSwipeConfig.onSwipeStart?.({ dir: 'Left' } as unknown);
+  });
+  act(() => {
+    capturedSwipeConfig.onSwiping?.({ deltaX: -100, absX: 100, absY: 0 } as unknown);
   });
 }
 
@@ -397,7 +399,7 @@ describe('SwipeableTodoRow', () => {
       } as unknown as ReturnType<typeof reactI18nextModule.useTranslation>);
     });
 
-    it('should position buttons correctly in RTL mode', () => {
+    it('should use same logical positions in RTL (CSS handles physical mapping)', () => {
       render(
         <SwipeableTodoRow
           todoId={testTodoId}
@@ -414,10 +416,9 @@ describe('SwipeableTodoRow', () => {
       const deleteButton = screen.getByLabelText('swipe.delete');
       const completeButton = screen.getByLabelText('swipe.complete');
 
-      // In RTL: delete button should be on start (left visually becomes right)
-      expect(deleteButton).toHaveClass('start-0');
-      // In RTL: complete button should be on end (right visually becomes left)
-      expect(completeButton).toHaveClass('end-0');
+      // Logical positions stay the same; CSS start/end handles RTL flipping
+      expect(deleteButton).toHaveClass('end-0');
+      expect(completeButton).toHaveClass('start-0');
     });
   });
 });

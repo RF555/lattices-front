@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 import { useIsMobile } from '@hooks/useIsMobile';
 
-const REVEAL_THRESHOLD = 100;
-const AUTO_TRIGGER_RATIO = 0.5;
+const REVEAL_THRESHOLD = 140;
+const AUTO_TRIGGER_RATIO = 0.6;
 const ACTION_WIDTH = 72;
 
 type RevealState = 'closed' | 'delete' | 'complete';
@@ -106,13 +106,16 @@ export function SwipeableTodoRow({
   );
 
   const handlers = useSwipeable({
-    onSwipeStart: () => {
-      setSwiping(true);
+    onSwipeStart: (eventData) => {
+      // Only activate swipe if the initial direction is horizontal
+      if (eventData.dir === 'Left' || eventData.dir === 'Right') {
+        setSwiping(true);
+      }
     },
     onSwiping: (eventData) => {
-      // In RTL, horizontal directions are visually inverted
-      const delta = isRtl ? -eventData.deltaX : eventData.deltaX;
-      setSwipeDelta(delta);
+      // Ignore vertical scrolling - only track primarily horizontal movement
+      if (!swiping || eventData.absX < eventData.absY * 1.5) return;
+      setSwipeDelta(eventData.deltaX);
     },
     onSwipedLeft: (eventData) => {
       handleSwipeEnd('left', Math.abs(eventData.deltaX));
@@ -155,7 +158,7 @@ export function SwipeableTodoRow({
 
   const translateX = getTranslateX();
 
-  const showActions = translateX !== 0;
+  const showActions = Math.abs(translateX) > 1;
 
   return (
     <div ref={containerRef} className="relative overflow-hidden">
@@ -166,7 +169,7 @@ export function SwipeableTodoRow({
             className={cn(
               'absolute inset-y-0 flex items-center justify-center',
               'bg-red-500 text-white',
-              isRtl ? 'start-0' : 'end-0',
+              'end-0',
             )}
             style={{ width: `${ACTION_WIDTH}px` }}
             onClick={() => {
@@ -184,7 +187,7 @@ export function SwipeableTodoRow({
               'absolute inset-y-0 flex items-center justify-center',
               'text-white',
               isCompleted ? 'bg-amber-500' : 'bg-green-500',
-              isRtl ? 'end-0' : 'start-0',
+              'start-0',
             )}
             style={{ width: `${ACTION_WIDTH}px` }}
             onClick={() => {
