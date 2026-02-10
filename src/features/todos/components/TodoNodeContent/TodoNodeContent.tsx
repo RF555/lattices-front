@@ -113,7 +113,7 @@ export function TodoNodeContent({
           role="button"
           tabIndex={0}
           className={cn(
-            'group flex items-center gap-1.5 sm:gap-2 px-2 py-2 sm:py-1.5 rounded-md',
+            'group flex items-start gap-1.5 sm:gap-2 px-2 py-2 sm:py-1.5 rounded-md',
             'hover:bg-gray-50 transition-all',
             depth === 0 ? 'shadow-node hover:shadow-node-hover' : 'shadow-none hover:shadow-node',
             isSelected && 'bg-blue-50 hover:bg-blue-100 shadow-node-selected',
@@ -158,7 +158,11 @@ export function TodoNodeContent({
                 )}
                 {}
                 <span
-                  className={cn('text-sm truncate', isCompleted && 'line-through text-gray-500')}
+                  className={cn(
+                    'text-sm',
+                    isSelected ? 'break-words' : 'truncate',
+                    isCompleted && 'line-through text-gray-500',
+                  )}
                   onDoubleClick={() => {
                     setIsEditing(true);
                   }}
