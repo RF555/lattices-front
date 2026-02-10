@@ -12,25 +12,10 @@ vi.mock('@features/workspaces/stores/workspaceUiStore', () => ({
   useActiveWorkspaceId: () => 'workspace-1',
 }));
 
-// Define mock state that can be updated by tests
-let mockPullToRefreshState = {
-  containerRef: { current: null },
-  isPulling: false,
-  isRefreshing: false,
-  pullProgress: 0,
-};
-
-vi.mock('@hooks/usePullToRefresh', () => ({
-  usePullToRefresh: () => mockPullToRefreshState,
-}));
-
 // Mock react-i18next
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
-      if (key === 'pullToRefresh.pull') return 'Pull to refresh';
-      if (key === 'pullToRefresh.release') return 'Release to refresh';
-      if (key === 'pullToRefresh.refreshing') return 'Refreshing...';
       if (key === 'tree.error') return 'Failed to load todos. Please try again.';
       if (key === 'tree.ariaLabel') return 'Task list';
       if (key === 'empty.defaultTitle') return 'No tasks yet';
@@ -95,14 +80,6 @@ describe('TodoTree', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    // Reset pull-to-refresh mock state
-    mockPullToRefreshState = {
-      containerRef: { current: null },
-      isPulling: false,
-      isRefreshing: false,
-      pullProgress: 0,
-    };
 
     // Default mock implementations
     vi.mocked(useTodosModule.useTodos).mockReturnValue({
@@ -310,142 +287,6 @@ describe('TodoTree', () => {
 
     expect(screen.getByTestId('todo-node-1')).toBeInTheDocument();
     expect(screen.queryByTestId('todo-node-2')).not.toBeInTheDocument();
-  });
-
-  it('should not show pull-to-refresh indicator when not pulling or refreshing', () => {
-    const todos = [createMockTodo('1', 'Task 1')];
-
-    vi.mocked(useTodosModule.useTodos).mockReturnValue({
-      data: todos,
-      isLoading: false,
-      error: null,
-      isSuccess: true,
-      isError: false,
-    } as ReturnType<typeof useTodosModule.useTodos>);
-
-    render(<TodoTree />);
-
-    expect(screen.queryByText('Pull to refresh')).not.toBeInTheDocument();
-    expect(screen.queryByText('Refreshing...')).not.toBeInTheDocument();
-  });
-
-  it('should show pull-to-refresh indicator when isPulling', () => {
-    mockPullToRefreshState = {
-      containerRef: { current: null },
-      isPulling: true,
-      isRefreshing: false,
-      pullProgress: 0.5,
-    };
-
-    const todos = [createMockTodo('1', 'Task 1')];
-
-    vi.mocked(useTodosModule.useTodos).mockReturnValue({
-      data: todos,
-      isLoading: false,
-      error: null,
-      isSuccess: true,
-      isError: false,
-    } as ReturnType<typeof useTodosModule.useTodos>);
-
-    render(<TodoTree />);
-
-    expect(screen.getByText('Pull to refresh')).toBeInTheDocument();
-  });
-
-  it('should show "Release to refresh" when pullProgress >= 1', () => {
-    mockPullToRefreshState = {
-      containerRef: { current: null },
-      isPulling: true,
-      isRefreshing: false,
-      pullProgress: 1,
-    };
-
-    const todos = [createMockTodo('1', 'Task 1')];
-
-    vi.mocked(useTodosModule.useTodos).mockReturnValue({
-      data: todos,
-      isLoading: false,
-      error: null,
-      isSuccess: true,
-      isError: false,
-    } as ReturnType<typeof useTodosModule.useTodos>);
-
-    render(<TodoTree />);
-
-    expect(screen.getByText('Release to refresh')).toBeInTheDocument();
-  });
-
-  it('should show "Refreshing..." when isRefreshing', () => {
-    mockPullToRefreshState = {
-      containerRef: { current: null },
-      isPulling: false,
-      isRefreshing: true,
-      pullProgress: 0,
-    };
-
-    const todos = [createMockTodo('1', 'Task 1')];
-
-    vi.mocked(useTodosModule.useTodos).mockReturnValue({
-      data: todos,
-      isLoading: false,
-      error: null,
-      isSuccess: true,
-      isError: false,
-    } as ReturnType<typeof useTodosModule.useTodos>);
-
-    render(<TodoTree />);
-
-    expect(screen.getByText('Refreshing...')).toBeInTheDocument();
-  });
-
-  it('should animate RefreshCw icon when isRefreshing', () => {
-    mockPullToRefreshState = {
-      containerRef: { current: null },
-      isPulling: false,
-      isRefreshing: true,
-      pullProgress: 0,
-    };
-
-    const todos = [createMockTodo('1', 'Task 1')];
-
-    vi.mocked(useTodosModule.useTodos).mockReturnValue({
-      data: todos,
-      isLoading: false,
-      error: null,
-      isSuccess: true,
-      isError: false,
-    } as ReturnType<typeof useTodosModule.useTodos>);
-
-    const { container } = render(<TodoTree />);
-
-    // Find the RefreshCw icon (lucide-react renders as svg)
-    const icon = container.querySelector('svg');
-    expect(icon).toHaveClass('animate-spin');
-  });
-
-  it('should rotate RefreshCw icon based on pullProgress when pulling', () => {
-    mockPullToRefreshState = {
-      containerRef: { current: null },
-      isPulling: true,
-      isRefreshing: false,
-      pullProgress: 0.5,
-    };
-
-    const todos = [createMockTodo('1', 'Task 1')];
-
-    vi.mocked(useTodosModule.useTodos).mockReturnValue({
-      data: todos,
-      isLoading: false,
-      error: null,
-      isSuccess: true,
-      isError: false,
-    } as ReturnType<typeof useTodosModule.useTodos>);
-
-    const { container } = render(<TodoTree />);
-
-    // Find the RefreshCw icon
-    const icon = container.querySelector('svg');
-    expect(icon).toHaveStyle({ transform: 'rotate(180deg)' }); // 0.5 * 360 = 180
   });
 
   it('should flatten tree for virtualization count check based on expanded IDs', () => {

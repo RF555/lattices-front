@@ -1,6 +1,6 @@
 # Lattices Frontend
 
-Hierarchical task management application built with React, TypeScript, and Vite. Organizes todos in a tree structure with drag-and-drop reordering, tagging, filtering, and keyboard navigation.
+Hierarchical task management application built with React, TypeScript, and Vite. Organizes todos in a tree structure with tagging, filtering, and keyboard navigation.
 
 ## Tech Stack
 
@@ -14,7 +14,6 @@ Hierarchical task management application built with React, TypeScript, and Vite.
 | Forms          | React Hook Form + Zod                   |
 | Styling        | Tailwind CSS 3 + tailwind-merge         |
 | i18n           | react-i18next + i18next                 |
-| Drag & Drop    | dnd-kit                                 |
 | Virtualization | @tanstack/react-virtual                 |
 | Bottom Sheets  | vaul                                    |
 | Swipe Gestures | react-swipeable                         |
@@ -45,11 +44,11 @@ src/
 │   └── OfflineIndicator/   # Network status banner
 ├── features/               # Feature modules
 │   ├── auth/               # Authentication (login, register, session)
-│   ├── todos/              # Todo CRUD, tree rendering, drag-and-drop
+│   ├── todos/              # Todo CRUD, tree rendering
 │   ├── tags/               # Tag management and filtering
 │   ├── workspaces/         # Multi-user workspaces, members, invitations, groups, activity
 │   └── notifications/      # In-app notifications and preferences
-├── hooks/                  # Shared hooks (useIsMobile, useDirection, usePullToRefresh, useFocusTrap...)
+├── hooks/                  # Shared hooks (useIsMobile, useDirection, useFocusTrap...)
 ├── i18n/                   # Internationalization
 │   ├── i18n.ts             # i18next configuration
 │   ├── i18next.d.ts        # Type-safe translation keys
@@ -57,7 +56,6 @@ src/
 ├── lib/                    # Core libraries
 │   ├── api/                # HTTP client, query keys, error handling
 │   ├── auth/               # Auth provider abstraction (JWT / Supabase)
-│   ├── dnd/                # dnd-kit configuration and context
 │   ├── realtime/           # Supabase Realtime manager (workspace, presence, notifications)
 │   └── utils/              # cn(), formatDate utilities
 ├── stores/                 # Global Zustand stores (toastStore, mobileNavStore)
@@ -178,14 +176,12 @@ The API client intercepts 401 responses, refreshes the token, and retries the or
 Todos are stored flat on the server and assembled into a tree on the client using an O(n) algorithm. The tree supports:
 
 - Recursive rendering with expand/collapse
-- Drag-and-drop reordering (dnd-kit with flat list + CSS indent, `touch-none` drag handles)
 - Virtual scrolling for large lists (@tanstack/react-virtual, threshold-based activation at 50+ items)
 - Keyboard navigation (arrow keys, vim bindings, Home/End)
 - Filtering by completion status, tags, and search query
 - Sorting by position, creation date, date updated, or alphabetical
 - Detail panel (desktop: inline panel, mobile: bottom sheet via vaul)
-- Pull-to-refresh on mobile (custom touch gesture hook with 60px threshold)
-- Swipe-to-reveal actions on mobile (swipe left to delete, swipe right to complete, full-swipe auto-trigger at 40%, RTL-aware)
+- Swipe-to-reveal actions on mobile (swipe left to delete, swipe right to complete, full-swipe auto-trigger at 50%, RTL-aware)
 
 ### Tags
 
@@ -260,10 +256,10 @@ pnpm test:coverage # With coverage report
 - API clients (todoApi, tagApi, workspaceApi, invitationApi, ApiClient)
 - React Query hooks with optimistic updates (useTodos, useTags, useWorkspaces, useWorkspaceMembers, useGroups, useInvitations)
 - Zustand stores (todoUiStore, workspaceUiStore, authStore, toastStore, mobileNavStore)
-- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, InvitationBanner, AcceptInvitation, CreateWorkspaceDialog, ActivityFeed, NotificationBell, NotificationPanel, NotificationItem, NotificationPreferences, NotificationsPage, Modal, Input, Button, BottomSheet, FAB, BottomNav, SettingsSheet, WorkspaceSheet, SwipeableTodoRow, SortableTodoNode, TodoDetailSheet, QuickAddSheet, ReloadPrompt, OfflineIndicator, etc.)
+- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, InvitationBanner, AcceptInvitation, CreateWorkspaceDialog, ActivityFeed, NotificationBell, NotificationPanel, NotificationItem, NotificationPreferences, NotificationsPage, Modal, Input, Button, BottomSheet, FAB, BottomNav, SettingsSheet, WorkspaceSheet, SwipeableTodoRow, TodoDetailSheet, QuickAddSheet, ReloadPrompt, OfflineIndicator, etc.)
 - Notification hooks (useNotifications, useUnreadCount, useMarkAsRead, useMarkAllAsRead, useDeleteNotification, useNotificationPreferences, useUpdateNotificationPreferences, useNotificationTypes)
 - Notification utilities (formatNotificationMessage, getEntityRoute, getActorInitials)
-- Utility hooks (useWorkspacePermission, useIsMobile, useDirection, useAnnounce, usePullToRefresh, useFocusTrap)
+- Utility hooks (useWorkspacePermission, useIsMobile, useDirection, useAnnounce, useFocusTrap)
 - Validation schemas (authSchemas, workspaceSchemas)
 - MSW handler integration tests
 

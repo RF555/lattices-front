@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@/test/test-utils';
+import { render, screen, fireEvent, act } from '@/test/test-utils';
 import { SwipeableTodoRow } from '../SwipeableTodoRow';
 import * as useIsMobileModule from '@hooks/useIsMobile';
 import * as reactSwipeableModule from 'react-swipeable';
@@ -10,9 +10,14 @@ vi.mock('@hooks/useIsMobile', () => ({
   useIsMobile: vi.fn(),
 }));
 
-// Mock react-swipeable
+// Capture useSwipeable config so tests can trigger callbacks
+let capturedSwipeConfig: Record<string, (...args: any[]) => void>;
+
 vi.mock('react-swipeable', () => ({
-  useSwipeable: vi.fn().mockReturnValue({ ref: vi.fn() }),
+  useSwipeable: vi.fn((config: any) => {
+    capturedSwipeConfig = config;
+    return { ref: vi.fn() };
+  }),
 }));
 
 // Mock react-i18next
@@ -22,6 +27,14 @@ vi.mock('react-i18next', () => ({
     i18n: { dir: () => 'ltr' },
   }),
 }));
+
+/** Trigger swipe start + movement to make action buttons visible */
+function revealActions() {
+  act(() => {
+    capturedSwipeConfig.onSwipeStart?.();
+    capturedSwipeConfig.onSwiping?.({ deltaX: -100 } as unknown);
+  });
+}
 
 describe('SwipeableTodoRow', () => {
   const mockOnDelete = vi.fn();
@@ -33,9 +46,10 @@ describe('SwipeableTodoRow', () => {
 
     // Default mocks
     vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
-    vi.mocked(reactSwipeableModule.useSwipeable).mockReturnValue({
-      ref: vi.fn(),
-    } as unknown as reactSwipeableModule.SwipeableHandlers);
+    vi.mocked(reactSwipeableModule.useSwipeable).mockImplementation(((config: any) => {
+      capturedSwipeConfig = config;
+      return { ref: vi.fn() };
+    }) as unknown as typeof reactSwipeableModule.useSwipeable);
     vi.mocked(reactI18nextModule.useTranslation).mockReturnValue({
       t: (key: string) => key,
       i18n: { dir: () => 'ltr' },
@@ -87,7 +101,7 @@ describe('SwipeableTodoRow', () => {
       expect(wrapper).toBeInTheDocument();
     });
 
-    it('should render delete and complete action buttons', () => {
+    it('should not render action buttons when closed', () => {
       render(
         <SwipeableTodoRow
           todoId={testTodoId}
@@ -99,7 +113,25 @@ describe('SwipeableTodoRow', () => {
         </SwipeableTodoRow>,
       );
 
-      // Should render both action buttons
+      // Buttons should NOT be in DOM when idle
+      expect(screen.queryByLabelText('swipe.delete')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('swipe.complete')).not.toBeInTheDocument();
+    });
+
+    it('should render action buttons when swiping', () => {
+      render(
+        <SwipeableTodoRow
+          todoId={testTodoId}
+          onDelete={mockOnDelete}
+          onToggleComplete={mockOnToggleComplete}
+          isCompleted={false}
+        >
+          <div>Test Todo</div>
+        </SwipeableTodoRow>,
+      );
+
+      revealActions();
+
       expect(screen.getByLabelText('swipe.delete')).toBeInTheDocument();
       expect(screen.getByLabelText('swipe.complete')).toBeInTheDocument();
     });
@@ -115,6 +147,8 @@ describe('SwipeableTodoRow', () => {
           <div>Test Todo</div>
         </SwipeableTodoRow>,
       );
+
+      revealActions();
 
       const deleteButton = screen.getByLabelText('swipe.delete');
       expect(deleteButton).toHaveAttribute('aria-label', 'swipe.delete');
@@ -132,6 +166,8 @@ describe('SwipeableTodoRow', () => {
         </SwipeableTodoRow>,
       );
 
+      revealActions();
+
       const completeButton = screen.getByLabelText('swipe.complete');
       expect(completeButton).toHaveAttribute('aria-label', 'swipe.complete');
     });
@@ -148,6 +184,8 @@ describe('SwipeableTodoRow', () => {
         </SwipeableTodoRow>,
       );
 
+      revealActions();
+
       const uncompleteButton = screen.getByLabelText('swipe.uncomplete');
       expect(uncompleteButton).toHaveAttribute('aria-label', 'swipe.uncomplete');
     });
@@ -163,6 +201,8 @@ describe('SwipeableTodoRow', () => {
           <div>Test Todo</div>
         </SwipeableTodoRow>,
       );
+
+      revealActions();
 
       const deleteButton = screen.getByLabelText('swipe.delete');
       fireEvent.click(deleteButton);
@@ -183,6 +223,8 @@ describe('SwipeableTodoRow', () => {
         </SwipeableTodoRow>,
       );
 
+      revealActions();
+
       const completeButton = screen.getByLabelText('swipe.complete');
       fireEvent.click(completeButton);
 
@@ -190,7 +232,7 @@ describe('SwipeableTodoRow', () => {
       expect(mockOnDelete).not.toHaveBeenCalled();
     });
 
-    it('should have tabIndex -1 for action buttons initially (closed state)', () => {
+    it('should have tabIndex -1 for action buttons during swipe (not yet revealed)', () => {
       render(
         <SwipeableTodoRow
           todoId={testTodoId}
@@ -201,6 +243,8 @@ describe('SwipeableTodoRow', () => {
           <div>Test Todo</div>
         </SwipeableTodoRow>,
       );
+
+      revealActions();
 
       const deleteButton = screen.getByLabelText('swipe.delete');
       const completeButton = screen.getByLabelText('swipe.complete');
@@ -221,6 +265,8 @@ describe('SwipeableTodoRow', () => {
         </SwipeableTodoRow>,
       );
 
+      revealActions();
+
       const deleteButton = screen.getByLabelText('swipe.delete');
       const completeButton = screen.getByLabelText('swipe.complete');
 
@@ -240,6 +286,8 @@ describe('SwipeableTodoRow', () => {
         </SwipeableTodoRow>,
       );
 
+      revealActions();
+
       const deleteButton = screen.getByLabelText('swipe.delete');
       expect(deleteButton).toHaveClass('bg-red-500');
     });
@@ -256,6 +304,8 @@ describe('SwipeableTodoRow', () => {
         </SwipeableTodoRow>,
       );
 
+      revealActions();
+
       const completeButton = screen.getByLabelText('swipe.complete');
       expect(completeButton).toHaveClass('bg-green-500');
     });
@@ -271,6 +321,8 @@ describe('SwipeableTodoRow', () => {
           <div>Test Todo</div>
         </SwipeableTodoRow>,
       );
+
+      revealActions();
 
       const uncompleteButton = screen.getByLabelText('swipe.uncomplete');
       expect(uncompleteButton).toHaveClass('bg-amber-500');
@@ -290,13 +342,18 @@ describe('SwipeableTodoRow', () => {
         </div>,
       );
 
+      revealActions();
+
+      // Buttons should be visible during swipe
+      expect(screen.getByLabelText('swipe.delete')).toBeInTheDocument();
+
       const outsideElement = screen.getByTestId('outside');
 
-      // Simulate clicking outside (this tests the useEffect cleanup logic indirectly)
+      // Simulate clicking outside
       fireEvent.mouseDown(outsideElement);
 
-      // The component should still be rendered normally
-      expect(screen.getByLabelText('swipe.delete')).toBeInTheDocument();
+      // Component should still render children
+      expect(screen.getByText('Test Todo')).toBeInTheDocument();
     });
 
     it('should reset revealed state when todoId changes', () => {
@@ -311,7 +368,10 @@ describe('SwipeableTodoRow', () => {
         </SwipeableTodoRow>,
       );
 
-      // Change todoId
+      revealActions();
+      expect(screen.getByLabelText('swipe.delete')).toBeInTheDocument();
+
+      // Change todoId - should reset revealed state
       rerender(
         <SwipeableTodoRow
           todoId="new-todo-id"
@@ -323,8 +383,8 @@ describe('SwipeableTodoRow', () => {
         </SwipeableTodoRow>,
       );
 
-      // Component should still render (this tests the useEffect cleanup logic indirectly)
-      expect(screen.getByLabelText('swipe.delete')).toBeInTheDocument();
+      // Children should still render
+      expect(screen.getByText('Test Todo')).toBeInTheDocument();
     });
   });
 
@@ -348,6 +408,8 @@ describe('SwipeableTodoRow', () => {
           <div>Test Todo</div>
         </SwipeableTodoRow>,
       );
+
+      revealActions();
 
       const deleteButton = screen.getByLabelText('swipe.delete');
       const completeButton = screen.getByLabelText('swipe.complete');

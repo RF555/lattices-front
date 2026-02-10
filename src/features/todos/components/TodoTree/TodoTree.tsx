@@ -1,14 +1,10 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useTranslation } from 'react-i18next';
-import { RefreshCw } from 'lucide-react';
 import { useTodos } from '../../hooks/useTodos';
 import { useTodoUiStore, useExpandedIds } from '../../stores/todoUiStore';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { filterTodoTree, sortTodoTree, flattenTodoTree } from '../../utils/treeUtils';
-import { usePullToRefresh } from '@hooks/usePullToRefresh';
-import { queryKeys } from '@lib/api/queryKeys';
-import { queryClient } from '@/app/providers/queryClient';
 import { TodoNode } from './TodoNode';
 import { TodoTreeEmpty } from './TodoTreeEmpty';
 import { TodoTreeLoading } from './TodoTreeLoading';
@@ -36,14 +32,6 @@ export function TodoTree({ viewingTask }: TodoTreeProps) {
       sortOrder: s.sortOrder,
     })),
   );
-
-  const handleRefresh = useCallback(async () => {
-    await queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
-  }, []);
-
-  const { containerRef, isPulling, isRefreshing, pullProgress } = usePullToRefresh({
-    onRefresh: handleRefresh,
-  });
 
   const filteredTodos = useMemo(() => {
     if (!todos) return [];
@@ -97,29 +85,8 @@ export function TodoTree({ viewingTask }: TodoTreeProps) {
     return <TodoTreeEmpty hasFilters={!!(searchQuery || filterTagIds.length)} />;
   }
 
-  const pullIndicatorText = isRefreshing
-    ? t('pullToRefresh.refreshing')
-    : pullProgress >= 1
-      ? t('pullToRefresh.release')
-      : t('pullToRefresh.pull');
-
   return (
-    <div ref={containerRef}>
-      {/* Pull-to-refresh indicator */}
-      {(isPulling || isRefreshing) && (
-        <div className="flex items-center justify-center gap-2 py-2 text-sm text-gray-500">
-          <RefreshCw
-            className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`}
-            style={
-              !isRefreshing
-                ? { transform: `rotate(${pullProgress * 360}deg)`, transition: 'transform 0.1s' }
-                : undefined
-            }
-          />
-          <span>{pullIndicatorText}</span>
-        </div>
-      )}
-
+    <div>
       {useVirtualList ? (
         <VirtualizedTodoList items={flatItems} />
       ) : (

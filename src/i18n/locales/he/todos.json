@@ -93,10 +93,5 @@
     "delete": "מחיקה",
     "complete": "השלמה",
     "uncomplete": "ביטול השלמה"
-  },
-  "pullToRefresh": {
-    "pull": "משכו לרענון",
-    "release": "שחררו לרענון",
-    "refreshing": "מרענן..."
   }
 }

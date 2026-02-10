@@ -12,7 +12,6 @@ import {
   useUpdateTodo,
   useDeleteTodo,
   useToggleTodo,
-  useMoveTodo,
 } from '../useTodos';
 import type { Todo } from '../../types/todo';
 
@@ -363,69 +362,6 @@ describe('useToggleTodo', () => {
       const cached = queryClient.getQueryData<Todo[]>(queryKey)!;
       expect(cached?.[0]?.isCompleted).toBe(true);
       expect(cached?.[0]?.completedAt).not.toBeNull();
-    });
-  });
-});
-
-describe('useMoveTodo', () => {
-  it('should move todo to new parent and position', async () => {
-    server.use(
-      http.patch(`${API_URL}/todos/:id`, async ({ params, request }) => {
-        const body = (await request.json()) as Record<string, unknown>;
-        return HttpResponse.json({
-          data: apiTodo({
-            id: params.id as string,
-            parent_id: body.parent_id ?? null,
-            position: body.position,
-          }),
-        });
-      }),
-    );
-
-    const { wrapper } = createWrapper();
-    const { result } = renderHook(() => useMoveTodo(), { wrapper });
-
-    let mutationResult: unknown;
-    await act(async () => {
-      mutationResult = await result.current.mutateAsync({ id: '3', parentId: null, position: 2 });
-    });
-
-    expect(mutationResult).toBeDefined();
-  });
-
-  it('should optimistically update parentId and position', async () => {
-    server.use(
-      http.patch(`${API_URL}/todos/:id`, async ({ params, request }) => {
-        const body = (await request.json()) as Record<string, unknown>;
-        return HttpResponse.json({
-          data: apiTodo({
-            id: params.id as string,
-            parent_id: body.parent_id ?? null,
-            position: body.position,
-          }),
-        });
-      }),
-    );
-
-    const { wrapper, queryClient } = createWrapper();
-    const todos = [
-      makeTodo({ id: '1', title: 'Parent', childCount: 1 }),
-      makeTodo({ id: '3', title: 'Child', parentId: '1', position: 0 }),
-    ];
-    const queryKey = ['todos', 'list', {}];
-    queryClient.setQueryData(queryKey, todos);
-
-    const { result } = renderHook(() => useMoveTodo(), { wrapper });
-
-    act(() => {
-      result.current.mutate({ id: '3', parentId: null, position: 5 });
-    });
-
-    await waitFor(() => {
-      const cached = queryClient.getQueryData<Todo[]>(queryKey)!;
-      const moved = cached?.find((t) => t.id === '3');
-      expect(moved?.parentId).toBeNull();
-      expect(moved?.position).toBe(5);
     });
   });
 });

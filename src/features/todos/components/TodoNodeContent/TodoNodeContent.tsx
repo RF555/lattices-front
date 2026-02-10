@@ -23,7 +23,7 @@ interface TodoNodeContentProps {
   depth: number;
   isExpanded: boolean;
   hasChildren: boolean;
-  /** Optional leading content (e.g., drag handle for SortableTodoNode) */
+  /** Optional leading content */
   leadingSlot?: ReactNode;
   /** Additional class names for the row container */
   className?: string;
