@@ -44,6 +44,11 @@ export default {
           DEFAULT: '#ffffff',
           muted: '#f9fafb',
         },
+        brand: {
+          indigo: '#6366f1',
+          cyan: '#22d3ee',
+          amber: '#f59e0b',
+        },
       },
       boxShadow: {
         node: '0 1px 2px 0 rgba(0, 0, 0, 0.04)',

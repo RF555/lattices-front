@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router';
-import { Grid3X3 } from 'lucide-react';
+import { LatticesLogo } from '@components/brand';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@features/auth/stores/authStore';
 import { WorkspaceSwitcher } from '@features/workspaces/components/WorkspaceSwitcher/WorkspaceSwitcher';
@@ -30,7 +30,7 @@ export function MainLayout() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h1 className="flex items-center gap-2 text-lg sm:text-xl font-bold tracking-tight text-gray-900">
-              <Grid3X3 className="w-5 h-5 text-primary" />
+              <LatticesLogo size="sm" />
               {t('brand.name')}
             </h1>
             <div className="hidden sm:block h-6 w-px bg-gray-200" />

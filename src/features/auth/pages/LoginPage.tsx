@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { LoginForm } from '../components/LoginForm';
 import { LanguageSwitcher } from '@components/ui/LanguageSwitcher';
+import { LatticesLogo } from '@components/brand';
 
 export default function LoginPage() {
   const { t } = useTranslation();
@@ -11,6 +12,7 @@ export default function LoginPage() {
       </div>
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
+          <LatticesLogo size="lg" className="mx-auto mb-4" />
           <h1 className="text-3xl font-bold text-gray-900">{t('brand.name')}</h1>
           <p className="mt-2 text-sm text-gray-600">{t('brand.tagline')}</p>
         </div>

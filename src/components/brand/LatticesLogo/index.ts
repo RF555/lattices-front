@@ -1,0 +1,1 @@
+export { LatticesLogo } from './LatticesLogo';
