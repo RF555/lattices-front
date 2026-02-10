@@ -1,0 +1,49 @@
+<svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    B3 Power Set Lattice — Boolean lattice on {a, b, c} (Hasse diagram)
+    8 nodes across 4 levels, 12 cover-relation edges
+
+    Level 3 (top):     {a,b,c}           — greatest element (join of all)
+    Level 2:       {a,b}  {a,c}  {b,c}   — 2-element subsets
+    Level 1:        {a}    {b}    {c}     — singletons (incomparable)
+    Level 0 (bottom):      {}             — least element (meet of all)
+
+    The 2 natural edge crossings between levels 2-1 create the characteristic
+    woven lattice pattern that distinguishes this from a simple tree
+
+    Color hierarchy (top → bottom): amber → indigo → indigo-400 → cyan
+    Each level is visually distinct, telling the hierarchy story through color
+  -->
+  <!-- Edges: cover relations (12 edges) -->
+  <!-- Level 3 → Level 2: top fans down to 3 nodes -->
+  <line x1="24" y1="6" x2="10" y2="18" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <line x1="24" y1="6" x2="24" y2="18" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <line x1="24" y1="6" x2="38" y2="18" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <!-- Level 2 → Level 1: 6 edges with 2 natural crossings -->
+  <!-- {a,b} covers {a} and {b} -->
+  <line x1="10" y1="18" x2="10" y2="30" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <line x1="10" y1="18" x2="24" y2="30" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <!-- {a,c} covers {a} and {c} — left edge crosses {a,b}→{b} -->
+  <line x1="24" y1="18" x2="10" y2="30" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <line x1="24" y1="18" x2="38" y2="30" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <!-- {b,c} covers {b} and {c} — left edge crosses {a,c}→{c} -->
+  <line x1="38" y1="18" x2="24" y2="30" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <line x1="38" y1="18" x2="38" y2="30" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <!-- Level 1 → Level 0: 3 singletons converge to bottom -->
+  <line x1="10" y1="30" x2="24" y2="42" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <line x1="24" y1="30" x2="24" y2="42" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <line x1="38" y1="30" x2="24" y2="42" stroke="#a5b4fc" stroke-width="2" stroke-linecap="round"/>
+  <!-- Nodes (drawn on top of edges) -->
+  <!-- Level 3: greatest element -->
+  <circle cx="24" cy="6" r="3.5" fill="#f59e0b"/>
+  <!-- Level 2: 2-element subsets -->
+  <circle cx="10" cy="18" r="3.5" fill="#6366f1"/>
+  <circle cx="24" cy="18" r="3.5" fill="#6366f1"/>
+  <circle cx="38" cy="18" r="3.5" fill="#6366f1"/>
+  <!-- Level 1: singletons -->
+  <circle cx="10" cy="30" r="3.5" fill="#818cf8"/>
+  <circle cx="24" cy="30" r="3.5" fill="#818cf8"/>
+  <circle cx="38" cy="30" r="3.5" fill="#818cf8"/>
+  <!-- Level 0: least element -->
+  <circle cx="24" cy="42" r="3.5" fill="#22d3ee"/>
+</svg>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { CheckCircle, AlertCircle, Grid3X3 } from 'lucide-react';
+import { CheckCircle, AlertCircle } from 'lucide-react';
+import { LatticesLogo } from '@components/brand';
 import { Button } from '@components/ui/Button';
 import { Spinner } from '@components/ui/Spinner';
 import { useIsAuthenticated } from '@features/auth/stores/authStore';
@@ -65,7 +66,7 @@ export function AcceptInvitation() {
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 text-center">
-        <Grid3X3 className="h-8 w-8 text-primary mx-auto mb-4" />
+        <LatticesLogo size="md" className="mx-auto mb-4" />
 
         {state === 'loading' && (
           <>

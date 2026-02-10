@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
-import { Grid3X3, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { LatticesLogo } from '@components/brand';
 import { Button } from '@components/ui/Button';
 
 interface WorkspaceEmptyStateProps {
@@ -12,7 +13,7 @@ export function WorkspaceEmptyState({ onCreateWorkspace }: WorkspaceEmptyStatePr
   return (
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
       <div className="rounded-full bg-primary/10 p-4 mb-4">
-        <Grid3X3 className="h-8 w-8 text-primary" />
+        <LatticesLogo size="md" />
       </div>
       <h2 className="text-xl font-semibold text-gray-900 mb-2">{t('emptyState.title')}</h2>
       <p className="text-sm text-gray-500 mb-6 max-w-md">{t('emptyState.description')}</p>
