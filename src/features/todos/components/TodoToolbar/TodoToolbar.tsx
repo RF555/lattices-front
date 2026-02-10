@@ -3,13 +3,15 @@ import { ChevronsDown, ChevronsUp, SlidersHorizontal, Search, X } from 'lucide-r
 import { useTranslation } from 'react-i18next';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { useTodos } from '../../hooks/useTodos';
+import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { countTodos } from '../../utils/treeUtils';
 import { TagFilter } from '../TagFilter';
 import type { Todo } from '../../types/todo';
 
 export function TodoToolbar() {
   const { t } = useTranslation('todos');
-  const { data: todos } = useTodos();
+  const activeWorkspaceId = useActiveWorkspaceId();
+  const { data: todos } = useTodos(undefined, activeWorkspaceId ?? undefined);
   const {
     showCompleted,
     setShowCompleted,

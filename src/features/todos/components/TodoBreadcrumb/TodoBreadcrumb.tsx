@@ -3,6 +3,7 @@ import { ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useTodoUiStore } from '../../stores/todoUiStore';
 import { useTodos } from '../../hooks/useTodos';
+import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { getAncestorPath } from '../../utils/treeUtils';
 
 interface TodoBreadcrumbProps {
@@ -11,7 +12,8 @@ interface TodoBreadcrumbProps {
 
 export function TodoBreadcrumb({ todoId }: TodoBreadcrumbProps) {
   const { t } = useTranslation('todos');
-  const { data: todos } = useTodos();
+  const activeWorkspaceId = useActiveWorkspaceId();
+  const { data: todos } = useTodos(undefined, activeWorkspaceId ?? undefined);
   const setSelectedId = useTodoUiStore((s) => s.setSelectedId);
 
   const ancestors = useMemo(() => {
