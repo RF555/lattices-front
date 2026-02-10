@@ -93,5 +93,29 @@
     "delete": "מחיקה",
     "complete": "השלמה",
     "uncomplete": "ביטול השלמה"
+  },
+  "export": {
+    "button": "ייצוא לאקסל",
+    "modalTitle": "ייצוא משימות לאקסל",
+    "workspaceLabel": "סביבת עבודה",
+    "allWorkspaces": "כל סביבות העבודה",
+    "statusLabel": "סטטוס",
+    "statusAll": "כל המשימות",
+    "statusCompleted": "הושלמו בלבד",
+    "statusUncompleted": "לא הושלמו בלבד",
+    "exportButton": "ייצוא",
+    "sheetName": "משימות",
+    "success": "קובץ האקסל הורד בהצלחה",
+    "error": "יצירת קובץ האקסל נכשלה",
+    "columns": {
+      "title": "כותרת",
+      "workspace": "סביבת עבודה",
+      "completed": "הושלם",
+      "parent": "משימת אב",
+      "description": "תיאור",
+      "tags": "תגיות",
+      "createdAt": "תאריך יצירה",
+      "updatedAt": "תאריך עדכון"
+    }
   }
 }
