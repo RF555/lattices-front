@@ -30,6 +30,8 @@ export function TodoInlineEdit({ initialValue, onSave, onCancel }: TodoInlineEdi
       handleSubmit();
     } else if (e.key === 'Escape') {
       onCancel();
+    } else {
+      e.stopPropagation();
     }
   };
 
