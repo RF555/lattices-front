@@ -150,6 +150,18 @@ describe('Button', () => {
     });
   });
 
+  describe('Type Attribute', () => {
+    it('should default to type="button" to prevent accidental form submissions', () => {
+      render(<Button>Click</Button>);
+      expect(screen.getByRole('button')).toHaveAttribute('type', 'button');
+    });
+
+    it('should allow overriding type to "submit"', () => {
+      render(<Button type="submit">Submit</Button>);
+      expect(screen.getByRole('button')).toHaveAttribute('type', 'submit');
+    });
+  });
+
   describe('Custom Props', () => {
     it('should accept custom className', () => {
       render(<Button className="custom-class">Custom</Button>);
