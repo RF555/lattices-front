@@ -36,7 +36,9 @@
   },
   "tree": {
     "error": "Failed to load todos. Please try again.",
-    "ariaLabel": "Task list"
+    "ariaLabel": "Task list",
+    "loadingAriaLabel": "Loading tasks",
+    "loadingMessage": "Loading tasks..."
   },
   "empty": {
     "filteredTitle": "No matching tasks",

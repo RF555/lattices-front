@@ -1,4 +1,5 @@
 import { Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 
 interface SpinnerProps {
@@ -13,11 +14,12 @@ const sizeClasses = {
 };
 
 export function Spinner({ size = 'md', className }: SpinnerProps) {
+  const { t } = useTranslation();
   return (
     <Loader2
       className={cn('animate-spin text-primary', sizeClasses[size], className)}
       role="status"
-      aria-label="Loading"
+      aria-label={t('actions.loading')}
     />
   );
 }

@@ -36,7 +36,9 @@
   },
   "tree": {
     "error": "טעינת המשימות נכשלה. אנא נסו שוב.",
-    "ariaLabel": "רשימת משימות"
+    "ariaLabel": "רשימת משימות",
+    "loadingAriaLabel": "טוען משימות",
+    "loadingMessage": "טוען משימות..."
   },
   "empty": {
     "filteredTitle": "אין משימות תואמות",

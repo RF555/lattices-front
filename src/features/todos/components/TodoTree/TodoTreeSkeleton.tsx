@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@components/ui/Skeleton';
 
 interface TodoTreeSkeletonProps {
@@ -9,8 +10,9 @@ const SKELETON_DEPTHS = [0, 1, 0, 2, 1, 0, 1, 2];
 const SKELETON_WIDTHS = [65, 40, 55, 35, 50, 45, 60, 38];
 
 export function TodoTreeSkeleton({ count = 8 }: TodoTreeSkeletonProps) {
+  const { t } = useTranslation('todos');
   return (
-    <div className="space-y-2" role="status" aria-label="Loading tasks">
+    <div className="space-y-2" role="status" aria-label={t('tree.loadingAriaLabel')}>
       {Array.from({ length: count }, (_, i) => {
         const depth = SKELETON_DEPTHS[i % SKELETON_DEPTHS.length];
         const indent = depth * 24;
@@ -31,7 +33,7 @@ export function TodoTreeSkeleton({ count = 8 }: TodoTreeSkeletonProps) {
           </div>
         );
       })}
-      <span className="sr-only">Loading tasks...</span>
+      <span className="sr-only">{t('tree.loadingMessage')}</span>
     </div>
   );
 }
