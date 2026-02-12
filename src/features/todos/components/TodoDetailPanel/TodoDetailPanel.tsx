@@ -5,14 +5,14 @@ import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
 import { useIsMobile } from '@hooks/useIsMobile';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
-import { useUpdateTodo } from '../../hooks/useTodos';
+import { useUpdateTodo } from '@features/todos/hooks/useTodos';
 import { TagPicker } from '@features/tags/components/TagPicker';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { ParentPicker } from '../ParentPicker';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
-import { useTodoUiStore } from '../../stores/todoUiStore';
+import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { formatDate, formatDateFull } from '@lib/utils/formatDate';
-import type { Todo } from '../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 interface TodoDetailPanelProps {
   todo: Todo;

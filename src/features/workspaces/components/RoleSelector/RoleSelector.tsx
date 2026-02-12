@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
-import type { WorkspaceRole } from '../../types/workspace';
+import type { WorkspaceRole } from '@features/workspaces/types/workspace';
 
 const SELECTABLE_ROLES: WorkspaceRole[] = ['viewer', 'member', 'admin'];
 

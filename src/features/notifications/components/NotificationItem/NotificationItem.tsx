@@ -2,8 +2,11 @@ import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 import { formatRelativeTime } from '@features/workspaces/utils/activityFormatter';
-import { formatNotificationMessage, getActorInitials } from '../../utils/formatNotification';
-import type { Notification } from '../../types/notification';
+import {
+  formatNotificationMessage,
+  getActorInitials,
+} from '@features/notifications/utils/formatNotification';
+import type { Notification } from '@features/notifications/types/notification';
 
 interface NotificationItemProps {
   notification: Notification;

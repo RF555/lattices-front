@@ -1,7 +1,7 @@
 import { memo, type CSSProperties } from 'react';
-import { useTodoUiStore } from '../../stores/todoUiStore';
+import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { TodoNodeContent } from '../TodoNodeContent';
-import type { Todo } from '../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 interface VirtualizedTodoRowProps {
   todo: Todo;

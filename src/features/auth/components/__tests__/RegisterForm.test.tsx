@@ -8,7 +8,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { RegisterForm } from '../RegisterForm';
-import { useAuthStore } from '../../stores/authStore';
+import { useAuthStore } from '@features/auth/stores/authStore';
 
 // Mock react-router navigation
 const mockNavigate = vi.fn();

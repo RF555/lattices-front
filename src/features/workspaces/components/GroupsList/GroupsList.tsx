@@ -5,10 +5,10 @@ import { useNavigate } from 'react-router';
 import { Button } from '@components/ui/Button';
 import { Spinner } from '@components/ui/Spinner';
 import { Modal } from '@components/ui/Modal/Modal';
-import { useGroups, useDeleteGroup } from '../../hooks/useGroups';
-import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
+import { useGroups, useDeleteGroup } from '@features/workspaces/hooks/useGroups';
+import { useWorkspacePermission } from '@features/workspaces/hooks/useWorkspacePermission';
 import { GroupManageDialog } from '../GroupManageDialog/GroupManageDialog';
-import type { Group } from '../../types/group';
+import type { Group } from '@features/workspaces/types/group';
 
 interface GroupsListProps {
   workspaceId: string;

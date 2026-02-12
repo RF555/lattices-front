@@ -12,7 +12,7 @@ import {
   useAddTagToTodo,
   useRemoveTagFromTodo,
 } from '../useTags';
-import type { Tag } from '../../types/tag';
+import type { Tag } from '@features/tags/types/tag';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const API_VERSION = import.meta.env.VITE_API_VERSION || 'v1';

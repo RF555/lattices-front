@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@components/ui/Button';
 import { Spinner } from '@components/ui/Spinner';
-import { useWorkspaceActivity } from '../../hooks/useActivity';
-import { formatAction, formatRelativeTime } from '../../utils/activityFormatter';
-import type { ActivityEntry } from '../../types/activity';
+import { useWorkspaceActivity } from '@features/workspaces/hooks/useActivity';
+import { formatAction, formatRelativeTime } from '@features/workspaces/utils/activityFormatter';
+import type { ActivityEntry } from '@features/workspaces/types/activity';
 
 const PAGE_SIZE = 20;
 

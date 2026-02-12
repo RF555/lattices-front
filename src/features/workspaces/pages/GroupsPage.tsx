@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { UsersRound, ArrowLeft } from 'lucide-react';
-import { GroupsList } from '../components/GroupsList/GroupsList';
+import { GroupsList } from '@features/workspaces/components/GroupsList/GroupsList';
 
 export default function GroupsPage() {
   const { id } = useParams<{ id: string }>();

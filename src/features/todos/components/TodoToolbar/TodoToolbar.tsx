@@ -1,12 +1,13 @@
 import { useMemo, useState, useEffect } from 'react';
 import { ChevronsDown, ChevronsUp, SlidersHorizontal, Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useTodoUiStore } from '../../stores/todoUiStore';
-import { useTodos } from '../../hooks/useTodos';
+import { DEBOUNCE } from '@/constants';
+import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
+import { useTodos } from '@features/todos/hooks/useTodos';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
-import { countTodos } from '../../utils/treeUtils';
+import { countTodos } from '@features/todos/utils/treeUtils';
 import { TagFilter } from '../TagFilter';
-import type { Todo } from '../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 export function TodoToolbar() {
   const { t } = useTranslation('todos');
@@ -33,7 +34,7 @@ export function TodoToolbar() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchQuery(localSearch);
-    }, 300);
+    }, DEBOUNCE.SEARCH);
     return () => {
       clearTimeout(timer);
     };

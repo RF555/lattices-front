@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
-import { useActiveWorkspace } from '../../hooks/useActiveWorkspace';
+import { useActiveWorkspace } from '@features/workspaces/hooks/useActiveWorkspace';
 
 interface WorkspaceSwitcherProps {
   onCreateWorkspace: () => void;

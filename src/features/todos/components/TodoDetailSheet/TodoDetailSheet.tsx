@@ -9,11 +9,11 @@ import { TagBadge } from '@features/tags/components/TagBadge';
 import { ParentPicker } from '../ParentPicker';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
 import { TodoCheckbox } from '../TodoTree/TodoCheckbox';
-import { useUpdateTodo, useToggleTodo } from '../../hooks/useTodos';
+import { useUpdateTodo, useToggleTodo } from '@features/todos/hooks/useTodos';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { formatDate, formatDateFull } from '@lib/utils/formatDate';
-import type { Todo } from '../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 interface TodoDetailSheetProps {
   todo: Todo;

@@ -1,15 +1,20 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
 import { toast } from '@stores/toastStore';
-import { workspaceApi } from '../api/workspaceApi';
-import { useWorkspaceUiStore } from '../stores/workspaceUiStore';
-import type { Workspace, CreateWorkspaceInput, UpdateWorkspaceInput } from '../types/workspace';
+import { QUERY_CACHE } from '@/constants';
+import { workspaceApi } from '@features/workspaces/api/workspaceApi';
+import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
+import type {
+  Workspace,
+  CreateWorkspaceInput,
+  UpdateWorkspaceInput,
+} from '@features/workspaces/types/workspace';
 
 export function useWorkspaces() {
   return useQuery({
     queryKey: queryKeys.workspaces.lists(),
     queryFn: () => workspaceApi.getAll(),
-    staleTime: 5 * 60 * 1000,
+    staleTime: QUERY_CACHE.STALE_LONG,
   });
 }
 

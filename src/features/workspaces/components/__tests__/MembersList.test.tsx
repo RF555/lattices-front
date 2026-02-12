@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import { MembersList } from '../MembersList/MembersList';
-import type { WorkspaceMember } from '../../types/workspace';
+import type { WorkspaceMember } from '@features/workspaces/types/workspace';
 
 const mockMembers: WorkspaceMember[] = [
   {
@@ -41,7 +41,7 @@ const mockMembers: WorkspaceMember[] = [
 const mockUpdateRole = { mutate: vi.fn(), isPending: false };
 const mockRemoveMember = { mutate: vi.fn(), isPending: false };
 
-vi.mock('../../hooks/useWorkspaceMembers', () => ({
+vi.mock('@features/workspaces/hooks/useWorkspaceMembers', () => ({
   useWorkspaceMembers: vi.fn(() => ({
     data: mockMembers,
     isLoading: false,
@@ -50,7 +50,7 @@ vi.mock('../../hooks/useWorkspaceMembers', () => ({
   useRemoveMember: vi.fn(() => mockRemoveMember),
 }));
 
-vi.mock('../../hooks/useWorkspacePermission', () => ({
+vi.mock('@features/workspaces/hooks/useWorkspacePermission', () => ({
   useWorkspacePermission: vi.fn(() => ({
     role: 'admin' as const,
     canEdit: true,
@@ -91,8 +91,8 @@ vi.mock('../RoleSelector/RoleSelector', () => ({
   ),
 }));
 
-import { useWorkspaceMembers } from '../../hooks/useWorkspaceMembers';
-import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
+import { useWorkspaceMembers } from '@features/workspaces/hooks/useWorkspaceMembers';
+import { useWorkspacePermission } from '@features/workspaces/hooks/useWorkspacePermission';
 const mockUseWorkspaceMembers = vi.mocked(useWorkspaceMembers);
 const mockUseWorkspacePermission = vi.mocked(useWorkspacePermission);
 

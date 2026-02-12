@@ -10,11 +10,11 @@ import {
   useGroupMembers,
   useAddGroupMember,
   useRemoveGroupMember,
-} from '../../hooks/useGroups';
-import { useWorkspaceMembers } from '../../hooks/useWorkspaceMembers';
-import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
+} from '@features/workspaces/hooks/useGroups';
+import { useWorkspaceMembers } from '@features/workspaces/hooks/useWorkspaceMembers';
+import { useWorkspacePermission } from '@features/workspaces/hooks/useWorkspacePermission';
 import { GroupManageDialog } from '../GroupManageDialog/GroupManageDialog';
-import type { GroupMember } from '../../types/group';
+import type { GroupMember } from '@features/workspaces/types/group';
 
 interface GroupDetailProps {
   workspaceId: string;

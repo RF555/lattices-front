@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { formatAction, formatRelativeTime } from '../activityFormatter';
-import type { ActivityEntry } from '../../types/activity';
+import type { ActivityEntry } from '@features/workspaces/types/activity';
 import i18n from '@/i18n/i18n';
 
 // Helper to create mock activity entries

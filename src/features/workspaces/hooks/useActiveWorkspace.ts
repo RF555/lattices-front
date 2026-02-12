@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useWorkspaces } from './useWorkspaces';
-import { useWorkspaceUiStore } from '../stores/workspaceUiStore';
-import type { Workspace } from '../types/workspace';
+import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
+import type { Workspace } from '@features/workspaces/types/workspace';
 
 interface ActiveWorkspaceResult {
   activeWorkspace: Workspace | null;

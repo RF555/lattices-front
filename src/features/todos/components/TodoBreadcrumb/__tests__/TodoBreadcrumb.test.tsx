@@ -9,14 +9,14 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
-import type { Todo } from '../../../types/todo';
-import * as useTodosModule from '../../../hooks/useTodos';
-import * as todoUiStoreModule from '../../../stores/todoUiStore';
+import type { Todo } from '@features/todos/types/todo';
+import * as useTodosModule from '@features/todos/hooks/useTodos';
+import * as todoUiStoreModule from '@features/todos/stores/todoUiStore';
 import * as workspaceUiStoreModule from '@features/workspaces/stores/workspaceUiStore';
 
 // Mock hooks and stores
-vi.mock('../../../hooks/useTodos');
-vi.mock('../../../stores/todoUiStore');
+vi.mock('@features/todos/hooks/useTodos');
+vi.mock('@features/todos/stores/todoUiStore');
 vi.mock('@features/workspaces/stores/workspaceUiStore');
 
 // Mock react-i18next

@@ -6,18 +6,18 @@ import { CreateWorkspaceDialog } from '../CreateWorkspaceDialog/CreateWorkspaceD
 const mockMutateAsync = vi.fn();
 const mockSetActiveWorkspace = vi.fn();
 
-vi.mock('../../hooks/useWorkspaces', () => ({
+vi.mock('@features/workspaces/hooks/useWorkspaces', () => ({
   useCreateWorkspace: vi.fn(() => ({
     mutateAsync: mockMutateAsync,
     isPending: false,
   })),
 }));
 
-vi.mock('../../stores/workspaceUiStore', () => ({
+vi.mock('@features/workspaces/stores/workspaceUiStore', () => ({
   useWorkspaceUiStore: vi.fn(() => mockSetActiveWorkspace),
 }));
 
-import { useCreateWorkspace } from '../../hooks/useWorkspaces';
+import { useCreateWorkspace } from '@features/workspaces/hooks/useWorkspaces';
 const mockUseCreateWorkspace = vi.mocked(useCreateWorkspace);
 
 describe('CreateWorkspaceDialog', () => {

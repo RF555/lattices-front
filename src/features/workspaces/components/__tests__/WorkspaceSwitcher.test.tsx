@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { WorkspaceSwitcher } from '../WorkspaceSwitcher/WorkspaceSwitcher';
-import type { Workspace } from '../../types/workspace';
+import type { Workspace } from '@features/workspaces/types/workspace';
 
 const mockSetActiveWorkspace = vi.fn();
 
@@ -29,7 +29,7 @@ const mockWorkspaces: Workspace[] = [
   },
 ];
 
-vi.mock('../../hooks/useActiveWorkspace', () => ({
+vi.mock('@features/workspaces/hooks/useActiveWorkspace', () => ({
   useActiveWorkspace: vi.fn(() => ({
     activeWorkspace: mockWorkspaces[0],
     workspaces: mockWorkspaces,
@@ -39,7 +39,7 @@ vi.mock('../../hooks/useActiveWorkspace', () => ({
   })),
 }));
 
-import { useActiveWorkspace } from '../../hooks/useActiveWorkspace';
+import { useActiveWorkspace } from '@features/workspaces/hooks/useActiveWorkspace';
 const mockUseActiveWorkspace = vi.mocked(useActiveWorkspace);
 
 describe('WorkspaceSwitcher', () => {

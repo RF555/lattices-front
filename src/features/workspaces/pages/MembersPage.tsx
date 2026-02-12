@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Users, ArrowLeft } from 'lucide-react';
-import { MembersList } from '../components/MembersList/MembersList';
-import { PendingInvitations } from '../components/PendingInvitations/PendingInvitations';
+import { MembersList } from '@features/workspaces/components/MembersList/MembersList';
+import { PendingInvitations } from '@features/workspaces/components/PendingInvitations/PendingInvitations';
 
 export default function MembersPage() {
   const { id } = useParams<{ id: string }>();

@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { Activity, ArrowLeft } from 'lucide-react';
-import { ActivityFeed } from '../components/ActivityFeed/ActivityFeed';
+import { ActivityFeed } from '@features/workspaces/components/ActivityFeed/ActivityFeed';
 
 export default function ActivityPage() {
   const { id } = useParams<{ id: string }>();

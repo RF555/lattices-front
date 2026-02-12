@@ -23,3 +23,5 @@ export function OptimizedImage({
     />
   );
 }
+
+OptimizedImage.displayName = 'OptimizedImage';
