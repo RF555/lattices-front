@@ -87,7 +87,7 @@ export function TagPicker({ selectedIds, onSelect, onDeselect, workspaceId }: Ta
           setIsOpen(true);
         }}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          if (e.key === 'Enter' || (e.key === ' ' && !isOpen)) {
             e.preventDefault();
             setIsOpen(true);
           }
