@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next';
-import type { ActivityEntry } from '../types/activity';
+import type { ActivityEntry } from '@features/workspaces/types/activity';
 
 export function formatAction(entry: ActivityEntry, t: TFunction<'workspaces'>): string {
   const { actorName, action, entityTitle } = entry;

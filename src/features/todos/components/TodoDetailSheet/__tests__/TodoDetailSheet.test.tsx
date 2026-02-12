@@ -10,10 +10,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { TodoDetailSheet } from '../TodoDetailSheet';
-import type { Todo } from '../../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 // Mock dependencies
-vi.mock('../../../hooks/useTodos', () => ({
+vi.mock('@features/todos/hooks/useTodos', () => ({
   useUpdateTodo: vi.fn(),
   useToggleTodo: vi.fn(),
 }));
@@ -158,7 +158,7 @@ vi.mock('@lib/utils/formatDate', () => ({
   formatDateFull: (date: string) => `full-${date}`,
 }));
 
-import { useUpdateTodo, useToggleTodo } from '../../../hooks/useTodos';
+import { useUpdateTodo, useToggleTodo } from '@features/todos/hooks/useTodos';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 

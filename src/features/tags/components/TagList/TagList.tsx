@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTags, useDeleteTag } from '../../hooks/useTags';
+import { useTags, useDeleteTag } from '@features/tags/hooks/useTags';
 import { Button } from '@components/ui/Button';
 import { TagBadge } from '../TagBadge';
 import { TagEditModal } from './TagEditModal';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
-import type { Tag } from '../../types/tag';
+import type { Tag } from '@features/tags/types/tag';
 
 interface TagListProps {
   workspaceId?: string;

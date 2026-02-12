@@ -1,9 +1,9 @@
 import { memo } from 'react';
 import { useIsMobile } from '@hooks/useIsMobile';
-import { useTodoUiStore } from '../../stores/todoUiStore';
+import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { TodoNodeContent } from '../TodoNodeContent';
 import { ViewingIndicator } from '@features/workspaces/components/ViewingIndicator/ViewingIndicator';
-import type { Todo } from '../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 import type { PresenceUser } from '@lib/realtime';
 
 interface TodoNodeProps {

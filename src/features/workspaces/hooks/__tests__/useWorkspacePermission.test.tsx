@@ -13,7 +13,7 @@ import type { ReactNode } from 'react';
 import { useWorkspacePermission } from '../useWorkspacePermission';
 import { useAuthStore } from '@features/auth/stores/authStore';
 import { queryKeys } from '@lib/api/queryKeys';
-import type { WorkspaceMember } from '../../types/workspace';
+import type { WorkspaceMember } from '@features/workspaces/types/workspace';
 import type { User } from '@lib/auth/types';
 
 // Mock the useWorkspaceMembers hook by providing data via QueryClient

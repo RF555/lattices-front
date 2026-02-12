@@ -5,9 +5,12 @@ import { Modal } from '@components/ui/Modal';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Textarea } from '@components/ui/Textarea';
-import { useCreateWorkspace } from '../../hooks/useWorkspaces';
-import { useWorkspaceUiStore } from '../../stores/workspaceUiStore';
-import { createWorkspaceSchema, type WorkspaceFormData } from '../../schemas/workspaceSchemas';
+import { useCreateWorkspace } from '@features/workspaces/hooks/useWorkspaces';
+import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
+import {
+  createWorkspaceSchema,
+  type WorkspaceFormData,
+} from '@features/workspaces/schemas/workspaceSchemas';
 
 interface CreateWorkspaceDialogProps {
   isOpen: boolean;

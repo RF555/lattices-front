@@ -9,10 +9,17 @@ import { Input } from '@components/ui/Input';
 import { Textarea } from '@components/ui/Textarea';
 import { Spinner } from '@components/ui/Spinner';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
-import { useWorkspace, useUpdateWorkspace, useDeleteWorkspace } from '../../hooks/useWorkspaces';
-import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
+import {
+  useWorkspace,
+  useUpdateWorkspace,
+  useDeleteWorkspace,
+} from '@features/workspaces/hooks/useWorkspaces';
+import { useWorkspacePermission } from '@features/workspaces/hooks/useWorkspacePermission';
 import { TagList } from '@features/tags/components/TagList';
-import { createWorkspaceSchema, type WorkspaceFormData } from '../../schemas/workspaceSchemas';
+import {
+  createWorkspaceSchema,
+  type WorkspaceFormData,
+} from '@features/workspaces/schemas/workspaceSchemas';
 
 export function WorkspaceSettings() {
   const { id } = useParams<{ id: string }>();

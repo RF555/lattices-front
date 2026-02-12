@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useAuthStore } from '@features/auth/stores/authStore';
 import { useWorkspaceMembers } from './useWorkspaceMembers';
-import type { WorkspaceRole } from '../types/workspace';
+import type { WorkspaceRole } from '@features/workspaces/types/workspace';
 
 interface WorkspacePermissions {
   role: WorkspaceRole | null;

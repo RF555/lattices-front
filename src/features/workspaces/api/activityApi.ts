@@ -1,6 +1,6 @@
 import { apiClient } from '@lib/api/client';
 import type { ListResponse } from '@lib/api/types';
-import type { ActivityEntry } from '../types/activity';
+import type { ActivityEntry } from '@features/workspaces/types/activity';
 
 /** Raw activity entry shape returned by the API (snake_case). */
 interface ApiActivityEntry {

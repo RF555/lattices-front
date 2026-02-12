@@ -2,9 +2,9 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import { ChevronDown, CornerLeftUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
-import { useFlatTodos } from '../../hooks/useTodos';
-import { buildTodoTree, getDescendantIdsFlat } from '../../utils/treeUtils';
-import type { Todo } from '../../types/todo';
+import { useFlatTodos } from '@features/todos/hooks/useTodos';
+import { buildTodoTree, getDescendantIdsFlat } from '@features/todos/utils/treeUtils';
+import type { Todo } from '@features/todos/types/todo';
 
 interface ParentPickerProps {
   todoId: string;

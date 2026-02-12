@@ -2,10 +2,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { NotificationBell } from '../NotificationBell/NotificationBell';
-import { useNotificationUiStore } from '../../stores/notificationUiStore';
+import { useNotificationUiStore } from '@features/notifications/stores/notificationUiStore';
 
 // Mock the hooks
-vi.mock('../../hooks/useNotifications', () => ({
+vi.mock('@features/notifications/hooks/useNotifications', () => ({
   useUnreadCount: vi.fn(() => ({ data: 0 })),
   useNotifications: vi.fn(() => ({
     data: { notifications: [], unreadCount: 0, nextCursor: null },
@@ -16,7 +16,7 @@ vi.mock('../../hooks/useNotifications', () => ({
   useDeleteNotification: vi.fn(() => ({ mutate: vi.fn() })),
 }));
 
-import { useUnreadCount } from '../../hooks/useNotifications';
+import { useUnreadCount } from '@features/notifications/hooks/useNotifications';
 const mockUseUnreadCount = vi.mocked(useUnreadCount);
 
 describe('NotificationBell', () => {

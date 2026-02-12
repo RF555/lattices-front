@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCreateTodo } from '../../hooks/useTodos';
-import { useSelectedTodoId } from '../../stores/todoUiStore';
+import { useCreateTodo } from '@features/todos/hooks/useTodos';
+import { useSelectedTodoId } from '@features/todos/stores/todoUiStore';
 import { useAddTagToTodo } from '@features/tags/hooks/useTags';
 import { TagPicker } from '@features/tags/components/TagPicker';
 import { ParentPicker } from '../ParentPicker';

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import { VirtualizedTodoList } from '../VirtualizedTodoList';
 import * as useIsMobileModule from '@hooks/useIsMobile';
-import type { Todo } from '../../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 // Mock useIsMobile
 vi.mock('@hooks/useIsMobile', () => ({

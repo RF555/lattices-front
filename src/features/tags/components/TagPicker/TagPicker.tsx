@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
-import { useTags, useCreateTag } from '../../hooks/useTags';
+import { useTags, useCreateTag } from '@features/tags/hooks/useTags';
 import { TagBadge } from '../TagBadge';
-import { TAG_COLORS } from '../../types/tag';
+import { TAG_COLORS } from '@features/tags/types/tag';
 
 interface TagPickerProps {
   selectedIds: string[];

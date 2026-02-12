@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useTodoUiStore } from '../../stores/todoUiStore';
-import { useTodos } from '../../hooks/useTodos';
+import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
+import { useTodos } from '@features/todos/hooks/useTodos';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
-import { getAncestorPath } from '../../utils/treeUtils';
+import { getAncestorPath } from '@features/todos/utils/treeUtils';
 
 interface TodoBreadcrumbProps {
   todoId: string;

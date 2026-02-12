@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useIsMobile } from '@hooks/useIsMobile';
 import { VirtualizedTodoRow } from './VirtualizedTodoRow';
-import type { Todo } from '../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 interface VirtualizedTodoListProps {
   items: Todo[];

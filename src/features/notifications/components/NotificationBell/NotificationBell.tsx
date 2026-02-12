@@ -1,9 +1,9 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { Bell } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
-import { useUnreadCount } from '../../hooks/useNotifications';
-import { useNotificationUiStore } from '../../stores/notificationUiStore';
-import { MAX_BADGE_COUNT } from '../../constants';
+import { useUnreadCount } from '@features/notifications/hooks/useNotifications';
+import { useNotificationUiStore } from '@features/notifications/stores/notificationUiStore';
+import { MAX_BADGE_COUNT } from '@features/notifications/constants';
 import { NotificationPanel } from '../NotificationPanel/NotificationPanel';
 
 export function NotificationBell() {

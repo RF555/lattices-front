@@ -1,5 +1,5 @@
 import { cn } from '@lib/utils/cn';
-import type { WorkspaceMember } from '../../types/workspace';
+import type { WorkspaceMember } from '@features/workspaces/types/workspace';
 
 interface MemberAvatarsProps {
   members: WorkspaceMember[];

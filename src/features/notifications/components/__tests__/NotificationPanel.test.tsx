@@ -3,13 +3,13 @@ import { render, screen } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { NotificationPanel } from '../NotificationPanel/NotificationPanel';
 import { createMockNotification } from '@/test/factories';
-import { useNotificationUiStore } from '../../stores/notificationUiStore';
+import { useNotificationUiStore } from '@features/notifications/stores/notificationUiStore';
 
 const mockMarkAsReadMutate = vi.fn();
 const mockMarkAllAsReadMutate = vi.fn();
 const mockDeleteNotificationMutate = vi.fn();
 
-vi.mock('../../hooks/useNotifications', () => ({
+vi.mock('@features/notifications/hooks/useNotifications', () => ({
   useNotifications: vi.fn(() => ({
     data: {
       notifications: [],
@@ -32,7 +32,7 @@ vi.mock('@features/todos/stores/todoUiStore', () => ({
   },
 }));
 
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '@features/notifications/hooks/useNotifications';
 const mockUseNotifications = vi.mocked(useNotifications);
 
 describe('NotificationPanel', () => {

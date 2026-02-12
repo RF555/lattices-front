@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUpdateTag } from '../../hooks/useTags';
+import { useUpdateTag } from '@features/tags/hooks/useTags';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
-import { TAG_COLORS } from '../../types/tag';
+import { TAG_COLORS } from '@features/tags/types/tag';
 import { cn } from '@lib/utils/cn';
-import type { Tag } from '../../types/tag';
+import type { Tag } from '@features/tags/types/tag';
 
 interface TagEditModalProps {
   tag: Tag;

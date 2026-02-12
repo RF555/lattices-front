@@ -3,9 +3,12 @@ import { Clock, X } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 import { Button } from '@components/ui/Button';
 import { Spinner } from '@components/ui/Spinner';
-import { useWorkspaceInvitations, useRevokeInvitation } from '../../hooks/useInvitations';
-import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
-import type { WorkspaceRole } from '../../types/workspace';
+import {
+  useWorkspaceInvitations,
+  useRevokeInvitation,
+} from '@features/workspaces/hooks/useInvitations';
+import { useWorkspacePermission } from '@features/workspaces/hooks/useWorkspacePermission';
+import type { WorkspaceRole } from '@features/workspaces/types/workspace';
 
 const ROLE_COLORS: Record<WorkspaceRole, string> = {
   owner: 'bg-purple-100 text-purple-700',

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, act } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { AcceptInvitation } from '../AcceptInvitation/AcceptInvitation';
-import type { AcceptInvitationResult } from '../../types/workspace';
+import type { AcceptInvitationResult } from '@features/workspaces/types/workspace';
 
 const mockNavigate = vi.fn();
 const mockMutate = vi.fn();
@@ -24,14 +24,14 @@ vi.mock('@features/auth/stores/authStore', () => ({
   useIsAuthenticated: vi.fn(() => mockIsAuthenticated),
 }));
 
-vi.mock('../../hooks/useInvitations', () => ({
+vi.mock('@features/workspaces/hooks/useInvitations', () => ({
   useAcceptInvitation: vi.fn(() => ({
     mutate: mockMutate,
     isPending: false,
   })),
 }));
 
-vi.mock('../../stores/workspaceUiStore', () => ({
+vi.mock('@features/workspaces/stores/workspaceUiStore', () => ({
   useWorkspaceUiStore: vi.fn(
     (selector: (state: { setActiveWorkspace: typeof mockSetActiveWorkspace }) => unknown) =>
       selector({ setActiveWorkspace: mockSetActiveWorkspace }),

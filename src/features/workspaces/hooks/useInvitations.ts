@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
 import { toast } from '@stores/toastStore';
-import { invitationApi } from '../api/invitationApi';
-import type { WorkspaceRole, Invitation } from '../types/workspace';
+import { invitationApi } from '@features/workspaces/api/invitationApi';
+import type { WorkspaceRole, Invitation } from '@features/workspaces/types/workspace';
 
 export function useWorkspaceInvitations(workspaceId: string) {
   return useQuery({

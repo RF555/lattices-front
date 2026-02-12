@@ -10,10 +10,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { TodoDetailPanel } from '../TodoDetailPanel';
-import type { Todo } from '../../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 // Mock dependencies
-vi.mock('../../../hooks/useTodos', () => ({
+vi.mock('@features/todos/hooks/useTodos', () => ({
   useUpdateTodo: vi.fn(),
 }));
 
@@ -26,7 +26,7 @@ vi.mock('@features/workspaces/stores/workspaceUiStore', () => ({
   useActiveWorkspaceId: vi.fn(),
 }));
 
-vi.mock('../../../stores/todoUiStore', () => ({
+vi.mock('@features/todos/stores/todoUiStore', () => ({
   useTodoUiStore: vi.fn(),
 }));
 
@@ -110,10 +110,10 @@ vi.mock('@lib/utils/formatDate', () => ({
   formatDateFull: (date: string) => `full-${date}`,
 }));
 
-import { useUpdateTodo } from '../../../hooks/useTodos';
+import { useUpdateTodo } from '@features/todos/hooks/useTodos';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
-import { useTodoUiStore } from '../../../stores/todoUiStore';
+import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 
 const mockUseUpdateTodo = vi.mocked(useUpdateTodo);
 const mockUseAddTagToTodo = vi.mocked(useAddTagToTodo);

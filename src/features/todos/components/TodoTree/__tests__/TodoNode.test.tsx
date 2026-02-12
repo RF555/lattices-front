@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import { TodoNode } from '../TodoNode';
 import * as useIsMobileModule from '@hooks/useIsMobile';
-import * as todoUiStoreModule from '../../../stores/todoUiStore';
-import type { Todo } from '../../../types/todo';
+import * as todoUiStoreModule from '@features/todos/stores/todoUiStore';
+import type { Todo } from '@features/todos/types/todo';
 
 // Mock useIsMobile
 vi.mock('@hooks/useIsMobile', () => ({
@@ -11,7 +11,7 @@ vi.mock('@hooks/useIsMobile', () => ({
 }));
 
 // Mock todoUiStore
-vi.mock('../../../stores/todoUiStore', () => ({
+vi.mock('@features/todos/stores/todoUiStore', () => ({
   useTodoUiStore: vi.fn(),
 }));
 

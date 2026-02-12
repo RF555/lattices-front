@@ -2,17 +2,17 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { InviteMemberDialog } from '../InviteMemberDialog/InviteMemberDialog';
-import type { InvitationCreatedResult } from '../../types/workspace';
+import type { InvitationCreatedResult } from '@features/workspaces/types/workspace';
 
 const mockMutateAsync = vi.fn();
-vi.mock('../../hooks/useInvitations', () => ({
+vi.mock('@features/workspaces/hooks/useInvitations', () => ({
   useCreateInvitation: vi.fn(() => ({
     mutateAsync: mockMutateAsync,
     isPending: false,
   })),
 }));
 
-import { useCreateInvitation } from '../../hooks/useInvitations';
+import { useCreateInvitation } from '@features/workspaces/hooks/useInvitations';
 const mockUseCreateInvitation = vi.mocked(useCreateInvitation);
 
 describe('InviteMemberDialog', () => {

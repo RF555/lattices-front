@@ -3,8 +3,8 @@ import { AlignLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 import { useIsMobile } from '@hooks/useIsMobile';
-import { useTodoUiStore } from '../../stores/todoUiStore';
-import { useToggleTodo, useDeleteTodo, useUpdateTodo } from '../../hooks/useTodos';
+import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
+import { useToggleTodo, useDeleteTodo, useUpdateTodo } from '@features/todos/hooks/useTodos';
 import { useIsAllWorkspaces } from '@features/workspaces/stores/workspaceUiStore';
 import { useWorkspaces } from '@features/workspaces/hooks/useWorkspaces';
 import { TodoCheckbox } from '../TodoTree/TodoCheckbox';
@@ -16,7 +16,7 @@ import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import { TodoDetailPanel } from '../TodoDetailPanel';
 import { TodoDetailSheet } from '../TodoDetailSheet';
 import { SwipeableTodoRow } from '../SwipeableTodoRow';
-import type { Todo } from '../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 interface TodoNodeContentProps {
   todo: Todo;

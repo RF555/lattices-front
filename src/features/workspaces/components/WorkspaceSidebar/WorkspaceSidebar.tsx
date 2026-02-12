@@ -2,8 +2,8 @@ import { NavLink, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { CheckSquare, Tag, Users, Activity, Settings, UsersRound, X } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
-import { useWorkspaceUiStore } from '../../stores/workspaceUiStore';
-import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
+import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
+import { useWorkspacePermission } from '@features/workspaces/hooks/useWorkspacePermission';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(

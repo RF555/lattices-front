@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useTags } from '@features/tags/hooks/useTags';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
-import { useTodoUiStore } from '../../stores/todoUiStore';
+import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { TagBadge } from '@features/tags/components/TagBadge';
 import { cn } from '@lib/utils/cn';
 

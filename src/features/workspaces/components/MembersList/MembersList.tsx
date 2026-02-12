@@ -10,11 +10,11 @@ import {
   useWorkspaceMembers,
   useUpdateMemberRole,
   useRemoveMember,
-} from '../../hooks/useWorkspaceMembers';
-import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
+} from '@features/workspaces/hooks/useWorkspaceMembers';
+import { useWorkspacePermission } from '@features/workspaces/hooks/useWorkspacePermission';
 import { InviteMemberDialog } from '../InviteMemberDialog/InviteMemberDialog';
 import { RoleSelector } from '../RoleSelector/RoleSelector';
-import type { WorkspaceMember, WorkspaceRole } from '../../types/workspace';
+import type { WorkspaceMember, WorkspaceRole } from '@features/workspaces/types/workspace';
 
 const ROLE_COLORS: Record<WorkspaceRole, string> = {
   owner: 'bg-purple-100 text-purple-700',
