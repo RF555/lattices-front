@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check, Copy, Link } from 'lucide-react';
+import { FEEDBACK } from '@/constants';
 import { Modal } from '@components/ui/Modal';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
-import { useCreateInvitation } from '../../hooks/useInvitations';
-import type { WorkspaceRole } from '../../types/workspace';
+import { useCreateInvitation } from '@features/workspaces/hooks/useInvitations';
+import type { WorkspaceRole } from '@features/workspaces/types/workspace';
 
 const ROLE_OPTIONS: WorkspaceRole[] = ['viewer', 'member', 'admin'];
 
@@ -52,7 +53,7 @@ export function InviteMemberDialog({ isOpen, onClose, workspaceId }: InviteMembe
       setCopied(true);
       setTimeout(() => {
         setCopied(false);
-      }, 2000);
+      }, FEEDBACK.COPY_RESET_MS);
     } catch {
       // Fallback: select the text in the input
     }
