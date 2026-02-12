@@ -195,7 +195,7 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
                   setLocalTagIds((prev) => prev.filter((id) => id !== tagId));
                   setIsDirty(true);
                 }}
-                workspaceId={activeWorkspaceId ?? undefined}
+                workspaceId={todo.workspaceId}
               />
             </div>
 

@@ -47,13 +47,14 @@ vi.mock('@features/tags/components/TagPicker', () => ({
     selectedIds,
     onSelect,
     onDeselect,
+    workspaceId,
   }: {
     selectedIds: string[];
     workspaceId?: string;
     onSelect: (id: string) => void;
     onDeselect: (id: string) => void;
   }) => (
-    <div data-testid="tag-picker">
+    <div data-testid="tag-picker" data-workspace-id={workspaceId ?? ''}>
       <div data-testid="selected-tags">{selectedIds.join(',')}</div>
       <button
         onClick={() => {
@@ -832,6 +833,37 @@ describe('TodoDetailPanel', () => {
       // Verify state reset
       expect(screen.getByTestId('selected-tags')).toHaveTextContent('tag-1,tag-2');
       expect(screen.getByTestId('current-parent')).toHaveTextContent('parent-1');
+    });
+  });
+
+  describe('TagPicker workspace scoping', () => {
+    beforeEach(() => {
+      mockUseTodoUiStore.mockImplementation((selector: any) => {
+        const state = {
+          isDetailEditing: true,
+          setDetailEditing: mockSetDetailEditing,
+        };
+        return selector(state);
+      });
+    });
+
+    it('should pass todo.workspaceId to TagPicker, not active workspace', () => {
+      // Simulate "All Workspaces" mode where activeWorkspaceId is null
+      mockUseActiveWorkspaceId.mockReturnValue(null);
+
+      render(<TodoDetailPanel todo={mockTodo} indentPx={20} />);
+
+      const tagPicker = screen.getByTestId('tag-picker');
+      expect(tagPicker).toHaveAttribute('data-workspace-id', 'ws-1');
+    });
+
+    it('should pass todo.workspaceId even when active workspace differs', () => {
+      mockUseActiveWorkspaceId.mockReturnValue('ws-other');
+
+      render(<TodoDetailPanel todo={mockTodo} indentPx={20} />);
+
+      const tagPicker = screen.getByTestId('tag-picker');
+      expect(tagPicker).toHaveAttribute('data-workspace-id', 'ws-1');
     });
   });
 
