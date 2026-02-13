@@ -43,6 +43,10 @@ export interface UpdateTodoInput {
   position?: number;
 }
 
+export interface MoveTodoInput {
+  targetWorkspaceId: string | null; // null = move to personal
+}
+
 export interface TodoFilters {
   includeCompleted?: boolean;
   tagId?: string;

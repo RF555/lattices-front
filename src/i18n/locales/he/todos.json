@@ -71,7 +71,13 @@
     "tags": "תגיות",
     "created": "נוצר {{date}}",
     "updated": "עודכן {{date}}",
-    "completed": "הושלם {{date}}"
+    "completed": "הושלם {{date}}",
+    "workspace": "סביבת עבודה",
+    "workspacePersonal": "אישי (ללא סביבת עבודה)",
+    "workspaceSearchPlaceholder": "חיפוש סביבות עבודה...",
+    "workspaceMoveTitle": "העברת משימה",
+    "workspaceMoveConfirm": "העברת משימה זו תעביר גם את כל תתי-המשימות ותסיר תגיות. להמשיך?",
+    "workspaceMoveButton": "העברה"
   },
   "shortcuts": {
     "title": "קיצורי מקלדת",

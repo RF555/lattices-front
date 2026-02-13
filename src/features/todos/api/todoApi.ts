@@ -1,6 +1,12 @@
 import { apiClient } from '@lib/api/client';
 import type { ListResponse, SingleResponse } from '@lib/api/types';
-import type { Todo, CreateTodoInput, UpdateTodoInput, TodoFilters } from '../types/todo';
+import type {
+  Todo,
+  CreateTodoInput,
+  UpdateTodoInput,
+  MoveTodoInput,
+  TodoFilters,
+} from '../types/todo';
 
 /** Raw todo shape returned by the API (snake_case). */
 interface ApiTodo {
@@ -81,6 +87,12 @@ export const todoApi = {
     if (input.position !== undefined) body.position = input.position;
 
     const response = await apiClient.patch<SingleResponse<ApiTodo>>(`/todos/${id}`, body);
+    return mapTodo(response.data);
+  },
+
+  async move(id: string, input: MoveTodoInput): Promise<Todo> {
+    const body = { target_workspace_id: input.targetWorkspaceId };
+    const response = await apiClient.post<SingleResponse<ApiTodo>>(`/todos/${id}/move`, body);
     return mapTodo(response.data);
   },
 
