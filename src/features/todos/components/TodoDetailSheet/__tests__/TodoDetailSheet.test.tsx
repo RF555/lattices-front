@@ -16,6 +16,7 @@ import type { Todo } from '@features/todos/types/todo';
 vi.mock('@features/todos/hooks/useTodos', () => ({
   useUpdateTodo: vi.fn(),
   useToggleTodo: vi.fn(),
+  useMoveTodo: vi.fn(),
 }));
 
 vi.mock('@features/tags/hooks/useTags', () => ({
@@ -126,6 +127,55 @@ vi.mock('../../ParentPicker', () => ({
   ),
 }));
 
+// Mock WorkspacePicker component
+vi.mock('../../WorkspacePicker/WorkspacePicker', () => ({
+  WorkspacePicker: ({
+    currentWorkspaceId,
+    onWorkspaceChange,
+  }: {
+    currentWorkspaceId: string | null;
+    onWorkspaceChange: (workspaceId: string | null) => void;
+  }) => (
+    <div data-testid="workspace-picker">
+      <div data-testid="current-workspace">{currentWorkspaceId ?? 'none'}</div>
+      <button
+        onClick={() => {
+          onWorkspaceChange('ws-2');
+        }}
+      >
+        Change Workspace
+      </button>
+    </div>
+  ),
+}));
+
+// Mock ConfirmationDialog component
+vi.mock('@components/feedback/ConfirmationDialog', () => ({
+  ConfirmationDialog: ({
+    isOpen,
+    onConfirm,
+    onCancel,
+  }: {
+    isOpen: boolean;
+    title: string;
+    message: string;
+    confirmLabel: string;
+    variant: string;
+    onConfirm: () => void;
+    onCancel: () => void;
+  }) =>
+    isOpen ? (
+      <div data-testid="confirmation-dialog">
+        <button onClick={onConfirm} data-testid="confirm-move">
+          Confirm
+        </button>
+        <button onClick={onCancel} data-testid="cancel-move">
+          Cancel Move
+        </button>
+      </div>
+    ) : null,
+}));
+
 // Mock TodoBreadcrumb component
 vi.mock('../../TodoBreadcrumb', () => ({
   TodoBreadcrumb: ({ todoId }: { todoId: string }) => (
@@ -159,12 +209,13 @@ vi.mock('@lib/utils/formatDate', () => ({
   formatDateFull: (date: string) => `full-${date}`,
 }));
 
-import { useUpdateTodo, useToggleTodo } from '@features/todos/hooks/useTodos';
+import { useUpdateTodo, useToggleTodo, useMoveTodo } from '@features/todos/hooks/useTodos';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 
 const mockUseUpdateTodo = vi.mocked(useUpdateTodo);
 const mockUseToggleTodo = vi.mocked(useToggleTodo);
+const mockUseMoveTodo = vi.mocked(useMoveTodo);
 const mockUseAddTagToTodo = vi.mocked(useAddTagToTodo);
 const mockUseRemoveTagFromTodo = vi.mocked(useRemoveTagFromTodo);
 const mockUseActiveWorkspaceId = vi.mocked(useActiveWorkspaceId);
@@ -172,6 +223,7 @@ const mockUseActiveWorkspaceId = vi.mocked(useActiveWorkspaceId);
 describe('TodoDetailSheet', () => {
   const mockUpdateMutate = vi.fn();
   const mockToggleMutate = vi.fn();
+  const mockMoveMutate = vi.fn();
   const mockAddTagMutate = vi.fn();
   const mockRemoveTagMutate = vi.fn();
   const mockOnOpenChange = vi.fn();
@@ -205,6 +257,7 @@ describe('TodoDetailSheet', () => {
     // Reset all mocks
     mockUpdateMutate.mockClear();
     mockToggleMutate.mockClear();
+    mockMoveMutate.mockClear();
     mockAddTagMutate.mockClear();
     mockRemoveTagMutate.mockClear();
     mockOnOpenChange.mockClear();
@@ -217,6 +270,11 @@ describe('TodoDetailSheet', () => {
 
     mockUseToggleTodo.mockReturnValue({
       mutate: mockToggleMutate,
+      isPending: false,
+    } as any);
+
+    mockUseMoveTodo.mockReturnValue({
+      mutate: mockMoveMutate,
       isPending: false,
     } as any);
 
@@ -988,6 +1046,280 @@ describe('TodoDetailSheet', () => {
       expect(screen.getByTestId('tag-badge-Tag 3')).toBeInTheDocument();
       expect(screen.queryByTestId('tag-badge-Tag 1')).not.toBeInTheDocument();
       expect(screen.queryByTestId('tag-badge-Tag 2')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Workspace Picker Visibility', () => {
+    it('should display WorkspacePicker in edit mode', async () => {
+      const user = userEvent.setup();
+      render(<TodoDetailSheet todo={mockTodo} open={true} onOpenChange={mockOnOpenChange} />);
+
+      await enterEditMode(user);
+
+      expect(screen.getByTestId('workspace-picker')).toBeInTheDocument();
+    });
+
+    it('should NOT display WorkspacePicker in view mode', () => {
+      render(<TodoDetailSheet todo={mockTodo} open={true} onOpenChange={mockOnOpenChange} />);
+
+      expect(screen.queryByTestId('workspace-picker')).not.toBeInTheDocument();
+    });
+
+    it('should show current workspace id in picker', async () => {
+      const user = userEvent.setup();
+      render(<TodoDetailSheet todo={mockTodo} open={true} onOpenChange={mockOnOpenChange} />);
+
+      await enterEditMode(user);
+
+      expect(screen.getByTestId('current-workspace')).toHaveTextContent('ws-1');
+    });
+
+    it('should set dirty flag when workspace is changed', async () => {
+      const user = userEvent.setup();
+      render(<TodoDetailSheet todo={mockTodo} open={true} onOpenChange={mockOnOpenChange} />);
+
+      await enterEditMode(user);
+
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      expect(saveButton).toBeDisabled();
+
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      expect(saveButton).toBeEnabled();
+    });
+  });
+
+  describe('Workspace Move Save Path', () => {
+    it('should call moveMutation when workspace is changed and Save is clicked', async () => {
+      const user = userEvent.setup();
+      const todoWithoutChildren = { ...mockTodo, childCount: 0, tags: [] };
+      render(
+        <TodoDetailSheet todo={todoWithoutChildren} open={true} onOpenChange={mockOnOpenChange} />,
+      );
+
+      await enterEditMode(user);
+
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      await user.click(saveButton);
+
+      expect(mockMoveMutate).toHaveBeenCalledWith({
+        id: 'todo-1',
+        input: { targetWorkspaceId: 'ws-2' },
+      });
+    });
+
+    it('should NOT call updateMutate when workspace changed', async () => {
+      const user = userEvent.setup();
+      const todoWithoutChildren = { ...mockTodo, childCount: 0, tags: [] };
+      render(
+        <TodoDetailSheet todo={todoWithoutChildren} open={true} onOpenChange={mockOnOpenChange} />,
+      );
+
+      await enterEditMode(user);
+
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      await user.click(saveButton);
+
+      expect(mockUpdateMutate).not.toHaveBeenCalled();
+    });
+
+    it('should NOT call tag mutations when workspace changed', async () => {
+      const user = userEvent.setup();
+      const todoWithoutChildren = { ...mockTodo, childCount: 0, tags: [] };
+      render(
+        <TodoDetailSheet todo={todoWithoutChildren} open={true} onOpenChange={mockOnOpenChange} />,
+      );
+
+      await enterEditMode(user);
+
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      await user.click(saveButton);
+
+      expect(mockAddTagMutate).not.toHaveBeenCalled();
+      expect(mockRemoveTagMutate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Workspace Move Confirmation Dialog', () => {
+    it('should NOT show confirmation dialog when workspace changes and todo has NO children and NO tags', async () => {
+      const user = userEvent.setup();
+      const todoWithoutChildren = { ...mockTodo, childCount: 0, tags: [] };
+      render(
+        <TodoDetailSheet todo={todoWithoutChildren} open={true} onOpenChange={mockOnOpenChange} />,
+      );
+
+      await enterEditMode(user);
+
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      await user.click(saveButton);
+
+      expect(screen.queryByTestId('confirmation-dialog')).not.toBeInTheDocument();
+      expect(mockMoveMutate).toHaveBeenCalled();
+    });
+
+    it('should show confirmation dialog when workspace changes and todo HAS children', async () => {
+      const user = userEvent.setup();
+      const todoWithChildren = { ...mockTodo, childCount: 2, tags: [] };
+      render(
+        <TodoDetailSheet todo={todoWithChildren} open={true} onOpenChange={mockOnOpenChange} />,
+      );
+
+      await enterEditMode(user);
+
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      await user.click(saveButton);
+
+      expect(screen.getByTestId('confirmation-dialog')).toBeInTheDocument();
+      expect(mockMoveMutate).not.toHaveBeenCalled();
+    });
+
+    it('should show confirmation dialog when workspace changes and todo HAS tags', async () => {
+      const user = userEvent.setup();
+      const todoWithTags = {
+        ...mockTodo,
+        childCount: 0,
+        tags: [{ id: 'tag-1', name: 'Tag 1', colorHex: '#ff0000' }],
+      };
+      render(<TodoDetailSheet todo={todoWithTags} open={true} onOpenChange={mockOnOpenChange} />);
+
+      await enterEditMode(user);
+
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      await user.click(saveButton);
+
+      expect(screen.getByTestId('confirmation-dialog')).toBeInTheDocument();
+      expect(mockMoveMutate).not.toHaveBeenCalled();
+    });
+
+    it('should execute move when confirmation is confirmed', async () => {
+      const user = userEvent.setup();
+      const todoWithChildren = { ...mockTodo, childCount: 2, tags: [] };
+      render(
+        <TodoDetailSheet todo={todoWithChildren} open={true} onOpenChange={mockOnOpenChange} />,
+      );
+
+      await enterEditMode(user);
+
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      await user.click(saveButton);
+
+      const confirmButton = screen.getByTestId('confirm-move');
+      await user.click(confirmButton);
+
+      expect(mockMoveMutate).toHaveBeenCalledWith({
+        id: 'todo-1',
+        input: { targetWorkspaceId: 'ws-2' },
+      });
+    });
+
+    it('should NOT execute move when confirmation is cancelled', async () => {
+      const user = userEvent.setup();
+      const todoWithChildren = { ...mockTodo, childCount: 2, tags: [] };
+      render(
+        <TodoDetailSheet todo={todoWithChildren} open={true} onOpenChange={mockOnOpenChange} />,
+      );
+
+      await enterEditMode(user);
+
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      await user.click(saveButton);
+
+      const cancelButton = screen.getByTestId('cancel-move');
+      await user.click(cancelButton);
+
+      expect(mockMoveMutate).not.toHaveBeenCalled();
+    });
+
+    it('should close confirmation dialog when cancelled', async () => {
+      const user = userEvent.setup();
+      const todoWithChildren = { ...mockTodo, childCount: 2, tags: [] };
+      render(
+        <TodoDetailSheet todo={todoWithChildren} open={true} onOpenChange={mockOnOpenChange} />,
+      );
+
+      await enterEditMode(user);
+
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      await user.click(saveButton);
+
+      expect(screen.getByTestId('confirmation-dialog')).toBeInTheDocument();
+
+      const cancelButton = screen.getByTestId('cancel-move');
+      await user.click(cancelButton);
+
+      expect(screen.queryByTestId('confirmation-dialog')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Cancel Resets Workspace', () => {
+    it('should reset workspace to original when cancel is clicked', async () => {
+      const user = userEvent.setup();
+      render(<TodoDetailSheet todo={mockTodo} open={true} onOpenChange={mockOnOpenChange} />);
+
+      await enterEditMode(user);
+
+      // Verify initial workspace
+      expect(screen.getByTestId('current-workspace')).toHaveTextContent('ws-1');
+
+      // Change workspace
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      expect(screen.getByTestId('current-workspace')).toHaveTextContent('ws-2');
+
+      // Cancel
+      const cancelButton = screen.getByRole('button', { name: 'actions.cancel' });
+      await user.click(cancelButton);
+
+      // Re-enter edit mode to verify workspace was reset
+      await enterEditMode(user);
+
+      expect(screen.getByTestId('current-workspace')).toHaveTextContent('ws-1');
+    });
+
+    it('should not call moveMutation when cancel is clicked after workspace change', async () => {
+      const user = userEvent.setup();
+      render(<TodoDetailSheet todo={mockTodo} open={true} onOpenChange={mockOnOpenChange} />);
+
+      await enterEditMode(user);
+
+      // Change workspace
+      const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
+      await user.click(changeWorkspaceButton);
+
+      // Cancel
+      const cancelButton = screen.getByRole('button', { name: 'actions.cancel' });
+      await user.click(cancelButton);
+
+      expect(mockMoveMutate).not.toHaveBeenCalled();
     });
   });
 });

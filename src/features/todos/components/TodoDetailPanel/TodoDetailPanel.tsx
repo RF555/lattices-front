@@ -3,12 +3,14 @@ import { Pencil, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
+import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import { useIsMobile } from '@hooks/useIsMobile';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
-import { useUpdateTodo } from '@features/todos/hooks/useTodos';
+import { useUpdateTodo, useMoveTodo } from '@features/todos/hooks/useTodos';
 import { TagPicker } from '@features/tags/components/TagPicker';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { ParentPicker } from '../ParentPicker';
+import { WorkspacePicker } from '../WorkspacePicker/WorkspacePicker';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { formatDate, formatDateFull } from '@lib/utils/formatDate';
@@ -25,7 +27,9 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   const [description, setDescription] = useState(todo.description ?? '');
   const [localTagIds, setLocalTagIds] = useState<string[]>(todo.tags.map((t) => t.id));
   const [localParentId, setLocalParentId] = useState<string | null>(todo.parentId);
+  const [localWorkspaceId, setLocalWorkspaceId] = useState<string | null>(todo.workspaceId ?? null);
   const [isDirty, setIsDirty] = useState(false);
+  const [showMoveConfirm, setShowMoveConfirm] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const isDetailEditing = useTodoUiStore((s) => s.isDetailEditing);
@@ -34,8 +38,11 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   const activeWorkspaceId = useActiveWorkspaceId();
   const updateMutation = useUpdateTodo();
   const updateMutate = updateMutation.mutate;
+  const moveMutation = useMoveTodo();
   const addTagMutation = useAddTagToTodo();
   const removeTagMutation = useRemoveTagFromTodo();
+
+  const workspaceChanged = localWorkspaceId !== (todo.workspaceId ?? null);
 
   // Sync from server when not in edit mode
   useEffect(() => {
@@ -43,15 +50,17 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
       setDescription(todo.description ?? '');
       setLocalTagIds(todo.tags.map((t) => t.id));
       setLocalParentId(todo.parentId);
+      setLocalWorkspaceId(todo.workspaceId ?? null);
     }
-  }, [todo.description, todo.tags, todo.parentId, isDetailEditing]);
+  }, [todo.description, todo.tags, todo.parentId, todo.workspaceId, isDetailEditing]);
 
   // Reset state when switching todos
   useEffect(() => {
     setIsDirty(false);
     setLocalTagIds(todo.tags.map((t) => t.id));
     setLocalParentId(todo.parentId);
-  }, [todo.id, todo.tags, todo.parentId]);
+    setLocalWorkspaceId(todo.workspaceId ?? null);
+  }, [todo.id, todo.tags, todo.parentId, todo.workspaceId]);
 
   // Focus textarea when entering edit mode
   useEffect(() => {
@@ -60,52 +69,78 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
     }
   }, [isDetailEditing]);
 
-  const handleSave = useCallback(() => {
-    // Build update input: description + parentId (only if changed)
-    const trimmed = description.trim();
-    const descValue = trimmed || null;
-    const input: { description: string | null; parentId?: string | null } = {
-      description: descValue,
-    };
-    if (localParentId !== todo.parentId) {
-      input.parentId = localParentId;
-    }
-    updateMutate({ id: todo.id, input });
-
-    // Compute tag diffs and fire mutations
-    const serverTagIds = new Set(todo.tags.map((t) => t.id));
-    const localSet = new Set(localTagIds);
-    for (const tagId of localTagIds) {
-      if (!serverTagIds.has(tagId)) {
-        addTagMutation.mutate({ todoId: todo.id, tagId });
+  const executeSave = useCallback(() => {
+    if (workspaceChanged) {
+      // Move to different workspace — tags are stripped by backend, parent is detached
+      moveMutation.mutate({
+        id: todo.id,
+        input: { targetWorkspaceId: localWorkspaceId },
+      });
+    } else {
+      // Regular update: description + parentId (only if changed)
+      const trimmed = description.trim();
+      const descValue = trimmed || null;
+      const input: { description: string | null; parentId?: string | null } = {
+        description: descValue,
+      };
+      if (localParentId !== todo.parentId) {
+        input.parentId = localParentId;
       }
-    }
-    for (const tagId of serverTagIds) {
-      if (!localSet.has(tagId)) {
-        removeTagMutation.mutate({ todoId: todo.id, tagId });
+      updateMutate({ id: todo.id, input });
+
+      // Compute tag diffs and fire mutations
+      const serverTagIds = new Set(todo.tags.map((t) => t.id));
+      const localSet = new Set(localTagIds);
+      for (const tagId of localTagIds) {
+        if (!serverTagIds.has(tagId)) {
+          addTagMutation.mutate({ todoId: todo.id, tagId });
+        }
+      }
+      for (const tagId of serverTagIds) {
+        if (!localSet.has(tagId)) {
+          removeTagMutation.mutate({ todoId: todo.id, tagId });
+        }
       }
     }
 
     setIsDirty(false);
     setDetailEditing(false);
   }, [
+    workspaceChanged,
+    moveMutation,
     updateMutate,
     todo,
     description,
     localParentId,
+    localWorkspaceId,
     localTagIds,
     addTagMutation,
     removeTagMutation,
     setDetailEditing,
   ]);
 
+  const handleSave = useCallback(() => {
+    // Show confirmation if workspace is changing and todo has children or tags
+    if (workspaceChanged && (todo.childCount > 0 || todo.tags.length > 0)) {
+      setShowMoveConfirm(true);
+      return;
+    }
+    executeSave();
+  }, [workspaceChanged, todo.childCount, todo.tags.length, executeSave]);
+
+  const handleConfirmMove = useCallback(() => {
+    setShowMoveConfirm(false);
+    executeSave();
+  }, [executeSave]);
+
   const handleCloseEdit = useCallback(() => {
     setDescription(todo.description ?? '');
     setLocalTagIds(todo.tags.map((t) => t.id));
     setLocalParentId(todo.parentId);
+    setLocalWorkspaceId(todo.workspaceId ?? null);
     setIsDirty(false);
     setDetailEditing(false);
-  }, [todo.description, todo.tags, todo.parentId, setDetailEditing]);
+  }, [todo.description, todo.tags, todo.parentId, todo.workspaceId, setDetailEditing]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
@@ -155,6 +190,20 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
               >
                 <X className="w-4 h-4" />
               </button>
+            </div>
+
+            {/* Workspace section */}
+            <div className="space-y-1">
+              <span className="block text-xs font-medium text-gray-500">
+                {t('detail.workspace')}
+              </span>
+              <WorkspacePicker
+                currentWorkspaceId={localWorkspaceId}
+                onWorkspaceChange={(wsId) => {
+                  setLocalWorkspaceId(wsId);
+                  setIsDirty(true);
+                }}
+              />
             </div>
 
             {/* Parent section */}
@@ -251,6 +300,21 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
           )}
         </div>
       </div>
+
+      {/* Move workspace confirmation dialog */}
+      {showMoveConfirm && (
+        <ConfirmationDialog
+          isOpen
+          title={t('detail.workspaceMoveTitle')}
+          message={t('detail.workspaceMoveConfirm')}
+          confirmLabel={t('detail.workspaceMoveButton')}
+          variant="danger"
+          onConfirm={handleConfirmMove}
+          onCancel={() => {
+            setShowMoveConfirm(false);
+          }}
+        />
+      )}
     </div>
   );
 }

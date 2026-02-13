@@ -71,7 +71,13 @@
     "tags": "Tags",
     "created": "Created {{date}}",
     "updated": "Updated {{date}}",
-    "completed": "Completed {{date}}"
+    "completed": "Completed {{date}}",
+    "workspace": "Workspace",
+    "workspacePersonal": "Personal (no workspace)",
+    "workspaceSearchPlaceholder": "Search workspaces...",
+    "workspaceMoveTitle": "Move Task",
+    "workspaceMoveConfirm": "Moving this task will also move all subtasks and remove tags. Continue?",
+    "workspaceMoveButton": "Move"
   },
   "shortcuts": {
     "title": "Keyboard Shortcuts",
