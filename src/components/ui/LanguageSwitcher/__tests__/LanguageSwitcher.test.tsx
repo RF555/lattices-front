@@ -52,4 +52,14 @@ describe('LanguageSwitcher', () => {
       expect(button).toHaveAttribute('type', 'button');
     });
   });
+
+  it('should show tooltip with full language name on focus', async () => {
+    const user = userEvent.setup();
+    render(<LanguageSwitcher />);
+
+    // Focus the EN button via tab
+    await user.tab();
+    const tooltip = await screen.findByRole('tooltip');
+    expect(tooltip).toHaveTextContent('English');
+  });
 });

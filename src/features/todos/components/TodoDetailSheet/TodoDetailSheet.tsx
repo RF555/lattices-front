@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { BottomSheet } from '@components/ui/BottomSheet';
 import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
+import { Tooltip } from '@components/ui/Tooltip';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import { TagPicker } from '@features/tags/components/TagPicker';
 import { TagBadge } from '@features/tags/components/TagBadge';
@@ -268,16 +269,18 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
                   <span className="text-gray-400 italic">{t('detail.noDescription')}</span>
                 )}
               </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsEditing(true);
-                }}
-                className="p-1.5 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
-                aria-label={t('detail.editMode')}
-              >
-                <Pencil className="w-4 h-4" />
-              </button>
+              <Tooltip content={t('detail.editMode')}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(true);
+                  }}
+                  className="p-1.5 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
+                  aria-label={t('detail.editMode')}
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+              </Tooltip>
             </div>
 
             {/* Tags (read-only) */}
@@ -293,16 +296,16 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
 
         {/* Timestamps (always visible) */}
         <div className="flex flex-col gap-1 text-xs text-gray-400">
-          <span title={formatDateFull(todo.createdAt)}>
-            {t('detail.created', { date: formatDate(todo.createdAt) })}
-          </span>
-          <span title={formatDateFull(todo.updatedAt)}>
-            {t('detail.updated', { date: formatDate(todo.updatedAt) })}
-          </span>
+          <Tooltip content={formatDateFull(todo.createdAt)}>
+            <span>{t('detail.created', { date: formatDate(todo.createdAt) })}</span>
+          </Tooltip>
+          <Tooltip content={formatDateFull(todo.updatedAt)}>
+            <span>{t('detail.updated', { date: formatDate(todo.updatedAt) })}</span>
+          </Tooltip>
           {todo.completedAt && (
-            <span title={formatDateFull(todo.completedAt)}>
-              {t('detail.completed', { date: formatDate(todo.completedAt) })}
-            </span>
+            <Tooltip content={formatDateFull(todo.completedAt)}>
+              <span>{t('detail.completed', { date: formatDate(todo.completedAt) })}</span>
+            </Tooltip>
           )}
         </div>
       </div>

@@ -28,5 +28,19 @@
   "filter": {
     "label": "סינון לפי תגית:",
     "clear": "ניקוי"
+  },
+  "tooltips": {
+    "selectColor": "בחירת צבע"
+  },
+  "colors": {
+    "red": "אדום",
+    "orange": "כתום",
+    "yellow": "צהוב",
+    "green": "ירוק",
+    "teal": "טורקיז",
+    "blue": "כחול",
+    "violet": "סגול",
+    "pink": "ורוד",
+    "gray": "אפור"
   }
 }

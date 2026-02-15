@@ -2,6 +2,7 @@ import { useState, useCallback, type ReactNode } from 'react';
 import { AlignLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
+import { Tooltip } from '@components/ui/Tooltip';
 import { useIsMobile } from '@hooks/useIsMobile';
 import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { useToggleTodo, useDeleteTodo, useUpdateTodo } from '@features/todos/hooks/useTodos';
@@ -152,9 +153,11 @@ export function TodoNodeContent({
               <div className="flex items-center gap-1.5 min-w-0">
                 {/* Workspace badge in All Workspaces mode */}
                 {workspaceName && (
-                  <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 shrink-0">
-                    {workspaceName}
-                  </span>
+                  <Tooltip content={workspaceName}>
+                    <span className="inline-flex items-center rounded-full bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700 shrink-0">
+                      {workspaceName}
+                    </span>
+                  </Tooltip>
                 )}
                 {}
                 <span
@@ -182,22 +185,29 @@ export function TodoNodeContent({
           )}
 
           {todo.description != null && (
-            <AlignLeft className="w-3.5 h-3.5 text-gray-300 shrink-0" aria-hidden="true" />
+            <Tooltip content={t('tooltips.hasDescription')}>
+              <span className="inline-flex shrink-0">
+                <AlignLeft className="w-3.5 h-3.5 text-gray-300" aria-hidden="true" />
+              </span>
+            </Tooltip>
           )}
 
           {todo.childCount > 0 && (
-            <span
-              className={cn(
-                'text-xs tabular-nums',
-                todo.completedChildCount === todo.childCount ? 'text-green-600' : 'text-gray-400',
-              )}
-              title={t('nodeContent.subtaskProgress', {
+            <Tooltip
+              content={t('nodeContent.subtaskProgress', {
                 completed: todo.completedChildCount,
                 total: todo.childCount,
               })}
             >
-              {todo.completedChildCount}/{todo.childCount}
-            </span>
+              <span
+                className={cn(
+                  'text-xs tabular-nums',
+                  todo.completedChildCount === todo.childCount ? 'text-green-600' : 'text-gray-400',
+                )}
+              >
+                {todo.completedChildCount}/{todo.childCount}
+              </span>
+            </Tooltip>
           )}
 
           <TodoActions

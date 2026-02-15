@@ -79,6 +79,7 @@ export function PendingInvitations({ workspaceId }: PendingInvitationsProps) {
                     });
                   }}
                   disabled={revokeInvitation.isPending}
+                  tooltip={t('tooltips.revokeInvitation')}
                 >
                   <X className="h-3.5 w-3.5" />
                 </Button>

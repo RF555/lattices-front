@@ -156,6 +156,22 @@ describe('CreateTodoForm', () => {
       const submitButton = screen.getByRole('button', { name: /^add$/i });
       expect(submitButton).toBeDisabled();
     });
+
+    it('should show tooltip on disabled Add button explaining why', async () => {
+      const user = userEvent.setup();
+      render(<CreateTodoForm />);
+
+      // Button is disabled because title is empty — tooltip should explain
+      const submitButton = screen.getByRole('button', { name: /^add$/i });
+      expect(submitButton).toBeDisabled();
+
+      // Focus the tooltip wrapper (span with tabIndex=0 around disabled button)
+      await user.tab(); // focus goes to input first
+      await user.tab(); // focus goes to tooltip wrapper around Add button
+
+      const tooltip = await screen.findByRole('tooltip');
+      expect(tooltip).toHaveTextContent(/enter a task title/i);
+    });
   });
 
   describe('Form Submission', () => {

@@ -13,6 +13,7 @@ import { useWorkspaces } from '@features/workspaces/hooks/useWorkspaces';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Textarea } from '@components/ui/Textarea';
+import { Tooltip } from '@components/ui/Tooltip';
 
 export function CreateTodoForm() {
   const { t } = useTranslation('todos');
@@ -147,7 +148,17 @@ export function CreateTodoForm() {
           }
           className="flex-1"
         />
-        <Button type="submit" disabled={!title.trim() || (isAllWorkspaces && !selectedWorkspaceId)}>
+        <Button
+          type="submit"
+          disabled={!title.trim() || (isAllWorkspaces && !selectedWorkspaceId)}
+          tooltip={
+            isAllWorkspaces && !selectedWorkspaceId
+              ? t('createForm.noWorkspaceSelected')
+              : !title.trim()
+                ? t('createForm.enterTitle')
+                : undefined
+          }
+        >
           {t('createForm.add')}
         </Button>
       </div>
@@ -163,13 +174,15 @@ export function CreateTodoForm() {
             className="text-sm"
             rows={2}
           />
-          <button
-            type="button"
-            onClick={handleToggleDescription}
-            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            {t('createForm.removeDescription')}
-          </button>
+          <Tooltip content={t('tooltips.removeDescription')}>
+            <button
+              type="button"
+              onClick={handleToggleDescription}
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              {t('createForm.removeDescription')}
+            </button>
+          </Tooltip>
         </div>
       )}
 
@@ -185,13 +198,15 @@ export function CreateTodoForm() {
             }}
             workspaceId={effectiveWorkspaceId}
           />
-          <button
-            type="button"
-            onClick={handleToggleTags}
-            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            {t('createForm.removeTags')}
-          </button>
+          <Tooltip content={t('tooltips.removeTags')}>
+            <button
+              type="button"
+              onClick={handleToggleTags}
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              {t('createForm.removeTags')}
+            </button>
+          </Tooltip>
         </div>
       )}
 
@@ -203,13 +218,15 @@ export function CreateTodoForm() {
             workspaceId={effectiveWorkspaceId}
             onParentChange={setParentId}
           />
-          <button
-            type="button"
-            onClick={handleToggleParent}
-            className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            {t('createForm.removeParent')}
-          </button>
+          <Tooltip content={t('tooltips.removeParent')}>
+            <button
+              type="button"
+              onClick={handleToggleParent}
+              className="text-xs text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              {t('createForm.removeParent')}
+            </button>
+          </Tooltip>
         </div>
       )}
 

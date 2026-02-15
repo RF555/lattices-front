@@ -1,10 +1,12 @@
 import { cn } from '@lib/utils/cn';
+import { Tooltip } from '@components/ui/Tooltip';
 
 interface ToggleSwitchProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
   disabled?: boolean;
   label?: string;
+  tooltip?: string;
   size?: 'sm' | 'md';
 }
 
@@ -13,6 +15,7 @@ export function ToggleSwitch({
   onChange,
   disabled = false,
   label,
+  tooltip,
   size = 'md',
 }: ToggleSwitchProps) {
   const handleClick = () => {
@@ -35,31 +38,33 @@ export function ToggleSwitch({
   const thumbTranslate = size === 'sm' ? 'translate-x-3' : 'translate-x-4';
 
   return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      aria-label={label}
-      tabIndex={0}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      disabled={disabled}
-      className={cn(
-        'relative inline-flex shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out',
-        'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
-        trackSize,
-        checked ? 'bg-primary' : 'bg-gray-300',
-        disabled && 'cursor-not-allowed opacity-50',
-      )}
-    >
-      <span
+    <Tooltip content={tooltip ?? ''}>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        tabIndex={0}
+        onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        disabled={disabled}
         className={cn(
-          'pointer-events-none inline-block transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out',
-          thumbSize,
-          'translate-y-0.5 translate-x-0.5',
-          checked && thumbTranslate,
+          'relative inline-flex shrink-0 cursor-pointer rounded-full transition-colors duration-200 ease-in-out',
+          'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
+          trackSize,
+          checked ? 'bg-primary' : 'bg-gray-300',
+          disabled && 'cursor-not-allowed opacity-50',
         )}
-      />
-    </button>
+      >
+        <span
+          className={cn(
+            'pointer-events-none inline-block transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out',
+            thumbSize,
+            'translate-y-0.5 translate-x-0.5',
+            checked && thumbTranslate,
+          )}
+        />
+      </button>
+    </Tooltip>
   );
 }

@@ -13,6 +13,15 @@ import { afterAll, afterEach, beforeAll } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import { server } from '../mocks/server';
 
+// Polyfill ResizeObserver for Radix UI Tooltip (jsdom doesn't support it)
+if (!globalThis.ResizeObserver) {
+  globalThis.ResizeObserver = class ResizeObserver {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  };
+}
+
 // Polyfill pointer capture for vaul (jsdom doesn't support it)
 if (!Element.prototype.setPointerCapture) {
   Element.prototype.setPointerCapture = () => {};

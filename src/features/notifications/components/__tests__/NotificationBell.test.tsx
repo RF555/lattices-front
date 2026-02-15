@@ -64,8 +64,8 @@ describe('NotificationBell', () => {
 
     await user.click(screen.getByRole('button', { name: /notifications/i }));
 
-    // The panel should now be visible (it renders the "Notifications" title)
-    expect(screen.getByText('Notifications')).toBeInTheDocument();
+    // The panel should now be visible (it renders the "Notifications" heading)
+    expect(screen.getByRole('heading', { name: 'Notifications' })).toBeInTheDocument();
   });
 
   it('should close panel when clicking the bell again', async () => {
@@ -76,11 +76,11 @@ describe('NotificationBell', () => {
 
     // Open
     await user.click(button);
-    expect(screen.getByText('Notifications')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Notifications' })).toBeInTheDocument();
 
     // Close
     await user.click(button);
-    expect(screen.queryByText('Notifications')).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Notifications' })).not.toBeInTheDocument();
   });
 
   it('should close panel when Escape key is pressed', async () => {
@@ -89,11 +89,11 @@ describe('NotificationBell', () => {
 
     // Open panel
     await user.click(screen.getByRole('button', { name: /notifications/i }));
-    expect(screen.getByText('Notifications')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Notifications' })).toBeInTheDocument();
 
     // Press Escape
     await user.keyboard('{Escape}');
-    expect(screen.queryByText('Notifications')).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Notifications' })).not.toBeInTheDocument();
   });
 
   it('should toggle panel when N key is pressed', async () => {
@@ -102,11 +102,11 @@ describe('NotificationBell', () => {
 
     // Press N to open
     await user.keyboard('n');
-    expect(screen.getByText('Notifications')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Notifications' })).toBeInTheDocument();
 
     // Press N to close
     await user.keyboard('n');
-    expect(screen.queryByText('Notifications')).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Notifications' })).not.toBeInTheDocument();
   });
 
   it('should not toggle panel when N key is pressed in an input field', async () => {
@@ -126,6 +126,6 @@ describe('NotificationBell', () => {
     await user.keyboard('n');
 
     // Panel should NOT open
-    expect(screen.queryByText('Notifications')).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Notifications' })).not.toBeInTheDocument();
   });
 });

@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
+import { Tooltip } from '@components/ui/Tooltip';
 import { useActiveWorkspace } from '@features/workspaces/hooks/useActiveWorkspace';
 
 interface WorkspaceSwitcherProps {
@@ -54,27 +55,29 @@ export function WorkspaceSwitcher({ onCreateWorkspace }: WorkspaceSwitcherProps)
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- keyDown handler only closes dropdown on Escape
     <div ref={dropdownRef} className="relative" onKeyDown={handleKeyDown}>
-      <button
-        type="button"
-        onClick={() => {
-          setIsOpen(!isOpen);
-        }}
-        className={cn(
-          'flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-1.5',
-          'text-sm font-medium text-gray-700 hover:bg-gray-50',
-          'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1',
-          'transition-colors',
-        )}
-        aria-expanded={isOpen}
-        aria-haspopup="listbox"
-      >
-        <span className="max-w-[100px] sm:max-w-[140px] truncate">
-          {isAllWorkspaces ? t('allWorkspaces') : (activeWorkspace?.name ?? t('selectWorkspace'))}
-        </span>
-        <ChevronDown
-          className={cn('h-4 w-4 text-gray-400 transition-transform', isOpen && 'rotate-180')}
-        />
-      </button>
+      <Tooltip content={t('tooltips.switchWorkspace')} enabled={!isOpen}>
+        <button
+          type="button"
+          onClick={() => {
+            setIsOpen(!isOpen);
+          }}
+          className={cn(
+            'flex items-center gap-2 rounded-md border border-gray-200 bg-white px-3 py-1.5',
+            'text-sm font-medium text-gray-700 hover:bg-gray-50',
+            'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1',
+            'transition-colors',
+          )}
+          aria-expanded={isOpen}
+          aria-haspopup="listbox"
+        >
+          <span className="max-w-[100px] sm:max-w-[140px] truncate">
+            {isAllWorkspaces ? t('allWorkspaces') : (activeWorkspace?.name ?? t('selectWorkspace'))}
+          </span>
+          <ChevronDown
+            className={cn('h-4 w-4 text-gray-400 transition-transform', isOpen && 'rotate-180')}
+          />
+        </button>
+      </Tooltip>
 
       {isOpen && (
         <div

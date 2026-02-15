@@ -16,7 +16,8 @@
     "removeParent": "Remove parent",
     "subtaskInfo": "Adding as subtask to selected item",
     "selectWorkspace": "Select workspace...",
-    "noWorkspaceSelected": "Choose a workspace to create a task"
+    "noWorkspaceSelected": "Choose a workspace to create a task",
+    "enterTitle": "Enter a task title"
   },
   "toolbar": {
     "taskCount_one": "{{count}} task",
@@ -101,5 +102,14 @@
     "delete": "Delete",
     "complete": "Complete",
     "uncomplete": "Undo complete"
+  },
+  "tooltips": {
+    "markComplete": "Mark as complete",
+    "markIncomplete": "Mark as incomplete",
+    "hasDescription": "Has description",
+    "removeDescription": "Remove description",
+    "removeTags": "Remove tags",
+    "removeParent": "Remove parent",
+    "sortBy": "Sort by"
   }
 }

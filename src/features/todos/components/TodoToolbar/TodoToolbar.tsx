@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { SquareMinus, SquarePlus, SlidersHorizontal, Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { DEBOUNCE } from '@/constants';
+import { Tooltip } from '@components/ui/Tooltip';
 import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { useTodos } from '@features/todos/hooks/useTodos';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
@@ -89,45 +90,55 @@ export function TodoToolbar() {
         <div className="flex items-center gap-3">
           {/* Sort controls */}
           <div className="flex items-center gap-1">
-            <select
-              value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value as 'position' | 'createdAt' | 'updatedAt' | 'title');
-              }}
-              className="text-sm rounded-md border border-gray-300 px-2 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
+            <Tooltip content={t('tooltips.sortBy')}>
+              <select
+                value={sortBy}
+                onChange={(e) => {
+                  setSortBy(e.target.value as 'position' | 'createdAt' | 'updatedAt' | 'title');
+                }}
+                className="text-sm rounded-md border border-gray-300 px-2 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
+              >
+                <option value="position">{t('toolbar.sortManual')}</option>
+                <option value="createdAt">{t('toolbar.sortDate')}</option>
+                <option value="updatedAt">{t('toolbar.sortUpdated')}</option>
+                <option value="title">{t('toolbar.sortAlpha')}</option>
+              </select>
+            </Tooltip>
+            <Tooltip
+              content={
+                sortOrder === 'asc' ? t('toolbar.sortDescending') : t('toolbar.sortAscending')
+              }
             >
-              <option value="position">{t('toolbar.sortManual')}</option>
-              <option value="createdAt">{t('toolbar.sortDate')}</option>
-              <option value="updatedAt">{t('toolbar.sortUpdated')}</option>
-              <option value="title">{t('toolbar.sortAlpha')}</option>
-            </select>
-            <button
-              onClick={() => {
-                setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-              }}
-              className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title={sortOrder === 'asc' ? t('toolbar.sortDescending') : t('toolbar.sortAscending')}
-            >
-              <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                {sortOrder === 'asc' ? (
-                  <path
-                    d="M8 3v10M4 7l4-4 4 4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                ) : (
-                  <path
-                    d="M8 13V3M4 9l4 4 4-4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                )}
-              </svg>
-            </button>
+              <button
+                onClick={() => {
+                  setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                }}
+                className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+                aria-label={
+                  sortOrder === 'asc' ? t('toolbar.sortDescending') : t('toolbar.sortAscending')
+                }
+              >
+                <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                  {sortOrder === 'asc' ? (
+                    <path
+                      d="M8 3v10M4 7l4-4 4 4"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  ) : (
+                    <path
+                      d="M8 13V3M4 9l4 4 4-4"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  )}
+                </svg>
+              </button>
+            </Tooltip>
           </div>
 
           <input
@@ -140,23 +151,25 @@ export function TodoToolbar() {
             className="text-sm rounded-md border border-gray-300 px-3 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1"
           />
 
-          <button
-            onClick={() => {
-              if (hasAnyExpanded) {
-                collapseAll();
-              } else {
-                expandAll(allIds);
-              }
-            }}
-            className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-            title={hasAnyExpanded ? t('toolbar.collapseAll') : t('toolbar.expandAll')}
-          >
-            {hasAnyExpanded ? (
-              <SquareMinus className="w-4 h-4" />
-            ) : (
-              <SquarePlus className="w-4 h-4" />
-            )}
-          </button>
+          <Tooltip content={hasAnyExpanded ? t('toolbar.collapseAll') : t('toolbar.expandAll')}>
+            <button
+              onClick={() => {
+                if (hasAnyExpanded) {
+                  collapseAll();
+                } else {
+                  expandAll(allIds);
+                }
+              }}
+              className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+              aria-label={hasAnyExpanded ? t('toolbar.collapseAll') : t('toolbar.expandAll')}
+            >
+              {hasAnyExpanded ? (
+                <SquareMinus className="w-4 h-4" />
+              ) : (
+                <SquarePlus className="w-4 h-4" />
+              )}
+            </button>
+          </Tooltip>
         </div>
       </div>
 
@@ -171,17 +184,23 @@ export function TodoToolbar() {
           {t('toolbar.taskCount', { count: totalCount })}
         </span>
 
-        <button
-          onClick={toggleToolbar}
-          className="relative p-2 text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100"
-          aria-label={toolbarExpanded ? t('toolbar.hideFilters') : t('toolbar.showFilters')}
-        >
-          {toolbarExpanded ? <X className="w-5 h-5" /> : <SlidersHorizontal className="w-5 h-5" />}
-          {/* Active filter indicator dot */}
-          {hasActiveFilters && !toolbarExpanded && (
-            <span className="absolute top-1.5 end-1.5 w-2 h-2 bg-primary rounded-full" />
-          )}
-        </button>
+        <Tooltip content={toolbarExpanded ? t('toolbar.hideFilters') : t('toolbar.showFilters')}>
+          <button
+            onClick={toggleToolbar}
+            className="relative p-2 text-gray-500 hover:text-gray-700 rounded-md hover:bg-gray-100"
+            aria-label={toolbarExpanded ? t('toolbar.hideFilters') : t('toolbar.showFilters')}
+          >
+            {toolbarExpanded ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <SlidersHorizontal className="w-5 h-5" />
+            )}
+            {/* Active filter indicator dot */}
+            {hasActiveFilters && !toolbarExpanded && (
+              <span className="absolute top-1.5 end-1.5 w-2 h-2 bg-primary rounded-full" />
+            )}
+          </button>
+        </Tooltip>
       </div>
 
       {/* Mobile expanded panel */}
@@ -216,62 +235,74 @@ export function TodoToolbar() {
 
           {/* Sort + expand/collapse row */}
           <div className="flex items-center gap-2">
-            <select
-              value={sortBy}
-              onChange={(e) => {
-                setSortBy(e.target.value as 'position' | 'createdAt' | 'updatedAt' | 'title');
-              }}
-              className="flex-1 text-sm rounded-md border border-gray-300 px-2 py-2 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
+            <Tooltip content={t('tooltips.sortBy')}>
+              <select
+                value={sortBy}
+                onChange={(e) => {
+                  setSortBy(e.target.value as 'position' | 'createdAt' | 'updatedAt' | 'title');
+                }}
+                className="flex-1 text-sm rounded-md border border-gray-300 px-2 py-2 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1 bg-white"
+              >
+                <option value="position">{t('toolbar.sortManual')}</option>
+                <option value="createdAt">{t('toolbar.sortDate')}</option>
+                <option value="updatedAt">{t('toolbar.sortUpdated')}</option>
+                <option value="title">{t('toolbar.sortAlpha')}</option>
+              </select>
+            </Tooltip>
+            <Tooltip
+              content={
+                sortOrder === 'asc' ? t('toolbar.sortDescending') : t('toolbar.sortAscending')
+              }
             >
-              <option value="position">{t('toolbar.sortManual')}</option>
-              <option value="createdAt">{t('toolbar.sortDate')}</option>
-              <option value="updatedAt">{t('toolbar.sortUpdated')}</option>
-              <option value="title">{t('toolbar.sortAlpha')}</option>
-            </select>
-            <button
-              onClick={() => {
-                setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-              }}
-              className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title={sortOrder === 'asc' ? t('toolbar.sortDescending') : t('toolbar.sortAscending')}
-            >
-              <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
-                {sortOrder === 'asc' ? (
-                  <path
-                    d="M8 3v10M4 7l4-4 4 4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                ) : (
-                  <path
-                    d="M8 13V3M4 9l4 4 4-4"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                )}
-              </svg>
-            </button>
-            <button
-              onClick={() => {
-                if (hasAnyExpanded) {
-                  collapseAll();
-                } else {
-                  expandAll(allIds);
+              <button
+                onClick={() => {
+                  setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+                }}
+                className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+                aria-label={
+                  sortOrder === 'asc' ? t('toolbar.sortDescending') : t('toolbar.sortAscending')
                 }
-              }}
-              className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title={hasAnyExpanded ? t('toolbar.collapseAll') : t('toolbar.expandAll')}
-            >
-              {hasAnyExpanded ? (
-                <SquareMinus className="w-4 h-4" />
-              ) : (
-                <SquarePlus className="w-4 h-4" />
-              )}
-            </button>
+              >
+                <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none">
+                  {sortOrder === 'asc' ? (
+                    <path
+                      d="M8 3v10M4 7l4-4 4 4"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  ) : (
+                    <path
+                      d="M8 13V3M4 9l4 4 4-4"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  )}
+                </svg>
+              </button>
+            </Tooltip>
+            <Tooltip content={hasAnyExpanded ? t('toolbar.collapseAll') : t('toolbar.expandAll')}>
+              <button
+                onClick={() => {
+                  if (hasAnyExpanded) {
+                    collapseAll();
+                  } else {
+                    expandAll(allIds);
+                  }
+                }}
+                className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+                aria-label={hasAnyExpanded ? t('toolbar.collapseAll') : t('toolbar.expandAll')}
+              >
+                {hasAnyExpanded ? (
+                  <SquareMinus className="w-4 h-4" />
+                ) : (
+                  <SquarePlus className="w-4 h-4" />
+                )}
+              </button>
+            </Tooltip>
           </div>
 
           {/* Tag filter */}
