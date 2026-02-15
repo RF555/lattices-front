@@ -3,6 +3,7 @@ import { Pencil, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
+import { Tooltip } from '@components/ui/Tooltip';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import { useIsMobile } from '@hooks/useIsMobile';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
@@ -182,14 +183,16 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
             {/* Header: breadcrumb + close button */}
             <div className="flex items-center justify-between gap-2">
               <TodoBreadcrumb todoId={todo.id} />
-              <button
-                type="button"
-                onClick={handleCloseEdit}
-                className="p-1 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
-                aria-label={t('detail.closeEdit')}
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <Tooltip content={t('detail.closeEdit')}>
+                <button
+                  type="button"
+                  onClick={handleCloseEdit}
+                  className="p-1 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
+                  aria-label={t('detail.closeEdit')}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </Tooltip>
             </div>
 
             {/* Workspace section */}
@@ -250,7 +253,12 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
 
             {/* Save/Cancel buttons */}
             <div className="flex items-center gap-2">
-              <Button size="sm" onClick={handleSave} disabled={!isDirty}>
+              <Button
+                size="sm"
+                onClick={handleSave}
+                disabled={!isDirty}
+                tooltip={!isDirty ? t('tooltips.noChanges', { ns: 'common' }) : undefined}
+              >
                 {t('actions.save', { ns: 'common' })}
               </Button>
               <Button size="sm" variant="ghost" onClick={handleCloseEdit}>
@@ -264,16 +272,18 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
             {/* Header: breadcrumb (if has parent) + edit button */}
             <div className="flex items-center justify-between gap-2">
               {todo.parentId !== null && <TodoBreadcrumb todoId={todo.id} />}
-              <button
-                type="button"
-                onClick={() => {
-                  setDetailEditing(true);
-                }}
-                className="p-1 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0 ms-auto"
-                aria-label={t('detail.editMode')}
-              >
-                <Pencil className="w-3.5 h-3.5" />
-              </button>
+              <Tooltip content={t('detail.editMode')}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDetailEditing(true);
+                  }}
+                  className="p-1 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0 ms-auto"
+                  aria-label={t('detail.editMode')}
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                </button>
+              </Tooltip>
             </div>
 
             {/* Description (read-only) */}
@@ -287,16 +297,16 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
 
         {/* Timestamps section (always visible) */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-gray-400">
-          <span title={formatDateFull(todo.createdAt)}>
-            {t('detail.created', { date: formatDate(todo.createdAt) })}
-          </span>
-          <span title={formatDateFull(todo.updatedAt)}>
-            {t('detail.updated', { date: formatDate(todo.updatedAt) })}
-          </span>
+          <Tooltip content={formatDateFull(todo.createdAt)}>
+            <span>{t('detail.created', { date: formatDate(todo.createdAt) })}</span>
+          </Tooltip>
+          <Tooltip content={formatDateFull(todo.updatedAt)}>
+            <span>{t('detail.updated', { date: formatDate(todo.updatedAt) })}</span>
+          </Tooltip>
           {todo.completedAt && (
-            <span title={formatDateFull(todo.completedAt)}>
-              {t('detail.completed', { date: formatDate(todo.completedAt) })}
-            </span>
+            <Tooltip content={formatDateFull(todo.completedAt)}>
+              <span>{t('detail.completed', { date: formatDate(todo.completedAt) })}</span>
+            </Tooltip>
           )}
         </div>
       </div>

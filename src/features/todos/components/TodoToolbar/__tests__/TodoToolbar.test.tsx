@@ -36,6 +36,7 @@ vi.mock('react-i18next', () => ({
       if (key === 'toolbar.collapseAll') return 'Collapse all';
       if (key === 'toolbar.showFilters') return 'Show filters';
       if (key === 'toolbar.hideFilters') return 'Hide filters';
+      if (key === 'tooltips.sortBy') return 'Sort by';
       return key;
     },
   }),
@@ -272,7 +273,7 @@ describe('TodoToolbar', () => {
       const user = userEvent.setup();
       render(<TodoToolbar />);
 
-      const sortOrderButton = screen.getAllByTitle('Sort descending')[0];
+      const sortOrderButton = screen.getAllByLabelText('Sort descending')[0];
       await user.click(sortOrderButton);
 
       expect(mockUseTodoUiStore.setSortOrder).toHaveBeenCalledWith('desc');
@@ -286,7 +287,7 @@ describe('TodoToolbar', () => {
 
       render(<TodoToolbar />);
 
-      expect(screen.getAllByTitle('Sort descending')[0]).toBeInTheDocument();
+      expect(screen.getAllByLabelText('Sort descending')[0]).toBeInTheDocument();
     });
 
     it('should show correct icon and title for descending order', () => {
@@ -297,7 +298,17 @@ describe('TodoToolbar', () => {
 
       render(<TodoToolbar />);
 
-      expect(screen.getAllByTitle('Sort ascending')[0]).toBeInTheDocument();
+      expect(screen.getAllByLabelText('Sort ascending')[0]).toBeInTheDocument();
+    });
+
+    it('should show "Sort by" tooltip on sort dropdown focus', async () => {
+      render(<TodoToolbar />);
+
+      const sortSelect = screen.getAllByRole('combobox')[0];
+      sortSelect.focus();
+
+      const tooltip = await screen.findByRole('tooltip');
+      expect(tooltip).toHaveTextContent('Sort by');
     });
   });
 
@@ -395,10 +406,10 @@ describe('TodoToolbar', () => {
         isError: false,
       } as ReturnType<typeof useTodosModule.useTodos>);
 
-      const { container } = render(<TodoToolbar />);
+      render(<TodoToolbar />);
 
-      // Should show "Expand all" title (not collapsed)
-      const toggleButton = container.querySelectorAll('[title="Expand all"]')[0] as HTMLElement;
+      // Should show "Expand all" aria-label (not collapsed)
+      const toggleButton = screen.getAllByLabelText('Expand all')[0];
       expect(toggleButton).toBeInTheDocument();
       toggleButton.click();
 
@@ -427,10 +438,10 @@ describe('TodoToolbar', () => {
         expandedIds: new Set(['1', '1-1', '2']),
       });
 
-      const { container } = render(<TodoToolbar />);
+      render(<TodoToolbar />);
 
-      // Should show "Collapse all" title
-      const toggleButton = container.querySelectorAll('[title="Collapse all"]')[0] as HTMLElement;
+      // Should show "Collapse all" aria-label
+      const toggleButton = screen.getAllByLabelText('Collapse all')[0];
       expect(toggleButton).toBeInTheDocument();
       toggleButton.click();
 
@@ -459,10 +470,10 @@ describe('TodoToolbar', () => {
         expandedIds: new Set(['1']),
       });
 
-      const { container } = render(<TodoToolbar />);
+      render(<TodoToolbar />);
 
       // Should show "Collapse all" (some are expanded)
-      const toggleButton = container.querySelectorAll('[title="Collapse all"]')[0] as HTMLElement;
+      const toggleButton = screen.getAllByLabelText('Collapse all')[0];
       expect(toggleButton).toBeInTheDocument();
       toggleButton.click();
 
@@ -478,9 +489,9 @@ describe('TodoToolbar', () => {
         isError: false,
       } as ReturnType<typeof useTodosModule.useTodos>);
 
-      const { container } = render(<TodoToolbar />);
+      render(<TodoToolbar />);
 
-      const toggleButton = container.querySelectorAll('[title="Expand all"]')[0] as HTMLElement;
+      const toggleButton = screen.getAllByLabelText('Expand all')[0];
       expect(toggleButton).toBeInTheDocument();
       toggleButton.click();
 
@@ -512,9 +523,9 @@ describe('TodoToolbar', () => {
         isError: false,
       } as ReturnType<typeof useTodosModule.useTodos>);
 
-      const { container } = render(<TodoToolbar />);
+      render(<TodoToolbar />);
 
-      const toggleButton = container.querySelectorAll('[title="Expand all"]')[0] as HTMLElement;
+      const toggleButton = screen.getAllByLabelText('Expand all')[0];
       toggleButton.click();
 
       expect(mockUseTodoUiStore.expandAll).toHaveBeenCalledWith(['1', '1-1', '1-1-1', '1-1-1-1']);

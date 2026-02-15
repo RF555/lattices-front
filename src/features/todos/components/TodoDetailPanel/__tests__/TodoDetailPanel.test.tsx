@@ -380,6 +380,30 @@ describe('TodoDetailPanel', () => {
       const saveButton = screen.getByRole('button', { name: 'actions.save' });
       expect(saveButton).toBeDisabled();
     });
+
+    it('should show "no changes" tooltip on disabled save button', async () => {
+      mockUseTodoUiStore.mockImplementation((selector: any) => {
+        const state = {
+          isDetailEditing: true,
+          setDetailEditing: mockSetDetailEditing,
+        };
+        return selector(state);
+      });
+
+      render(<TodoDetailPanel todo={mockTodo} indentPx={20} />);
+
+      // The disabled save button is wrapped in a span with tabIndex=0
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      expect(saveButton).toBeDisabled();
+
+      // Focus the tooltip wrapper
+      const wrapper = saveButton.closest('span[tabindex="0"]');
+      expect(wrapper).toBeInTheDocument();
+      (wrapper as HTMLElement).focus();
+
+      const tooltip = await screen.findByRole('tooltip');
+      expect(tooltip).toHaveTextContent('tooltips.noChanges');
+    });
   });
 
   describe('Parent Batching - Local State', () => {
@@ -408,13 +432,13 @@ describe('TodoDetailPanel', () => {
       const user = userEvent.setup();
       render(<TodoDetailPanel todo={mockTodo} indentPx={20} />);
 
-      const saveButton = screen.getByRole('button', { name: 'actions.save' });
-      expect(saveButton).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'actions.save' })).toBeDisabled();
 
       const changeParentButton = screen.getByRole('button', { name: 'Change Parent' });
       await user.click(changeParentButton);
 
-      expect(saveButton).toBeEnabled();
+      // Re-query after state change (tooltip wrapper changes DOM structure)
+      expect(screen.getByRole('button', { name: 'actions.save' })).toBeEnabled();
     });
 
     it('should update ParentPicker current parent after change', async () => {
@@ -940,13 +964,13 @@ describe('TodoDetailPanel', () => {
       const user = userEvent.setup();
       render(<TodoDetailPanel todo={mockTodo} indentPx={20} />);
 
-      const saveButton = screen.getByRole('button', { name: 'actions.save' });
-      expect(saveButton).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'actions.save' })).toBeDisabled();
 
       const textarea = screen.getByDisplayValue('Test description');
       await user.type(textarea, ' updated');
 
-      expect(saveButton).toBeEnabled();
+      // Re-query after state change (tooltip wrapper changes DOM structure)
+      expect(screen.getByRole('button', { name: 'actions.save' })).toBeEnabled();
     });
 
     it('should send trimmed description on save', async () => {
@@ -1024,13 +1048,13 @@ describe('TodoDetailPanel', () => {
       const user = userEvent.setup();
       render(<TodoDetailPanel todo={mockTodo} indentPx={20} />);
 
-      const saveButton = screen.getByRole('button', { name: 'actions.save' });
-      expect(saveButton).toBeDisabled();
+      expect(screen.getByRole('button', { name: 'actions.save' })).toBeDisabled();
 
       const changeWorkspaceButton = screen.getByRole('button', { name: 'Change Workspace' });
       await user.click(changeWorkspaceButton);
 
-      expect(saveButton).toBeEnabled();
+      // Re-query after state change (tooltip wrapper changes DOM structure)
+      expect(screen.getByRole('button', { name: 'actions.save' })).toBeEnabled();
     });
   });
 

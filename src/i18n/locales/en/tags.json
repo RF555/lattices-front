@@ -28,5 +28,19 @@
   "filter": {
     "label": "Filter by tag:",
     "clear": "Clear"
+  },
+  "tooltips": {
+    "selectColor": "Select color"
+  },
+  "colors": {
+    "red": "Red",
+    "orange": "Orange",
+    "yellow": "Yellow",
+    "green": "Green",
+    "teal": "Teal",
+    "blue": "Blue",
+    "violet": "Violet",
+    "pink": "Pink",
+    "gray": "Gray"
   }
 }

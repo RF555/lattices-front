@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useToastStore, type Toast as ToastType } from '@stores/toastStore';
 import { cn } from '@lib/utils/cn';
 import { TOAST } from '@/constants';
+import { Tooltip } from '@components/ui/Tooltip';
 
 interface ToastProps {
   toast: ToastType;
@@ -48,14 +49,16 @@ export function Toast({ toast }: ToastProps) {
     >
       <span className="flex-shrink-0">{icons[toast.type]}</span>
       <p className="flex-1 text-sm">{toast.message}</p>
-      <button
-        type="button"
-        onClick={handleDismiss}
-        className="flex-shrink-0 p-1 rounded hover:bg-black/5"
-        aria-label={t('notifications.dismiss')}
-      >
-        <X className="w-4 h-4" />
-      </button>
+      <Tooltip content={t('notifications.dismiss')}>
+        <button
+          type="button"
+          onClick={handleDismiss}
+          className="flex-shrink-0 p-1 rounded hover:bg-black/5"
+          aria-label={t('notifications.dismiss')}
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </Tooltip>
     </div>
   );
 }

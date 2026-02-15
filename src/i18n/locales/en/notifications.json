@@ -55,5 +55,8 @@
     "invitation.received": "Invitation received",
     "invitation.accepted": "Invitation accepted",
     "group.member_added": "Added to group"
+  },
+  "tooltips": {
+    "notifications": "Notifications"
   }
 }

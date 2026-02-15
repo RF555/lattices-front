@@ -56,6 +56,7 @@ export function MainLayout() {
               <Button
                 variant="ghost"
                 size="sm"
+                tooltip={t('tooltips.signOut')}
                 onClick={() => {
                   void logout();
                 }}

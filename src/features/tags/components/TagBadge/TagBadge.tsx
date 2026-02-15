@@ -1,6 +1,7 @@
 import { X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
+import { Tooltip } from '@components/ui/Tooltip';
 
 interface TagBadgeProps {
   tag: { name: string; colorHex: string };
@@ -45,17 +46,19 @@ export function TagBadge({ tag, size = 'sm', onRemove, onClick }: TagBadgeProps)
     >
       {tag.name}
       {onRemove && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onRemove();
-          }}
-          className="ms-0.5 hover:bg-black/10 rounded-full p-0.5"
-          aria-label={t('badge.removeTag', { name: tag.name })}
-        >
-          <X className="w-3 h-3" />
-        </button>
+        <Tooltip content={t('badge.removeTag', { name: tag.name })}>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove();
+            }}
+            className="ms-0.5 hover:bg-black/10 rounded-full p-0.5"
+            aria-label={t('badge.removeTag', { name: tag.name })}
+          >
+            <X className="w-3 h-3" />
+          </button>
+        </Tooltip>
       )}
     </span>
   );

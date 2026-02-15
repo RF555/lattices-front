@@ -214,6 +214,39 @@ describe('Button', () => {
     });
   });
 
+  describe('Tooltip', () => {
+    it('should show tooltip on focus when tooltip prop is provided', async () => {
+      const user = userEvent.setup();
+      render(<Button tooltip="Save changes">Save</Button>);
+
+      // Focus via tab to trigger tooltip (hover doesn't work in jsdom)
+      await user.tab();
+      expect(screen.getByRole('button', { name: 'Save' })).toHaveFocus();
+
+      await screen.findByRole('tooltip');
+      expect(screen.getByRole('tooltip')).toHaveTextContent('Save changes');
+    });
+
+    it('should not render tooltip when tooltip prop is absent', () => {
+      render(<Button>No tooltip</Button>);
+      // Button renders directly without span wrapper
+      const button = screen.getByRole('button', { name: 'No tooltip' });
+      expect(button.parentElement?.tagName).not.toBe('SPAN');
+    });
+
+    it('should wrap disabled button in span for tooltip accessibility', () => {
+      render(
+        <Button tooltip="Cannot save" disabled>
+          Save
+        </Button>,
+      );
+      const button = screen.getByRole('button', { name: 'Save' });
+      const wrapper = button.parentElement;
+      expect(wrapper?.tagName).toBe('SPAN');
+      expect(wrapper).toHaveAttribute('tabIndex', '0');
+    });
+  });
+
   describe('Combinations', () => {
     it('should support variant and size combinations', () => {
       render(

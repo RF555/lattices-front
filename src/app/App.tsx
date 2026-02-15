@@ -1,4 +1,5 @@
 import { RouterProvider } from 'react-router';
+import { Provider as TooltipProvider } from '@radix-ui/react-tooltip';
 import { QueryProvider } from './providers/QueryProvider';
 import { AuthProvider } from './providers/AuthProvider';
 import { ErrorBoundary } from '@components/ErrorBoundary';
@@ -13,14 +14,16 @@ export function App() {
 
   return (
     <ErrorBoundary>
-      <QueryProvider>
-        <AuthProvider>
-          <ColdStartBanner />
-          <RouterProvider router={router} />
-          <ToastContainer />
-          <ReloadPrompt />
-        </AuthProvider>
-      </QueryProvider>
+      <TooltipProvider delayDuration={400} skipDelayDuration={300}>
+        <QueryProvider>
+          <AuthProvider>
+            <ColdStartBanner />
+            <RouterProvider router={router} />
+            <ToastContainer />
+            <ReloadPrompt />
+          </AuthProvider>
+        </QueryProvider>
+      </TooltipProvider>
     </ErrorBoundary>
   );
 }

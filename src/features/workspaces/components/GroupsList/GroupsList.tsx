@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Users, Plus, Trash2 } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { Button } from '@components/ui/Button';
+import { Tooltip } from '@components/ui/Tooltip';
 import { Spinner } from '@components/ui/Spinner';
 import { Modal } from '@components/ui/Modal/Modal';
 import { useGroups, useDeleteGroup } from '@features/workspaces/hooks/useGroups';
@@ -84,17 +85,19 @@ export function GroupsList({ workspaceId }: GroupsListProps) {
                 {group.memberCount} {t('sidebar.members').toLowerCase()}
               </span>
               {canManageMembers && (
-                <button
-                  type="button"
-                  className="text-gray-400 hover:text-red-500 transition-colors p-1"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setConfirmDelete(group);
-                  }}
-                  aria-label={t('groups.delete')}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </button>
+                <Tooltip content={t('tooltips.deleteGroup')}>
+                  <button
+                    type="button"
+                    className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setConfirmDelete(group);
+                    }}
+                    aria-label={t('groups.delete')}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </Tooltip>
               )}
             </button>
           ))}

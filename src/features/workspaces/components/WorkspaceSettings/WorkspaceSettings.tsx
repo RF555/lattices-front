@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslation } from 'react-i18next';
 import { Settings, Trash2, Tag, ArrowLeft } from 'lucide-react';
 import { Button } from '@components/ui/Button';
+import { Tooltip } from '@components/ui/Tooltip';
 import { Input } from '@components/ui/Input';
 import { Textarea } from '@components/ui/Textarea';
 import { Spinner } from '@components/ui/Spinner';
@@ -71,15 +72,18 @@ export function WorkspaceSettings() {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => {
-            void navigate('/app');
-          }}
-          className="text-gray-400 hover:text-gray-600 transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
+        <Tooltip content={t('tooltips.back')}>
+          <button
+            type="button"
+            onClick={() => {
+              void navigate('/app');
+            }}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+            aria-label={t('tooltips.back')}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+        </Tooltip>
         <Settings className="h-5 w-5 text-gray-500" />
         <h2 className="text-xl font-semibold text-gray-900">{t('settings.title')}</h2>
       </div>
@@ -113,7 +117,12 @@ export function WorkspaceSettings() {
 
           {canEdit && (
             <div className="flex justify-end">
-              <Button type="submit" disabled={!isDirty} isLoading={updateWorkspace.isPending}>
+              <Button
+                type="submit"
+                disabled={!isDirty}
+                isLoading={updateWorkspace.isPending}
+                tooltip={!isDirty ? t('tooltips.noChanges', { ns: 'common' }) : undefined}
+              >
                 {t('settings.saveChanges')}
               </Button>
             </div>

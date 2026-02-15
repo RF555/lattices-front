@@ -305,7 +305,7 @@ describe('TodoBreadcrumb', () => {
       expect(mockClickHandler).not.toHaveBeenCalled();
     });
 
-    it('should set title attribute with full task name for truncated titles', () => {
+    it('should render full task name text for truncated titles', () => {
       const todos = [
         createMockTodo('parent-1', 'Very Long Parent Task Name That Will Be Truncated', {
           children: [createMockTodo('child-1', 'Child Task', { parentId: 'parent-1' })],
@@ -323,10 +323,8 @@ describe('TodoBreadcrumb', () => {
       render(<TodoBreadcrumb todoId="child-1" />);
 
       const ancestorButton = screen.getByText('Very Long Parent Task Name That Will Be Truncated');
-      expect(ancestorButton).toHaveAttribute(
-        'title',
-        'Very Long Parent Task Name That Will Be Truncated',
-      );
+      expect(ancestorButton).toBeInTheDocument();
+      expect(ancestorButton).toHaveClass('truncate');
     });
 
     it('should navigate to correct ancestor when multiple ancestors are present', async () => {

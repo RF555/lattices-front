@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
+import { Tooltip } from '@components/ui/Tooltip';
 import { formatRelativeTime } from '@features/workspaces/utils/activityFormatter';
 import {
   formatNotificationMessage,
@@ -81,18 +82,20 @@ export function NotificationItem({
       </div>
 
       {/* Dismiss button (visible on hover) */}
-      <button
-        type="button"
-        onClick={handleDelete}
-        className={cn(
-          'shrink-0 rounded p-1 text-gray-400 transition-opacity',
-          'hover:bg-gray-200 hover:text-gray-600',
-          'opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100',
-        )}
-        aria-label={t('dismiss')}
-      >
-        <X className="h-3.5 w-3.5" />
-      </button>
+      <Tooltip content={t('dismiss')}>
+        <button
+          type="button"
+          onClick={handleDelete}
+          className={cn(
+            'shrink-0 rounded p-1 text-gray-400 transition-opacity',
+            'hover:bg-gray-200 hover:text-gray-600',
+            'opacity-100 sm:opacity-0 sm:group-hover:opacity-100 focus:opacity-100',
+          )}
+          aria-label={t('dismiss')}
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      </Tooltip>
     </div>
   );
 }

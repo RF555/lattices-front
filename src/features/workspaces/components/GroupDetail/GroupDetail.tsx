@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ArrowLeft, Pencil, UserPlus, X } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { Button } from '@components/ui/Button';
+import { Tooltip } from '@components/ui/Tooltip';
 import { Spinner } from '@components/ui/Spinner';
 import { Modal } from '@components/ui/Modal/Modal';
 import {
@@ -75,15 +76,18 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={() => {
-            void navigate(`/workspaces/${workspaceId}/groups`);
-          }}
-          className="text-gray-400 hover:text-gray-600 transition-colors"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
+        <Tooltip content={t('tooltips.back')}>
+          <button
+            type="button"
+            onClick={() => {
+              void navigate(`/workspaces/${workspaceId}/groups`);
+            }}
+            className="text-gray-400 hover:text-gray-600 transition-colors"
+            aria-label={t('tooltips.back')}
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </button>
+        </Tooltip>
         <div className="flex-1 min-w-0">
           <h2 className="text-xl font-semibold text-gray-900">{group.name}</h2>
           {group.description && <p className="text-sm text-gray-500 mt-0.5">{group.description}</p>}
@@ -149,16 +153,18 @@ export function GroupDetail({ workspaceId, groupId }: GroupDetailProps) {
                 </div>
                 <span className="text-xs text-gray-400 capitalize">{member.role}</span>
                 {canManageMembers && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setConfirmRemove(member);
-                    }}
-                    className="text-gray-400 hover:text-red-500 transition-colors p-1"
-                    aria-label={t('groups.removeMember')}
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
+                  <Tooltip content={t('tooltips.removeMember')}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setConfirmRemove(member);
+                      }}
+                      className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                      aria-label={t('groups.removeMember')}
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </Tooltip>
                 )}
               </div>
             ))}

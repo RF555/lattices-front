@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Mail, X } from 'lucide-react';
 import { Button } from '@components/ui/Button';
+import { Tooltip } from '@components/ui/Tooltip';
 import {
   usePendingInvitations,
   useAcceptInvitationById,
@@ -32,13 +33,15 @@ export function InvitationBanner() {
               >
                 {t('invitation.accept')}
               </Button>
-              <button
-                type="button"
-                className="p-1 text-blue-400 hover:text-blue-600"
-                aria-label={t('invitation.decline')}
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <Tooltip content={t('tooltips.declineInvitation')}>
+                <button
+                  type="button"
+                  className="p-1 text-blue-400 hover:text-blue-600"
+                  aria-label={t('invitation.decline')}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </Tooltip>
             </div>
           </div>
         ))}
