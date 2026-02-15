@@ -74,6 +74,7 @@ describe('TodoToolbar', () => {
     setSortBy: vi.fn(),
     sortOrder: 'asc' as const,
     setSortOrder: vi.fn(),
+    expandedIds: new Set<string>(),
     expandAll: vi.fn(),
     collapseAll: vi.fn(),
     filterTagIds: [],
@@ -374,8 +375,8 @@ describe('TodoToolbar', () => {
     });
   });
 
-  describe('Expand/Collapse Buttons', () => {
-    it('should call expandAll with all todo IDs when expand button is clicked', () => {
+  describe('Expand/Collapse Toggle Button', () => {
+    it('should show expand button and call expandAll when nothing is expanded', () => {
       const todos = [
         createMockTodo('1', 'Parent 1', {
           children: [
@@ -396,25 +397,79 @@ describe('TodoToolbar', () => {
 
       const { container } = render(<TodoToolbar />);
 
-      const expandButtons = container.querySelectorAll('[title="Expand all"]');
-      const expandButton = expandButtons[0] as HTMLElement;
-      expandButton.click();
+      // Should show "Expand all" title (not collapsed)
+      const toggleButton = container.querySelectorAll('[title="Expand all"]')[0] as HTMLElement;
+      expect(toggleButton).toBeInTheDocument();
+      toggleButton.click();
 
-      // Should collect all IDs recursively
       expect(mockUseTodoUiStore.expandAll).toHaveBeenCalledWith(['1', '1-1', '1-2', '2']);
     });
 
-    it('should call collapseAll when collapse button is clicked', () => {
+    it('should show collapse button and call collapseAll when all are expanded', () => {
+      const todos = [
+        createMockTodo('1', 'Parent 1', {
+          children: [createMockTodo('1-1', 'Child 1-1', { parentId: '1' })],
+        }),
+        createMockTodo('2', 'Parent 2'),
+      ];
+
+      vi.mocked(useTodosModule.useTodos).mockReturnValue({
+        data: todos,
+        isLoading: false,
+        error: null,
+        isSuccess: true,
+        isError: false,
+      } as ReturnType<typeof useTodosModule.useTodos>);
+
+      // All IDs are expanded
+      vi.mocked(todoUiStoreModule.useTodoUiStore).mockReturnValue({
+        ...mockUseTodoUiStore,
+        expandedIds: new Set(['1', '1-1', '2']),
+      });
+
       const { container } = render(<TodoToolbar />);
 
-      const collapseButtons = container.querySelectorAll('[title="Collapse all"]');
-      const collapseButton = collapseButtons[0] as HTMLElement;
-      collapseButton.click();
+      // Should show "Collapse all" title
+      const toggleButton = container.querySelectorAll('[title="Collapse all"]')[0] as HTMLElement;
+      expect(toggleButton).toBeInTheDocument();
+      toggleButton.click();
 
       expect(mockUseTodoUiStore.collapseAll).toHaveBeenCalled();
     });
 
-    it('should pass empty array to expandAll when todos is undefined', () => {
+    it('should show collapse button when partially expanded', () => {
+      const todos = [
+        createMockTodo('1', 'Parent 1', {
+          children: [createMockTodo('1-1', 'Child 1-1', { parentId: '1' })],
+        }),
+        createMockTodo('2', 'Parent 2'),
+      ];
+
+      vi.mocked(useTodosModule.useTodos).mockReturnValue({
+        data: todos,
+        isLoading: false,
+        error: null,
+        isSuccess: true,
+        isError: false,
+      } as ReturnType<typeof useTodosModule.useTodos>);
+
+      // Only some IDs are expanded
+      vi.mocked(todoUiStoreModule.useTodoUiStore).mockReturnValue({
+        ...mockUseTodoUiStore,
+        expandedIds: new Set(['1']),
+      });
+
+      const { container } = render(<TodoToolbar />);
+
+      // Should show "Collapse all" (some are expanded)
+      const toggleButton = container.querySelectorAll('[title="Collapse all"]')[0] as HTMLElement;
+      expect(toggleButton).toBeInTheDocument();
+      toggleButton.click();
+
+      expect(mockUseTodoUiStore.collapseAll).toHaveBeenCalled();
+    });
+
+    it('should show expand button when todos is undefined', () => {
       vi.mocked(useTodosModule.useTodos).mockReturnValue({
         data: undefined,
         isLoading: true,
@@ -425,9 +480,9 @@ describe('TodoToolbar', () => {
 
       const { container } = render(<TodoToolbar />);
 
-      const expandButtons = container.querySelectorAll('[title="Expand all"]');
-      const expandButton = expandButtons[0] as HTMLElement;
-      expandButton.click();
+      const toggleButton = container.querySelectorAll('[title="Expand all"]')[0] as HTMLElement;
+      expect(toggleButton).toBeInTheDocument();
+      toggleButton.click();
 
       expect(mockUseTodoUiStore.expandAll).toHaveBeenCalledWith([]);
     });
@@ -459,9 +514,8 @@ describe('TodoToolbar', () => {
 
       const { container } = render(<TodoToolbar />);
 
-      const expandButtons = container.querySelectorAll('[title="Expand all"]');
-      const expandButton = expandButtons[0] as HTMLElement;
-      expandButton.click();
+      const toggleButton = container.querySelectorAll('[title="Expand all"]')[0] as HTMLElement;
+      toggleButton.click();
 
       expect(mockUseTodoUiStore.expandAll).toHaveBeenCalledWith(['1', '1-1', '1-1-1', '1-1-1-1']);
     });
