@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { ChevronsDown, ChevronsUp, SlidersHorizontal, Search, X } from 'lucide-react';
+import { SquareMinus, SquarePlus, SlidersHorizontal, Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { DEBOUNCE } from '@/constants';
 import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
@@ -22,6 +22,7 @@ export function TodoToolbar() {
     setSortBy,
     sortOrder,
     setSortOrder,
+    expandedIds,
     expandAll,
     collapseAll,
     filterTagIds,
@@ -57,6 +58,8 @@ export function TodoToolbar() {
     collectIds(todos);
     return ids;
   }, [todos]);
+
+  const hasAnyExpanded = expandedIds.size > 0;
 
   const hasActiveFilters =
     searchQuery.length > 0 || filterTagIds.length > 0 || !showCompleted || sortBy !== 'position';
@@ -137,26 +140,23 @@ export function TodoToolbar() {
             className="text-sm rounded-md border border-gray-300 px-3 py-1.5 shadow-sm focus:border-primary focus:ring-primary focus:outline-none focus:ring-1"
           />
 
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => {
-                expandAll(allIds);
-              }}
-              className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title={t('toolbar.expandAll')}
-            >
-              <ChevronsDown className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => {
+          <button
+            onClick={() => {
+              if (hasAnyExpanded) {
                 collapseAll();
-              }}
-              className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title={t('toolbar.collapseAll')}
-            >
-              <ChevronsUp className="w-4 h-4" />
-            </button>
-          </div>
+              } else {
+                expandAll(allIds);
+              }
+            }}
+            className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+            title={hasAnyExpanded ? t('toolbar.collapseAll') : t('toolbar.expandAll')}
+          >
+            {hasAnyExpanded ? (
+              <SquareMinus className="w-4 h-4" />
+            ) : (
+              <SquarePlus className="w-4 h-4" />
+            )}
+          </button>
         </div>
       </div>
 
@@ -257,21 +257,20 @@ export function TodoToolbar() {
             </button>
             <button
               onClick={() => {
-                expandAll(allIds);
+                if (hasAnyExpanded) {
+                  collapseAll();
+                } else {
+                  expandAll(allIds);
+                }
               }}
               className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title={t('toolbar.expandAll')}
+              title={hasAnyExpanded ? t('toolbar.collapseAll') : t('toolbar.expandAll')}
             >
-              <ChevronsDown className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => {
-                collapseAll();
-              }}
-              className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
-              title={t('toolbar.collapseAll')}
-            >
-              <ChevronsUp className="w-4 h-4" />
+              {hasAnyExpanded ? (
+                <SquareMinus className="w-4 h-4" />
+              ) : (
+                <SquarePlus className="w-4 h-4" />
+              )}
             </button>
           </div>
 
