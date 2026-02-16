@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
 import { toast } from '@stores/toastStore';
 import { QUERY_CACHE } from '@/constants';
+import { ApiException, getErrorMessage } from '@lib/api/errors';
 import { workspaceApi } from '@features/workspaces/api/workspaceApi';
 import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
 import type {
@@ -60,10 +61,13 @@ export function useCreateWorkspace() {
       return { previousWorkspaces };
     },
 
-    onError: (_err, _input, context) => {
+    onError: (err, _input, context) => {
       if (context?.previousWorkspaces) {
         queryClient.setQueryData(queryKeys.workspaces.lists(), context.previousWorkspaces);
       }
+      toast.error(
+        ApiException.isApiException(err) ? getErrorMessage(err.code) : getErrorMessage('UNKNOWN'),
+      );
     },
 
     onSuccess: () => {
@@ -110,13 +114,16 @@ export function useUpdateWorkspace() {
       return { previousList, previousDetail, id };
     },
 
-    onError: (_err, _variables, context) => {
+    onError: (err, _variables, context) => {
       if (context?.previousList) {
         queryClient.setQueryData(queryKeys.workspaces.lists(), context.previousList);
       }
       if (context?.previousDetail) {
         queryClient.setQueryData(queryKeys.workspaces.detail(context.id), context.previousDetail);
       }
+      toast.error(
+        ApiException.isApiException(err) ? getErrorMessage(err.code) : getErrorMessage('UNKNOWN'),
+      );
     },
 
     onSuccess: () => {
@@ -157,13 +164,16 @@ export function useDeleteWorkspace() {
       return { previousList, previousActiveWorkspaceId };
     },
 
-    onError: (_err, _id, context) => {
+    onError: (err, _id, context) => {
       if (context?.previousList) {
         queryClient.setQueryData(queryKeys.workspaces.lists(), context.previousList);
       }
       if (context?.previousActiveWorkspaceId) {
         setActiveWorkspace(context.previousActiveWorkspaceId);
       }
+      toast.error(
+        ApiException.isApiException(err) ? getErrorMessage(err.code) : getErrorMessage('UNKNOWN'),
+      );
     },
 
     onSuccess: () => {

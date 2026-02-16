@@ -60,6 +60,7 @@
     "removeWarning": "They will lose access to all tasks in this workspace.",
     "leaveWorkspace": "Leave Workspace",
     "leaveConfirm": "Are you sure you want to leave this workspace?",
+    "leaveWarning": "You will lose access to all tasks in this workspace.",
     "changeRoleConfirm": "Change {{name}}'s role from {{oldRole}} to {{newRole}}?",
     "transferOwnership": "Transfer Ownership",
     "transferConfirm": "Transfer ownership to {{name}}? You will become an Admin.",
