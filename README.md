@@ -200,6 +200,8 @@ Multi-user collaboration through workspaces. Each workspace scopes todos, tags, 
 - **Invitations** — Email-based invitations with accept/revoke flow and pending invitation banner
 - **Activity feed** — Timeline of workspace actions (todo CRUD, member changes) with actor info and timestamps
 - **User groups** — Organize workspace members into groups with group-level management
+- **Leave workspace** — Non-owner members can leave a workspace via the members list with confirmation dialog
+- **Backend error guards** — Localized error toasts for all workspace mutations (delete, leave, role change, etc.) including `LAST_WORKSPACE` and `LAST_OWNER` guards
 - **Permission system** — Role-based access control (Owner > Admin > Member > Viewer) via `useWorkspacePermission` hook
 - **Real-time collaboration** — Supabase Realtime for live updates, online presence indicators, "someone is viewing" indicators, and conflict notifications
 - **Workspace sidebar** — Collapsible navigation for workspace sections (Todos, Tags, Members, Activity, Groups, Settings)
@@ -241,7 +243,7 @@ The project enforces strict code quality standards via automated tooling:
 
 ## Testing
 
-1268 tests across 76 test files using Vitest + React Testing Library + MSW.
+1314 tests across 79 test files using Vitest + React Testing Library + MSW.
 
 ```bash
 pnpm test          # Watch mode

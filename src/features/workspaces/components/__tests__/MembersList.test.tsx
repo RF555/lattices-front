@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
+import userEvent from '@testing-library/user-event';
 import { MembersList } from '../MembersList/MembersList';
 import type { WorkspaceMember } from '@features/workspaces/types/workspace';
 
@@ -63,12 +64,10 @@ vi.mock('@features/workspaces/hooks/useWorkspacePermission', () => ({
   })),
 }));
 
+const mockUser = { id: 'user-2', email: 'admin@example.com', name: 'Bob Admin' };
+
 vi.mock('@features/auth/stores/authStore', () => ({
-  useAuthStore: vi.fn((selector: (state: unknown) => unknown) =>
-    selector({
-      user: { id: 'user-2', email: 'admin@example.com', name: 'Bob Admin' },
-    }),
-  ),
+  useAuthStore: vi.fn((selector: (state: unknown) => unknown) => selector({ user: mockUser })),
 }));
 
 // Mock child components to keep tests focused
@@ -99,6 +98,10 @@ const mockUseWorkspacePermission = vi.mocked(useWorkspacePermission);
 describe('MembersList', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Reset mock user to default (admin, non-owner)
+    mockUser.id = 'user-2';
+    mockUser.email = 'admin@example.com';
+    mockUser.name = 'Bob Admin';
     mockUseWorkspaceMembers.mockReturnValue({
       data: mockMembers,
       isLoading: false,
@@ -190,5 +193,31 @@ describe('MembersList', () => {
     // Alice Owner → "AL", Carol Member → "CA"
     expect(screen.getByText('AL')).toBeInTheDocument();
     expect(screen.getByText('CA')).toBeInTheDocument();
+  });
+
+  it('should show Leave Workspace button for current user (non-owner)', () => {
+    render(<MembersList workspaceId="ws-1" />);
+
+    // Current user is user-2 (admin), should see the Leave button
+    expect(screen.getByRole('button', { name: /leave workspace/i })).toBeInTheDocument();
+  });
+
+  it('should NOT show Leave Workspace button when current user is owner', () => {
+    // Set current user as the owner (user-1)
+    mockUser.id = 'user-1';
+    mockUser.email = 'owner@example.com';
+    mockUser.name = 'Alice Owner';
+
+    render(<MembersList workspaceId="ws-1" />);
+    expect(screen.queryByRole('button', { name: /leave workspace/i })).not.toBeInTheDocument();
+  });
+
+  it('should show leave confirmation dialog when Leave button is clicked', async () => {
+    const user = userEvent.setup();
+    render(<MembersList workspaceId="ws-1" />);
+
+    await user.click(screen.getByRole('button', { name: /leave workspace/i }));
+
+    expect(screen.getByText(/are you sure you want to leave/i)).toBeInTheDocument();
   });
 });

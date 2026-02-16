@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Crown, MoreHorizontal, UserPlus } from 'lucide-react';
+import { Crown, LogOut, MoreHorizontal, UserPlus } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 import { useAuthStore } from '@features/auth/stores/authStore';
 import { Button } from '@components/ui/Button';
@@ -30,6 +31,7 @@ interface MembersListProps {
 
 export function MembersList({ workspaceId }: MembersListProps) {
   const { t } = useTranslation('workspaces');
+  const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const { data: members, isLoading } = useWorkspaceMembers(workspaceId);
   const updateRole = useUpdateMemberRole();
@@ -39,6 +41,7 @@ export function MembersList({ workspaceId }: MembersListProps) {
   const [actionMember, setActionMember] = useState<WorkspaceMember | null>(null);
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
   const [showRoleChange, setShowRoleChange] = useState(false);
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
   const [newRole, setNewRole] = useState<WorkspaceRole>('member');
 
   if (isLoading) {
@@ -88,6 +91,19 @@ export function MembersList({ workspaceId }: MembersListProps) {
       .then(() => {
         setShowRemoveConfirm(false);
         setActionMember(null);
+      });
+  };
+
+  const confirmLeave = () => {
+    if (!user) return;
+    void removeMember
+      .mutateAsync({
+        workspaceId,
+        userId: user.id,
+      })
+      .then(() => {
+        setShowLeaveConfirm(false);
+        void navigate('/app');
       });
   };
 
@@ -166,6 +182,21 @@ export function MembersList({ workspaceId }: MembersListProps) {
                   {t(`roles.${member.role}`)}
                 </span>
 
+                {isCurrentUser && member.role !== 'owner' && (
+                  <Tooltip content={t('members.leaveWorkspace')}>
+                    <button
+                      type="button"
+                      className="p-1 rounded hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
+                      aria-label={t('members.leaveWorkspace')}
+                      onClick={() => {
+                        setShowLeaveConfirm(true);
+                      }}
+                    >
+                      <LogOut className="h-4 w-4" />
+                    </button>
+                  </Tooltip>
+                )}
+
                 {canManageMembers && member.role !== 'owner' && !isCurrentUser && (
                   <div className="relative group">
                     <Tooltip content={t('tooltips.memberActions')}>
@@ -241,6 +272,17 @@ export function MembersList({ workspaceId }: MembersListProps) {
           ' ' +
           t('members.removeWarning')
         }
+        variant="danger"
+      />
+
+      <ConfirmationDialog
+        isOpen={showLeaveConfirm}
+        onConfirm={confirmLeave}
+        onCancel={() => {
+          setShowLeaveConfirm(false);
+        }}
+        title={t('members.leaveWorkspace')}
+        message={t('members.leaveConfirm') + ' ' + t('members.leaveWarning')}
         variant="danger"
       />
     </div>

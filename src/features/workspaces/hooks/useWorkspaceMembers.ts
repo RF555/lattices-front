@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
 import { toast } from '@stores/toastStore';
+import { ApiException, getErrorMessage } from '@lib/api/errors';
 import { workspaceApi } from '@features/workspaces/api/workspaceApi';
 import type {
   WorkspaceRole,
@@ -29,6 +30,12 @@ export function useAddMember() {
       userId: string;
       role: WorkspaceRole;
     }) => workspaceApi.addMember(workspaceId, userId, role),
+
+    onError: (err) => {
+      toast.error(
+        ApiException.isApiException(err) ? getErrorMessage(err.code) : getErrorMessage('UNKNOWN'),
+      );
+    },
 
     onSuccess: (_, { workspaceId }) => {
       void queryClient.invalidateQueries({ queryKey: queryKeys.workspaces.members(workspaceId) });
@@ -69,13 +76,16 @@ export function useUpdateMemberRole() {
       return { previousMembers, workspaceId };
     },
 
-    onError: (_err, _variables, context) => {
+    onError: (err, _variables, context) => {
       if (context?.previousMembers) {
         queryClient.setQueryData(
           queryKeys.workspaces.members(context.workspaceId),
           context.previousMembers,
         );
       }
+      toast.error(
+        ApiException.isApiException(err) ? getErrorMessage(err.code) : getErrorMessage('UNKNOWN'),
+      );
     },
 
     onSuccess: () => {
@@ -126,7 +136,7 @@ export function useRemoveMember() {
       return { previousMembers, previousWorkspaces, workspaceId };
     },
 
-    onError: (_err, _variables, context) => {
+    onError: (err, _variables, context) => {
       if (context?.previousMembers) {
         queryClient.setQueryData(
           queryKeys.workspaces.members(context.workspaceId),
@@ -136,6 +146,9 @@ export function useRemoveMember() {
       if (context?.previousWorkspaces) {
         queryClient.setQueryData(queryKeys.workspaces.lists(), context.previousWorkspaces);
       }
+      toast.error(
+        ApiException.isApiException(err) ? getErrorMessage(err.code) : getErrorMessage('UNKNOWN'),
+      );
     },
 
     onSuccess: () => {
@@ -177,13 +190,16 @@ export function useTransferOwnership() {
       return { previousMembers, workspaceId };
     },
 
-    onError: (_err, _variables, context) => {
+    onError: (err, _variables, context) => {
       if (context?.previousMembers) {
         queryClient.setQueryData(
           queryKeys.workspaces.members(context.workspaceId),
           context.previousMembers,
         );
       }
+      toast.error(
+        ApiException.isApiException(err) ? getErrorMessage(err.code) : getErrorMessage('UNKNOWN'),
+      );
     },
 
     onSuccess: () => {
