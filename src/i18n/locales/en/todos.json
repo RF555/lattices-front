@@ -16,7 +16,8 @@
     "removeParent": "Remove parent",
     "subtaskInfo": "Adding as subtask to selected item",
     "selectWorkspace": "Select workspace...",
-    "noWorkspaceSelected": "Choose a workspace to create a task"
+    "noWorkspaceSelected": "Choose a workspace to create a task",
+    "enterTitle": "Enter a task title"
   },
   "toolbar": {
     "taskCount_one": "{{count}} task",
@@ -36,7 +37,9 @@
   },
   "tree": {
     "error": "Failed to load todos. Please try again.",
-    "ariaLabel": "Task list"
+    "ariaLabel": "Task list",
+    "loadingAriaLabel": "Loading tasks",
+    "loadingMessage": "Loading tasks..."
   },
   "empty": {
     "filteredTitle": "No matching tasks",
@@ -69,7 +72,13 @@
     "tags": "Tags",
     "created": "Created {{date}}",
     "updated": "Updated {{date}}",
-    "completed": "Completed {{date}}"
+    "completed": "Completed {{date}}",
+    "workspace": "Workspace",
+    "workspacePersonal": "Personal (no workspace)",
+    "workspaceSearchPlaceholder": "Search workspaces...",
+    "workspaceMoveTitle": "Move Task",
+    "workspaceMoveConfirm": "Moving this task will also move all subtasks and remove tags. Continue?",
+    "workspaceMoveButton": "Move"
   },
   "shortcuts": {
     "title": "Keyboard Shortcuts",
@@ -117,5 +126,14 @@
       "createdAt": "Date Created",
       "updatedAt": "Date Updated"
     }
+  },
+  "tooltips": {
+    "markComplete": "Mark as complete",
+    "markIncomplete": "Mark as incomplete",
+    "hasDescription": "Has description",
+    "removeDescription": "Remove description",
+    "removeTags": "Remove tags",
+    "removeParent": "Remove parent",
+    "sortBy": "Sort by"
   }
 }

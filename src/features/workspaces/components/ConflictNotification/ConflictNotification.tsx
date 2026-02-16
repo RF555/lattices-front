@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { AlertTriangle, RefreshCw, X } from 'lucide-react';
 import { Button } from '@components/ui/Button';
+import { Tooltip } from '@components/ui/Tooltip';
 
 interface ConflictNotificationProps {
   /** Name of the user who made the conflicting change */
@@ -29,14 +30,16 @@ export function ConflictNotification({ userName, onReload, onDismiss }: Conflict
         <RefreshCw className="h-3.5 w-3.5 mr-1" />
         {t('realtime.reload')}
       </Button>
-      <button
-        type="button"
-        onClick={onDismiss}
-        className="text-amber-400 hover:text-amber-600 transition-colors"
-        aria-label={t('realtime.dismiss')}
-      >
-        <X className="h-4 w-4" />
-      </button>
+      <Tooltip content={t('tooltips.dismissConflict')}>
+        <button
+          type="button"
+          onClick={onDismiss}
+          className="text-amber-400 hover:text-amber-600 transition-colors"
+          aria-label={t('realtime.dismiss')}
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </Tooltip>
     </div>
   );
 }

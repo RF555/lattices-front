@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useTranslation } from 'react-i18next';
-import { useTodos } from '../../hooks/useTodos';
-import { useTodoUiStore, useExpandedIds } from '../../stores/todoUiStore';
+import { useTodos } from '@features/todos/hooks/useTodos';
+import { useTodoUiStore, useExpandedIds } from '@features/todos/stores/todoUiStore';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
-import { filterTodoTree, sortTodoTree, flattenTodoTree } from '../../utils/treeUtils';
+import { filterTodoTree, sortTodoTree, flattenTodoTree } from '@features/todos/utils/treeUtils';
 import { TodoNode } from './TodoNode';
 import { TodoTreeEmpty } from './TodoTreeEmpty';
 import { TodoTreeLoading } from './TodoTreeLoading';

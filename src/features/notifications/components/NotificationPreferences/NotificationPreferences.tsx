@@ -5,10 +5,13 @@ import { ToggleSwitch } from '@components/ui/ToggleSwitch';
 import {
   useNotificationPreferences,
   useUpdateNotificationPreferences,
-} from '../../hooks/useNotifications';
-import { useNotificationUiStore } from '../../stores/notificationUiStore';
-import { NOTIFICATION_CATEGORIES, MANDATORY_NOTIFICATION_TYPES } from '../../types/notification';
-import type { NotificationPreference } from '../../types/notification';
+} from '@features/notifications/hooks/useNotifications';
+import { useNotificationUiStore } from '@features/notifications/stores/notificationUiStore';
+import {
+  NOTIFICATION_CATEGORIES,
+  MANDATORY_NOTIFICATION_TYPES,
+} from '@features/notifications/types/notification';
+import type { NotificationPreference } from '@features/notifications/types/notification';
 
 const CATEGORY_KEYS = {
   task: 'preferences.taskNotifications',

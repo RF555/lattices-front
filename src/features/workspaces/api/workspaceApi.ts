@@ -6,7 +6,7 @@ import type {
   CreateWorkspaceInput,
   UpdateWorkspaceInput,
   WorkspaceRole,
-} from '../types/workspace';
+} from '@features/workspaces/types/workspace';
 
 /** Raw workspace shape returned by the API (snake_case). */
 interface ApiWorkspace {

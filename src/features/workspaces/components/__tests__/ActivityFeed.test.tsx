@@ -2,15 +2,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { ActivityFeed } from '../ActivityFeed/ActivityFeed';
-import type { ActivityEntry } from '../../types/activity';
+import type { ActivityEntry } from '@features/workspaces/types/activity';
 
 const mockUseWorkspaceActivity = vi.fn();
 
-vi.mock('../../hooks/useActivity', () => ({
+vi.mock('@features/workspaces/hooks/useActivity', () => ({
   useWorkspaceActivity: (...args: unknown[]) => mockUseWorkspaceActivity(...args),
 }));
 
-vi.mock('../../utils/activityFormatter', () => ({
+vi.mock('@features/workspaces/utils/activityFormatter', () => ({
   formatAction: vi.fn((entry: ActivityEntry) => `${entry.actorName} did ${entry.action}`),
   formatRelativeTime: vi.fn(() => 'just now'),
 }));

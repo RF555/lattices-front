@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { Modal } from '@components/ui/Modal/Modal';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
-import { useCreateGroup, useUpdateGroup } from '../../hooks/useGroups';
-import type { Group } from '../../types/group';
+import { useCreateGroup, useUpdateGroup } from '@features/workspaces/hooks/useGroups';
+import type { Group } from '@features/workspaces/types/group';
 
 interface GroupManageDialogProps {
   isOpen: boolean;

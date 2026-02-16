@@ -21,6 +21,16 @@ export const QUERY_CACHE = {
   DEFAULT_RETRY: 3,
 } as const;
 
+/** Debounce delays in milliseconds */
+export const DEBOUNCE = {
+  SEARCH: 300,
+} as const;
+
+/** User feedback timing in milliseconds */
+export const FEEDBACK = {
+  COPY_RESET_MS: 2000,
+} as const;
+
 /** Backend wake-up / cold start retry timing */
 export const WAKE_UP = {
   TIMEOUT_MS: 10_000,

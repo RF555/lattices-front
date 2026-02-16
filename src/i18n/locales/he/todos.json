@@ -16,7 +16,8 @@
     "removeParent": "הסרת משימת אב",
     "subtaskInfo": "מוסיף כתת-משימה לפריט הנבחר",
     "selectWorkspace": "בחר סביבת עבודה...",
-    "noWorkspaceSelected": "בחר סביבת עבודה כדי ליצור משימה"
+    "noWorkspaceSelected": "בחר סביבת עבודה כדי ליצור משימה",
+    "enterTitle": "הזן כותרת למשימה"
   },
   "toolbar": {
     "taskCount_one": "משימה {{count}}",
@@ -36,7 +37,9 @@
   },
   "tree": {
     "error": "טעינת המשימות נכשלה. אנא נסו שוב.",
-    "ariaLabel": "רשימת משימות"
+    "ariaLabel": "רשימת משימות",
+    "loadingAriaLabel": "טוען משימות",
+    "loadingMessage": "טוען משימות..."
   },
   "empty": {
     "filteredTitle": "אין משימות תואמות",
@@ -69,7 +72,13 @@
     "tags": "תגיות",
     "created": "נוצר {{date}}",
     "updated": "עודכן {{date}}",
-    "completed": "הושלם {{date}}"
+    "completed": "הושלם {{date}}",
+    "workspace": "סביבת עבודה",
+    "workspacePersonal": "אישי (ללא סביבת עבודה)",
+    "workspaceSearchPlaceholder": "חיפוש סביבות עבודה...",
+    "workspaceMoveTitle": "העברת משימה",
+    "workspaceMoveConfirm": "העברת משימה זו תעביר גם את כל תתי-המשימות ותסיר תגיות. להמשיך?",
+    "workspaceMoveButton": "העברה"
   },
   "shortcuts": {
     "title": "קיצורי מקלדת",
@@ -117,5 +126,14 @@
       "createdAt": "תאריך יצירה",
       "updatedAt": "תאריך עדכון"
     }
+  },
+  "tooltips": {
+    "markComplete": "סימון כהושלם",
+    "markIncomplete": "ביטול סימון כהושלם",
+    "hasDescription": "יש תיאור",
+    "removeDescription": "הסרת תיאור",
+    "removeTags": "הסרת תגיות",
+    "removeParent": "הסרת משימת אב",
+    "sortBy": "מיון לפי"
   }
 }

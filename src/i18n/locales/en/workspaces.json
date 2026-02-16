@@ -144,5 +144,19 @@
       "connecting": "Reconnecting...",
       "disconnected": "Disconnected"
     }
+  },
+  "tooltips": {
+    "workspaceOwner": "Workspace owner",
+    "memberActions": "Member actions",
+    "moreMembers": "And {{count}} more",
+    "moreViewers": "And {{count}} more viewing",
+    "revokeInvitation": "Revoke invitation",
+    "switchWorkspace": "Switch workspace",
+    "closeSidebar": "Close sidebar",
+    "back": "Back",
+    "deleteGroup": "Delete group",
+    "removeMember": "Remove member",
+    "dismissConflict": "Dismiss",
+    "declineInvitation": "Decline invitation"
   }
 }

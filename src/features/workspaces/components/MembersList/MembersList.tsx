@@ -5,16 +5,17 @@ import { cn } from '@lib/utils/cn';
 import { useAuthStore } from '@features/auth/stores/authStore';
 import { Button } from '@components/ui/Button';
 import { Spinner } from '@components/ui/Spinner';
+import { Tooltip } from '@components/ui/Tooltip';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import {
   useWorkspaceMembers,
   useUpdateMemberRole,
   useRemoveMember,
-} from '../../hooks/useWorkspaceMembers';
-import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
+} from '@features/workspaces/hooks/useWorkspaceMembers';
+import { useWorkspacePermission } from '@features/workspaces/hooks/useWorkspacePermission';
 import { InviteMemberDialog } from '../InviteMemberDialog/InviteMemberDialog';
 import { RoleSelector } from '../RoleSelector/RoleSelector';
-import type { WorkspaceMember, WorkspaceRole } from '../../types/workspace';
+import type { WorkspaceMember, WorkspaceRole } from '@features/workspaces/types/workspace';
 
 const ROLE_COLORS: Record<WorkspaceRole, string> = {
   owner: 'bg-purple-100 text-purple-700',
@@ -149,7 +150,13 @@ export function MembersList({ workspaceId }: MembersListProps) {
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
-                {member.role === 'owner' && <Crown className="h-4 w-4 text-yellow-500" />}
+                {member.role === 'owner' && (
+                  <Tooltip content={t('tooltips.workspaceOwner')}>
+                    <span className="inline-flex">
+                      <Crown className="h-4 w-4 text-yellow-500" />
+                    </span>
+                  </Tooltip>
+                )}
                 <span
                   className={cn(
                     'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
@@ -161,13 +168,15 @@ export function MembersList({ workspaceId }: MembersListProps) {
 
                 {canManageMembers && member.role !== 'owner' && !isCurrentUser && (
                   <div className="relative group">
-                    <button
-                      type="button"
-                      className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600"
-                      aria-label={t('members.actions')}
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </button>
+                    <Tooltip content={t('tooltips.memberActions')}>
+                      <button
+                        type="button"
+                        className="p-1 rounded hover:bg-gray-100 text-gray-400 hover:text-gray-600"
+                        aria-label={t('members.actions')}
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </button>
+                    </Tooltip>
                     <div className="absolute right-0 top-full z-dropdown hidden group-focus-within:block bg-white rounded-md shadow-lg border border-gray-200 py-1 w-40">
                       <RoleSelector
                         currentRole={member.role}

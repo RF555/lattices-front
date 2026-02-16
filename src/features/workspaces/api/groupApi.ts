@@ -1,6 +1,11 @@
 import { apiClient } from '@lib/api/client';
 import type { ListResponse, SingleResponse } from '@lib/api/types';
-import type { Group, GroupMember, CreateGroupInput, UpdateGroupInput } from '../types/group';
+import type {
+  Group,
+  GroupMember,
+  CreateGroupInput,
+  UpdateGroupInput,
+} from '@features/workspaces/types/group';
 
 // ─── API shapes (snake_case) ──────────────────────────────────────────
 

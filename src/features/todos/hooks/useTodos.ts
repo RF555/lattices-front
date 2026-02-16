@@ -3,7 +3,13 @@ import { queryKeys } from '@lib/api/queryKeys';
 import { todoApi } from '../api/todoApi';
 import { buildTodoTree } from '../utils/treeUtils';
 import { TODO_DEFAULTS } from '../constants';
-import type { Todo, CreateTodoInput, UpdateTodoInput, TodoFilters } from '../types/todo';
+import type {
+  Todo,
+  CreateTodoInput,
+  UpdateTodoInput,
+  MoveTodoInput,
+  TodoFilters,
+} from '../types/todo';
 
 export function useTodos(filters?: TodoFilters, workspaceId?: string) {
   const filterKey = { ...(filters ?? {}), workspaceId };
@@ -168,6 +174,19 @@ export function useDeleteTodo() {
     },
 
     onSettled: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
+    },
+  });
+}
+
+export function useMoveTodo() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, input }: { id: string; input: MoveTodoInput }) => todoApi.move(id, input),
+
+    onSettled: () => {
+      // Invalidate ALL todo lists (source + target workspace caches)
       void queryClient.invalidateQueries({ queryKey: queryKeys.todos.lists() });
     },
   });

@@ -150,6 +150,18 @@ describe('Button', () => {
     });
   });
 
+  describe('Type Attribute', () => {
+    it('should default to type="button" to prevent accidental form submissions', () => {
+      render(<Button>Click</Button>);
+      expect(screen.getByRole('button')).toHaveAttribute('type', 'button');
+    });
+
+    it('should allow overriding type to "submit"', () => {
+      render(<Button type="submit">Submit</Button>);
+      expect(screen.getByRole('button')).toHaveAttribute('type', 'submit');
+    });
+  });
+
   describe('Custom Props', () => {
     it('should accept custom className', () => {
       render(<Button className="custom-class">Custom</Button>);
@@ -199,6 +211,39 @@ describe('Button', () => {
     it('should support aria-label', () => {
       render(<Button aria-label="Custom label">Icon</Button>);
       expect(screen.getByRole('button', { name: /custom label/i })).toBeInTheDocument();
+    });
+  });
+
+  describe('Tooltip', () => {
+    it('should show tooltip on focus when tooltip prop is provided', async () => {
+      const user = userEvent.setup();
+      render(<Button tooltip="Save changes">Save</Button>);
+
+      // Focus via tab to trigger tooltip (hover doesn't work in jsdom)
+      await user.tab();
+      expect(screen.getByRole('button', { name: 'Save' })).toHaveFocus();
+
+      await screen.findByRole('tooltip');
+      expect(screen.getByRole('tooltip')).toHaveTextContent('Save changes');
+    });
+
+    it('should not render tooltip when tooltip prop is absent', () => {
+      render(<Button>No tooltip</Button>);
+      // Button renders directly without span wrapper
+      const button = screen.getByRole('button', { name: 'No tooltip' });
+      expect(button.parentElement?.tagName).not.toBe('SPAN');
+    });
+
+    it('should wrap disabled button in span for tooltip accessibility', () => {
+      render(
+        <Button tooltip="Cannot save" disabled>
+          Save
+        </Button>,
+      );
+      const button = screen.getByRole('button', { name: 'Save' });
+      const wrapper = button.parentElement;
+      expect(wrapper?.tagName).toBe('SPAN');
+      expect(wrapper).toHaveAttribute('tabIndex', '0');
     });
   });
 

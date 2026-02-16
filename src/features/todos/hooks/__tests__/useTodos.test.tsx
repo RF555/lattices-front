@@ -13,7 +13,7 @@ import {
   useDeleteTodo,
   useToggleTodo,
 } from '../useTodos';
-import type { Todo } from '../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const API_VERSION = import.meta.env.VITE_API_VERSION || 'v1';

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
-import { activityApi } from '../api/activityApi';
+import { activityApi } from '@features/workspaces/api/activityApi';
 
 export function useWorkspaceActivity(
   workspaceId: string,

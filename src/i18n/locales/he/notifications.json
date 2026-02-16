@@ -55,5 +55,8 @@
     "invitation.received": "הזמנה התקבלה",
     "invitation.accepted": "הזמנה אושרה",
     "group.member_added": "נוספת לקבוצה"
+  },
+  "tooltips": {
+    "notifications": "התראות"
   }
 }

@@ -1,10 +1,11 @@
 import { useMemo } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useTodoUiStore } from '../../stores/todoUiStore';
-import { useTodos } from '../../hooks/useTodos';
+import { Tooltip } from '@components/ui/Tooltip';
+import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
+import { useTodos } from '@features/todos/hooks/useTodos';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
-import { getAncestorPath } from '../../utils/treeUtils';
+import { getAncestorPath } from '@features/todos/utils/treeUtils';
 
 interface TodoBreadcrumbProps {
   todoId: string;
@@ -31,17 +32,18 @@ export function TodoBreadcrumb({ todoId }: TodoBreadcrumbProps) {
       {ancestors.map((ancestor, index) => (
         <span key={ancestor.id} className="flex items-center gap-1 shrink-0">
           {index > 0 && <ChevronRight className="w-3 h-3 shrink-0 rtl:-scale-x-100" />}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedId(ancestor.id);
-            }}
-            className="hover:text-gray-600 hover:underline truncate max-w-[80px] sm:max-w-[120px]"
-            title={ancestor.title}
-          >
-            {ancestor.title}
-          </button>
+          <Tooltip content={ancestor.title}>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedId(ancestor.id);
+              }}
+              className="hover:text-gray-600 hover:underline truncate max-w-[80px] sm:max-w-[120px]"
+            >
+              {ancestor.title}
+            </button>
+          </Tooltip>
         </span>
       ))}
       <ChevronRight className="w-3 h-3 shrink-0 rtl:-scale-x-100" />

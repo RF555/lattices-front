@@ -144,5 +144,19 @@
       "connecting": "\u05de\u05ea\u05d7\u05d1\u05e8 \u05de\u05d7\u05d3\u05e9...",
       "disconnected": "\u05de\u05e0\u05d5\u05ea\u05e7"
     }
+  },
+  "tooltips": {
+    "workspaceOwner": "בעלים של סביבת העבודה",
+    "memberActions": "פעולות חבר",
+    "moreMembers": "ו-{{count}} נוספים",
+    "moreViewers": "ו-{{count}} נוספים צופים",
+    "revokeInvitation": "ביטול הזמנה",
+    "switchWorkspace": "החלף סביבת עבודה",
+    "closeSidebar": "סגור סרגל צד",
+    "back": "חזרה",
+    "deleteGroup": "מחק קבוצה",
+    "removeMember": "הסר חבר",
+    "dismissConflict": "התעלם",
+    "declineInvitation": "דחה הזמנה"
   }
 }

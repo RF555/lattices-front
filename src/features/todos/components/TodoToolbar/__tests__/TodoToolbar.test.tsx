@@ -9,14 +9,14 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { TodoToolbar } from '../TodoToolbar';
-import type { Todo } from '../../../types/todo';
-import * as useTodosModule from '../../../hooks/useTodos';
-import * as todoUiStoreModule from '../../../stores/todoUiStore';
+import type { Todo } from '@features/todos/types/todo';
+import * as useTodosModule from '@features/todos/hooks/useTodos';
+import * as todoUiStoreModule from '@features/todos/stores/todoUiStore';
 import * as workspaceUiStoreModule from '@features/workspaces/stores/workspaceUiStore';
 
 // Mock hooks and stores
-vi.mock('../../../hooks/useTodos');
-vi.mock('../../../stores/todoUiStore');
+vi.mock('@features/todos/hooks/useTodos');
+vi.mock('@features/todos/stores/todoUiStore');
 vi.mock('@features/workspaces/stores/workspaceUiStore');
 
 // Mock react-i18next
@@ -36,6 +36,7 @@ vi.mock('react-i18next', () => ({
       if (key === 'toolbar.collapseAll') return 'Collapse all';
       if (key === 'toolbar.showFilters') return 'Show filters';
       if (key === 'toolbar.hideFilters') return 'Hide filters';
+      if (key === 'tooltips.sortBy') return 'Sort by';
       return key;
     },
   }),
@@ -74,6 +75,7 @@ describe('TodoToolbar', () => {
     setSortBy: vi.fn(),
     sortOrder: 'asc' as const,
     setSortOrder: vi.fn(),
+    expandedIds: new Set<string>(),
     expandAll: vi.fn(),
     collapseAll: vi.fn(),
     filterTagIds: [],
@@ -271,7 +273,7 @@ describe('TodoToolbar', () => {
       const user = userEvent.setup();
       render(<TodoToolbar />);
 
-      const sortOrderButton = screen.getAllByTitle('Sort descending')[0];
+      const sortOrderButton = screen.getAllByLabelText('Sort descending')[0];
       await user.click(sortOrderButton);
 
       expect(mockUseTodoUiStore.setSortOrder).toHaveBeenCalledWith('desc');
@@ -285,7 +287,7 @@ describe('TodoToolbar', () => {
 
       render(<TodoToolbar />);
 
-      expect(screen.getAllByTitle('Sort descending')[0]).toBeInTheDocument();
+      expect(screen.getAllByLabelText('Sort descending')[0]).toBeInTheDocument();
     });
 
     it('should show correct icon and title for descending order', () => {
@@ -296,7 +298,17 @@ describe('TodoToolbar', () => {
 
       render(<TodoToolbar />);
 
-      expect(screen.getAllByTitle('Sort ascending')[0]).toBeInTheDocument();
+      expect(screen.getAllByLabelText('Sort ascending')[0]).toBeInTheDocument();
+    });
+
+    it('should show "Sort by" tooltip on sort dropdown focus', async () => {
+      render(<TodoToolbar />);
+
+      const sortSelect = screen.getAllByRole('combobox')[0];
+      sortSelect.focus();
+
+      const tooltip = await screen.findByRole('tooltip');
+      expect(tooltip).toHaveTextContent('Sort by');
     });
   });
 
@@ -374,8 +386,8 @@ describe('TodoToolbar', () => {
     });
   });
 
-  describe('Expand/Collapse Buttons', () => {
-    it('should call expandAll with all todo IDs when expand button is clicked', () => {
+  describe('Expand/Collapse Toggle Button', () => {
+    it('should show expand button and call expandAll when nothing is expanded', () => {
       const todos = [
         createMockTodo('1', 'Parent 1', {
           children: [
@@ -394,27 +406,81 @@ describe('TodoToolbar', () => {
         isError: false,
       } as ReturnType<typeof useTodosModule.useTodos>);
 
-      const { container } = render(<TodoToolbar />);
+      render(<TodoToolbar />);
 
-      const expandButtons = container.querySelectorAll('[title="Expand all"]');
-      const expandButton = expandButtons[0] as HTMLElement;
-      expandButton.click();
+      // Should show "Expand all" aria-label (not collapsed)
+      const toggleButton = screen.getAllByLabelText('Expand all')[0];
+      expect(toggleButton).toBeInTheDocument();
+      toggleButton.click();
 
-      // Should collect all IDs recursively
       expect(mockUseTodoUiStore.expandAll).toHaveBeenCalledWith(['1', '1-1', '1-2', '2']);
     });
 
-    it('should call collapseAll when collapse button is clicked', () => {
-      const { container } = render(<TodoToolbar />);
+    it('should show collapse button and call collapseAll when all are expanded', () => {
+      const todos = [
+        createMockTodo('1', 'Parent 1', {
+          children: [createMockTodo('1-1', 'Child 1-1', { parentId: '1' })],
+        }),
+        createMockTodo('2', 'Parent 2'),
+      ];
 
-      const collapseButtons = container.querySelectorAll('[title="Collapse all"]');
-      const collapseButton = collapseButtons[0] as HTMLElement;
-      collapseButton.click();
+      vi.mocked(useTodosModule.useTodos).mockReturnValue({
+        data: todos,
+        isLoading: false,
+        error: null,
+        isSuccess: true,
+        isError: false,
+      } as ReturnType<typeof useTodosModule.useTodos>);
+
+      // All IDs are expanded
+      vi.mocked(todoUiStoreModule.useTodoUiStore).mockReturnValue({
+        ...mockUseTodoUiStore,
+        expandedIds: new Set(['1', '1-1', '2']),
+      });
+
+      render(<TodoToolbar />);
+
+      // Should show "Collapse all" aria-label
+      const toggleButton = screen.getAllByLabelText('Collapse all')[0];
+      expect(toggleButton).toBeInTheDocument();
+      toggleButton.click();
 
       expect(mockUseTodoUiStore.collapseAll).toHaveBeenCalled();
     });
 
-    it('should pass empty array to expandAll when todos is undefined', () => {
+    it('should show collapse button when partially expanded', () => {
+      const todos = [
+        createMockTodo('1', 'Parent 1', {
+          children: [createMockTodo('1-1', 'Child 1-1', { parentId: '1' })],
+        }),
+        createMockTodo('2', 'Parent 2'),
+      ];
+
+      vi.mocked(useTodosModule.useTodos).mockReturnValue({
+        data: todos,
+        isLoading: false,
+        error: null,
+        isSuccess: true,
+        isError: false,
+      } as ReturnType<typeof useTodosModule.useTodos>);
+
+      // Only some IDs are expanded
+      vi.mocked(todoUiStoreModule.useTodoUiStore).mockReturnValue({
+        ...mockUseTodoUiStore,
+        expandedIds: new Set(['1']),
+      });
+
+      render(<TodoToolbar />);
+
+      // Should show "Collapse all" (some are expanded)
+      const toggleButton = screen.getAllByLabelText('Collapse all')[0];
+      expect(toggleButton).toBeInTheDocument();
+      toggleButton.click();
+
+      expect(mockUseTodoUiStore.collapseAll).toHaveBeenCalled();
+    });
+
+    it('should show expand button when todos is undefined', () => {
       vi.mocked(useTodosModule.useTodos).mockReturnValue({
         data: undefined,
         isLoading: true,
@@ -423,11 +489,11 @@ describe('TodoToolbar', () => {
         isError: false,
       } as ReturnType<typeof useTodosModule.useTodos>);
 
-      const { container } = render(<TodoToolbar />);
+      render(<TodoToolbar />);
 
-      const expandButtons = container.querySelectorAll('[title="Expand all"]');
-      const expandButton = expandButtons[0] as HTMLElement;
-      expandButton.click();
+      const toggleButton = screen.getAllByLabelText('Expand all')[0];
+      expect(toggleButton).toBeInTheDocument();
+      toggleButton.click();
 
       expect(mockUseTodoUiStore.expandAll).toHaveBeenCalledWith([]);
     });
@@ -457,11 +523,10 @@ describe('TodoToolbar', () => {
         isError: false,
       } as ReturnType<typeof useTodosModule.useTodos>);
 
-      const { container } = render(<TodoToolbar />);
+      render(<TodoToolbar />);
 
-      const expandButtons = container.querySelectorAll('[title="Expand all"]');
-      const expandButton = expandButtons[0] as HTMLElement;
-      expandButton.click();
+      const toggleButton = screen.getAllByLabelText('Expand all')[0];
+      toggleButton.click();
 
       expect(mockUseTodoUiStore.expandAll).toHaveBeenCalledWith(['1', '1-1', '1-1-1', '1-1-1-1']);
     });

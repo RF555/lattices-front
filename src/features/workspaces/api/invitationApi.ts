@@ -5,7 +5,7 @@ import type {
   Invitation,
   InvitationCreatedResult,
   WorkspaceRole,
-} from '../types/workspace';
+} from '@features/workspaces/types/workspace';
 
 /** Raw invitation shape returned by the API (snake_case). */
 interface ApiInvitation {

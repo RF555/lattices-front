@@ -1,11 +1,24 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUpdateTag } from '../../hooks/useTags';
+import { useUpdateTag } from '@features/tags/hooks/useTags';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
-import { TAG_COLORS } from '../../types/tag';
+import { Tooltip } from '@components/ui/Tooltip';
+import { TAG_COLORS } from '@features/tags/types/tag';
 import { cn } from '@lib/utils/cn';
-import type { Tag } from '../../types/tag';
+import type { Tag } from '@features/tags/types/tag';
+
+const COLOR_KEYS: Record<string, string> = {
+  '#ef4444': 'red',
+  '#f97316': 'orange',
+  '#eab308': 'yellow',
+  '#22c55e': 'green',
+  '#14b8a6': 'teal',
+  '#3b82f6': 'blue',
+  '#8b5cf6': 'violet',
+  '#ec4899': 'pink',
+  '#6b7280': 'gray',
+};
 
 interface TagEditModalProps {
   tag: Tag;
@@ -70,18 +83,19 @@ export function TagEditModal({ tag, onClose }: TagEditModalProps) {
             </span>
             <div className="flex gap-2" role="radiogroup" aria-labelledby="tag-edit-color-label">
               {TAG_COLORS.map((c) => (
-                <button
-                  key={c}
-                  type="button"
-                  className={cn(
-                    'w-8 h-8 rounded-full',
-                    color === c && 'ring-2 ring-offset-2 ring-gray-400',
-                  )}
-                  style={{ backgroundColor: c }}
-                  onClick={() => {
-                    setColor(c);
-                  }}
-                />
+                <Tooltip key={c} content={t(`colors.${COLOR_KEYS[c]}` as never)}>
+                  <button
+                    type="button"
+                    className={cn(
+                      'w-8 h-8 rounded-full',
+                      color === c && 'ring-2 ring-offset-2 ring-gray-400',
+                    )}
+                    style={{ backgroundColor: c }}
+                    onClick={() => {
+                      setColor(c);
+                    }}
+                  />
+                </Tooltip>
               ))}
             </div>
           </div>

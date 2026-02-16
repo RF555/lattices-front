@@ -2,8 +2,9 @@ import { NavLink, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { CheckSquare, Tag, Users, Activity, Settings, UsersRound, X } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
-import { useWorkspaceUiStore } from '../../stores/workspaceUiStore';
-import { useWorkspacePermission } from '../../hooks/useWorkspacePermission';
+import { Tooltip } from '@components/ui/Tooltip';
+import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
+import { useWorkspacePermission } from '@features/workspaces/hooks/useWorkspacePermission';
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
@@ -26,14 +27,16 @@ export function WorkspaceSidebar() {
         <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400">
           {t('sidebar.navigation')}
         </h3>
-        <button
-          type="button"
-          onClick={toggleSidebar}
-          className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-          aria-label={t('sidebar.close')}
-        >
-          <X className="h-4 w-4" />
-        </button>
+        <Tooltip content={t('tooltips.closeSidebar')}>
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+            aria-label={t('sidebar.close')}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </Tooltip>
       </div>
 
       <nav className="space-y-1">

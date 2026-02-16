@@ -9,14 +9,14 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
-import type { Todo } from '../../../types/todo';
-import * as useTodosModule from '../../../hooks/useTodos';
-import * as todoUiStoreModule from '../../../stores/todoUiStore';
+import type { Todo } from '@features/todos/types/todo';
+import * as useTodosModule from '@features/todos/hooks/useTodos';
+import * as todoUiStoreModule from '@features/todos/stores/todoUiStore';
 import * as workspaceUiStoreModule from '@features/workspaces/stores/workspaceUiStore';
 
 // Mock hooks and stores
-vi.mock('../../../hooks/useTodos');
-vi.mock('../../../stores/todoUiStore');
+vi.mock('@features/todos/hooks/useTodos');
+vi.mock('@features/todos/stores/todoUiStore');
 vi.mock('@features/workspaces/stores/workspaceUiStore');
 
 // Mock react-i18next
@@ -305,7 +305,7 @@ describe('TodoBreadcrumb', () => {
       expect(mockClickHandler).not.toHaveBeenCalled();
     });
 
-    it('should set title attribute with full task name for truncated titles', () => {
+    it('should render full task name text for truncated titles', () => {
       const todos = [
         createMockTodo('parent-1', 'Very Long Parent Task Name That Will Be Truncated', {
           children: [createMockTodo('child-1', 'Child Task', { parentId: 'parent-1' })],
@@ -323,10 +323,8 @@ describe('TodoBreadcrumb', () => {
       render(<TodoBreadcrumb todoId="child-1" />);
 
       const ancestorButton = screen.getByText('Very Long Parent Task Name That Will Be Truncated');
-      expect(ancestorButton).toHaveAttribute(
-        'title',
-        'Very Long Parent Task Name That Will Be Truncated',
-      );
+      expect(ancestorButton).toBeInTheDocument();
+      expect(ancestorButton).toHaveClass('truncate');
     });
 
     it('should navigate to correct ancestor when multiple ancestors are present', async () => {

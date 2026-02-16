@@ -3,7 +3,7 @@ import { Check } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 import { Button } from '@components/ui/Button';
 import { Spinner } from '@components/ui/Spinner';
-import { useNotificationActions } from '../../hooks/useNotificationActions';
+import { useNotificationActions } from '@features/notifications/hooks/useNotificationActions';
 import { NotificationItem } from '../NotificationItem/NotificationItem';
 
 interface NotificationPanelProps {

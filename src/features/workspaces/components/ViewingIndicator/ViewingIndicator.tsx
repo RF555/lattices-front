@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Eye } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
+import { Tooltip } from '@components/ui/Tooltip';
 import type { PresenceUser } from '@lib/realtime';
 
 interface ViewingIndicatorProps {
@@ -18,37 +19,40 @@ export function ViewingIndicator({ viewers, className }: ViewingIndicatorProps) 
   if (viewers.length === 0) return null;
 
   return (
-    <div
-      className={cn('inline-flex items-center gap-1', className)}
-      title={t('realtime.viewingTooltip', {
+    <Tooltip
+      content={t('realtime.viewingTooltip', {
         names: viewers.map((v) => v.displayName).join(', '),
       })}
     >
-      <Eye className="h-3 w-3 text-blue-400" />
-      <div className="flex -space-x-1.5">
-        {viewers.slice(0, 3).map((viewer) =>
-          viewer.avatarUrl ? (
-            <img
-              key={viewer.userId}
-              src={viewer.avatarUrl}
-              alt={viewer.displayName}
-              className="h-4 w-4 rounded-full border border-white object-cover"
-            />
-          ) : (
-            <div
-              key={viewer.userId}
-              className="h-4 w-4 rounded-full border border-white bg-blue-100 flex items-center justify-center text-[8px] font-bold text-blue-600"
-            >
-              {viewer.displayName.slice(0, 1).toUpperCase()}
-            </div>
-          ),
-        )}
-        {viewers.length > 3 && (
-          <div className="h-4 w-4 rounded-full border border-white bg-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-600">
-            +{viewers.length - 3}
-          </div>
-        )}
+      <div className={cn('inline-flex items-center gap-1', className)}>
+        <Eye className="h-3 w-3 text-blue-400" />
+        <div className="flex -space-x-1.5">
+          {viewers.slice(0, 3).map((viewer) =>
+            viewer.avatarUrl ? (
+              <img
+                key={viewer.userId}
+                src={viewer.avatarUrl}
+                alt={viewer.displayName}
+                className="h-4 w-4 rounded-full border border-white object-cover"
+              />
+            ) : (
+              <div
+                key={viewer.userId}
+                className="h-4 w-4 rounded-full border border-white bg-blue-100 flex items-center justify-center text-[8px] font-bold text-blue-600"
+              >
+                {viewer.displayName.slice(0, 1).toUpperCase()}
+              </div>
+            ),
+          )}
+          {viewers.length > 3 && (
+            <Tooltip content={t('tooltips.moreViewers', { count: viewers.length - 3 })}>
+              <div className="h-4 w-4 rounded-full border border-white bg-gray-200 flex items-center justify-center text-[8px] font-bold text-gray-600">
+                +{viewers.length - 3}
+              </div>
+            </Tooltip>
+          )}
+        </div>
       </div>
-    </div>
+    </Tooltip>
   );
 }

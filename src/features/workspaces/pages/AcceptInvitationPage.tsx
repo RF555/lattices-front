@@ -1,4 +1,4 @@
-import { AcceptInvitation } from '../components/AcceptInvitation/AcceptInvitation';
+import { AcceptInvitation } from '@features/workspaces/components/AcceptInvitation/AcceptInvitation';
 
 export default function AcceptInvitationPage() {
   return <AcceptInvitation />;

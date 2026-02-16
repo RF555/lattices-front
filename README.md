@@ -17,6 +17,7 @@ Hierarchical task management application built with React, TypeScript, and Vite.
 | Virtualization | @tanstack/react-virtual                 |
 | Bottom Sheets  | vaul                                    |
 | Swipe Gestures | react-swipeable                         |
+| Brand          | Custom Hasse diagram SVG logos          |
 | PWA            | vite-plugin-pwa + Workbox               |
 | Offline        | @tanstack/react-query-persist-client    |
 | Testing        | Vitest + React Testing Library + MSW    |
@@ -35,6 +36,7 @@ src/
 ├── constants/              # Centralized typed constants (timing, z-index, breakpoints, keys)
 ├── components/             # Shared UI components
 │   ├── ui/                 # Atoms: Button, Input, Modal, Skeleton, BottomSheet, FAB...
+│   ├── brand/              # LatticesLogo (Hasse diagram SVGs)
 │   ├── layout/             # MainLayout, PageLoader, BottomNav, SettingsSheet, WorkspaceSheet
 │   ├── feedback/           # ConfirmationDialog
 │   ├── Toast/              # Toast notification system
@@ -180,8 +182,10 @@ Todos are stored flat on the server and assembled into a tree on the client usin
 - Keyboard navigation (arrow keys, vim bindings, Home/End)
 - Filtering by completion status, tags, and search query
 - Sorting by position, creation date, date updated, or alphabetical
-- Detail panel (desktop: inline panel, mobile: bottom sheet via vaul)
-- Swipe-to-reveal actions on mobile (swipe left to delete, swipe right to complete, full-swipe auto-trigger at 50%, RTL-aware)
+- Detail panel (desktop: inline panel, mobile: bottom sheet via vaul) with workspace move, parent picker, tag picker, and description editing
+- Workspace move — Move a task (and subtree) between workspaces via a workspace picker in the detail panel, with confirmation dialog when subtasks or tags are affected
+- Inline title editing (double-click to edit, Enter to save, Escape to cancel)
+- Swipe-to-reveal actions on mobile (swipe left to delete, swipe right to complete, full-swipe auto-trigger at 60%, RTL-aware via CSS logical properties)
 
 ### Tags
 
@@ -237,7 +241,7 @@ The project enforces strict code quality standards via automated tooling:
 
 ## Testing
 
-1118 tests across 66 test files using Vitest + React Testing Library + MSW.
+1268 tests across 76 test files using Vitest + React Testing Library + MSW.
 
 ```bash
 pnpm test          # Watch mode
@@ -256,7 +260,7 @@ pnpm test:coverage # With coverage report
 - API clients (todoApi, tagApi, workspaceApi, invitationApi, ApiClient)
 - React Query hooks with optimistic updates (useTodos, useTags, useWorkspaces, useWorkspaceMembers, useGroups, useInvitations)
 - Zustand stores (todoUiStore, workspaceUiStore, authStore, toastStore, mobileNavStore)
-- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, InvitationBanner, AcceptInvitation, CreateWorkspaceDialog, ActivityFeed, NotificationBell, NotificationPanel, NotificationItem, NotificationPreferences, NotificationsPage, Modal, Input, Button, BottomSheet, FAB, BottomNav, SettingsSheet, WorkspaceSheet, SwipeableTodoRow, TodoDetailSheet, QuickAddSheet, ReloadPrompt, OfflineIndicator, etc.)
+- Components (CreateTodoForm, RegisterForm, LoginForm, WorkspaceSwitcher, MembersList, InviteMemberDialog, InvitationBanner, AcceptInvitation, CreateWorkspaceDialog, ActivityFeed, NotificationBell, NotificationPanel, NotificationItem, NotificationPreferences, NotificationsPage, TodoBreadcrumb, TodoToolbar, TodoDetailPanel, TodoDetailSheet, WorkspacePicker, Modal, Input, Button, BottomSheet, FAB, BottomNav, SettingsSheet, WorkspaceSheet, SwipeableTodoRow, QuickAddSheet, ReloadPrompt, OfflineIndicator, etc.)
 - Notification hooks (useNotifications, useUnreadCount, useMarkAsRead, useMarkAllAsRead, useDeleteNotification, useNotificationPreferences, useUpdateNotificationPreferences, useNotificationTypes)
 - Notification utilities (formatNotificationMessage, getEntityRoute, getActorInitials)
 - Utility hooks (useWorkspacePermission, useIsMobile, useDirection, useAnnounce, useFocusTrap)

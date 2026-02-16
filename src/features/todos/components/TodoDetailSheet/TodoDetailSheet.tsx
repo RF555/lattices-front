@@ -4,16 +4,19 @@ import { useTranslation } from 'react-i18next';
 import { BottomSheet } from '@components/ui/BottomSheet';
 import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
+import { Tooltip } from '@components/ui/Tooltip';
+import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
 import { TagPicker } from '@features/tags/components/TagPicker';
 import { TagBadge } from '@features/tags/components/TagBadge';
 import { ParentPicker } from '../ParentPicker';
+import { WorkspacePicker } from '../WorkspacePicker/WorkspacePicker';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
 import { TodoCheckbox } from '../TodoTree/TodoCheckbox';
-import { useUpdateTodo, useToggleTodo } from '../../hooks/useTodos';
+import { useUpdateTodo, useToggleTodo, useMoveTodo } from '@features/todos/hooks/useTodos';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { formatDate, formatDateFull } from '@lib/utils/formatDate';
-import type { Todo } from '../../types/todo';
+import type { Todo } from '@features/todos/types/todo';
 
 interface TodoDetailSheetProps {
   todo: Todo;
@@ -27,7 +30,9 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
   const [description, setDescription] = useState(todo.description ?? '');
   const [localTagIds, setLocalTagIds] = useState<string[]>(todo.tags.map((tag) => tag.id));
   const [localParentId, setLocalParentId] = useState<string | null>(todo.parentId);
+  const [localWorkspaceId, setLocalWorkspaceId] = useState<string | null>(todo.workspaceId ?? null);
   const [isDirty, setIsDirty] = useState(false);
+  const [showMoveConfirm, setShowMoveConfirm] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const activeWorkspaceId = useActiveWorkspaceId();
@@ -35,8 +40,11 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
   const updateMutate = updateMutation.mutate;
   const toggleMutation = useToggleTodo();
   const toggleMutate = toggleMutation.mutate;
+  const moveMutation = useMoveTodo();
   const addTagMutation = useAddTagToTodo();
   const removeTagMutation = useRemoveTagFromTodo();
+
+  const workspaceChanged = localWorkspaceId !== (todo.workspaceId ?? null);
 
   // Sync from server state when opening or when todo changes
   useEffect(() => {
@@ -44,10 +52,11 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
       setDescription(todo.description ?? '');
       setLocalTagIds(todo.tags.map((tag) => tag.id));
       setLocalParentId(todo.parentId);
+      setLocalWorkspaceId(todo.workspaceId ?? null);
       setIsDirty(false);
       setIsEditing(false);
     }
-  }, [open, todo.id, todo.description, todo.tags, todo.parentId]);
+  }, [open, todo.id, todo.description, todo.tags, todo.parentId, todo.workspaceId]);
 
   // Focus textarea when entering edit mode
   useEffect(() => {
@@ -56,51 +65,77 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
     }
   }, [isEditing]);
 
-  const handleSave = useCallback(() => {
-    // Build update input: description + parentId (only if changed)
-    const trimmed = description.trim();
-    const descValue = trimmed || null;
-    const input: { description: string | null; parentId?: string | null } = {
-      description: descValue,
-    };
-    if (localParentId !== todo.parentId) {
-      input.parentId = localParentId;
-    }
-    updateMutate({ id: todo.id, input });
-
-    // Compute tag diffs and fire mutations
-    const serverTagIds = new Set(todo.tags.map((tag) => tag.id));
-    const localSet = new Set(localTagIds);
-    for (const tagId of localTagIds) {
-      if (!serverTagIds.has(tagId)) {
-        addTagMutation.mutate({ todoId: todo.id, tagId });
+  const executeSave = useCallback(() => {
+    if (workspaceChanged) {
+      // Move to different workspace — tags are stripped by backend, parent is detached
+      moveMutation.mutate({
+        id: todo.id,
+        input: { targetWorkspaceId: localWorkspaceId },
+      });
+    } else {
+      // Regular update: description + parentId (only if changed)
+      const trimmed = description.trim();
+      const descValue = trimmed || null;
+      const input: { description: string | null; parentId?: string | null } = {
+        description: descValue,
+      };
+      if (localParentId !== todo.parentId) {
+        input.parentId = localParentId;
       }
-    }
-    for (const tagId of serverTagIds) {
-      if (!localSet.has(tagId)) {
-        removeTagMutation.mutate({ todoId: todo.id, tagId });
+      updateMutate({ id: todo.id, input });
+
+      // Compute tag diffs and fire mutations
+      const serverTagIds = new Set(todo.tags.map((tag) => tag.id));
+      const localSet = new Set(localTagIds);
+      for (const tagId of localTagIds) {
+        if (!serverTagIds.has(tagId)) {
+          addTagMutation.mutate({ todoId: todo.id, tagId });
+        }
+      }
+      for (const tagId of serverTagIds) {
+        if (!localSet.has(tagId)) {
+          removeTagMutation.mutate({ todoId: todo.id, tagId });
+        }
       }
     }
 
     setIsDirty(false);
     setIsEditing(false);
   }, [
+    workspaceChanged,
+    moveMutation,
     updateMutate,
     todo,
     description,
     localParentId,
+    localWorkspaceId,
     localTagIds,
     addTagMutation,
     removeTagMutation,
   ]);
 
+  const handleSave = useCallback(() => {
+    // Show confirmation if workspace is changing and todo has children or tags
+    if (workspaceChanged && (todo.childCount > 0 || todo.tags.length > 0)) {
+      setShowMoveConfirm(true);
+      return;
+    }
+    executeSave();
+  }, [workspaceChanged, todo.childCount, todo.tags.length, executeSave]);
+
+  const handleConfirmMove = useCallback(() => {
+    setShowMoveConfirm(false);
+    executeSave();
+  }, [executeSave]);
+
   const handleCancel = useCallback(() => {
     setDescription(todo.description ?? '');
     setLocalTagIds(todo.tags.map((tag) => tag.id));
     setLocalParentId(todo.parentId);
+    setLocalWorkspaceId(todo.workspaceId ?? null);
     setIsDirty(false);
     setIsEditing(false);
-  }, [todo.description, todo.tags, todo.parentId]);
+  }, [todo.description, todo.tags, todo.parentId, todo.workspaceId]);
 
   const handleDescriptionChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescription(e.target.value);
@@ -131,6 +166,7 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
           setDescription(todo.description ?? '');
           setLocalTagIds(todo.tags.map((tag) => tag.id));
           setLocalParentId(todo.parentId);
+          setLocalWorkspaceId(todo.workspaceId ?? null);
           setIsDirty(false);
           setIsEditing(false);
         }
@@ -155,6 +191,20 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
         {isEditing ? (
           /* ───── Edit Mode ───── */
           <>
+            {/* Workspace section */}
+            <div className="space-y-1">
+              <span className="block text-xs font-medium text-gray-500">
+                {t('detail.workspace')}
+              </span>
+              <WorkspacePicker
+                currentWorkspaceId={localWorkspaceId}
+                onWorkspaceChange={(wsId) => {
+                  setLocalWorkspaceId(wsId);
+                  setIsDirty(true);
+                }}
+              />
+            </div>
+
             {/* Parent section */}
             <div className="space-y-1">
               <span className="block text-xs font-medium text-gray-500">{t('detail.parent')}</span>
@@ -195,7 +245,7 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
                   setLocalTagIds((prev) => prev.filter((id) => id !== tagId));
                   setIsDirty(true);
                 }}
-                workspaceId={activeWorkspaceId ?? undefined}
+                workspaceId={todo.workspaceId}
               />
             </div>
 
@@ -219,16 +269,18 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
                   <span className="text-gray-400 italic">{t('detail.noDescription')}</span>
                 )}
               </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsEditing(true);
-                }}
-                className="p-1.5 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
-                aria-label={t('detail.editMode')}
-              >
-                <Pencil className="w-4 h-4" />
-              </button>
+              <Tooltip content={t('detail.editMode')}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditing(true);
+                  }}
+                  className="p-1.5 rounded hover:bg-gray-200/60 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
+                  aria-label={t('detail.editMode')}
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+              </Tooltip>
             </div>
 
             {/* Tags (read-only) */}
@@ -244,19 +296,34 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
 
         {/* Timestamps (always visible) */}
         <div className="flex flex-col gap-1 text-xs text-gray-400">
-          <span title={formatDateFull(todo.createdAt)}>
-            {t('detail.created', { date: formatDate(todo.createdAt) })}
-          </span>
-          <span title={formatDateFull(todo.updatedAt)}>
-            {t('detail.updated', { date: formatDate(todo.updatedAt) })}
-          </span>
+          <Tooltip content={formatDateFull(todo.createdAt)}>
+            <span>{t('detail.created', { date: formatDate(todo.createdAt) })}</span>
+          </Tooltip>
+          <Tooltip content={formatDateFull(todo.updatedAt)}>
+            <span>{t('detail.updated', { date: formatDate(todo.updatedAt) })}</span>
+          </Tooltip>
           {todo.completedAt && (
-            <span title={formatDateFull(todo.completedAt)}>
-              {t('detail.completed', { date: formatDate(todo.completedAt) })}
-            </span>
+            <Tooltip content={formatDateFull(todo.completedAt)}>
+              <span>{t('detail.completed', { date: formatDate(todo.completedAt) })}</span>
+            </Tooltip>
           )}
         </div>
       </div>
+
+      {/* Move workspace confirmation dialog */}
+      {showMoveConfirm && (
+        <ConfirmationDialog
+          isOpen
+          title={t('detail.workspaceMoveTitle')}
+          message={t('detail.workspaceMoveConfirm')}
+          confirmLabel={t('detail.workspaceMoveButton')}
+          variant="danger"
+          onConfirm={handleConfirmMove}
+          onCancel={() => {
+            setShowMoveConfirm(false);
+          }}
+        />
+      )}
     </BottomSheet>
   );
 }

@@ -1,9 +1,22 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
-import { useTags, useCreateTag } from '../../hooks/useTags';
+import { Tooltip } from '@components/ui/Tooltip';
+import { useTags, useCreateTag } from '@features/tags/hooks/useTags';
 import { TagBadge } from '../TagBadge';
-import { TAG_COLORS } from '../../types/tag';
+import { TAG_COLORS } from '@features/tags/types/tag';
+
+const COLOR_KEYS: Record<string, string> = {
+  '#ef4444': 'red',
+  '#f97316': 'orange',
+  '#eab308': 'yellow',
+  '#22c55e': 'green',
+  '#14b8a6': 'teal',
+  '#3b82f6': 'blue',
+  '#8b5cf6': 'violet',
+  '#ec4899': 'pink',
+  '#6b7280': 'gray',
+};
 
 interface TagPickerProps {
   selectedIds: string[];
@@ -87,7 +100,7 @@ export function TagPicker({ selectedIds, onSelect, onDeselect, workspaceId }: Ta
           setIsOpen(true);
         }}
         onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          if (e.key === 'Enter' || (e.key === ' ' && !isOpen)) {
             e.preventDefault();
             setIsOpen(true);
           }
@@ -165,18 +178,19 @@ export function TagPicker({ selectedIds, onSelect, onDeselect, workspaceId }: Ta
                   </p>
                   <div className="flex gap-1">
                     {TAG_COLORS.map((color) => (
-                      <button
-                        key={color}
-                        type="button"
-                        className={cn(
-                          'w-7 h-7 sm:w-5 sm:h-5 rounded-full',
-                          newTagColor === color && 'ring-2 ring-offset-1 ring-gray-400',
-                        )}
-                        style={{ backgroundColor: color }}
-                        onClick={() => {
-                          setNewTagColor(color);
-                        }}
-                      />
+                      <Tooltip key={color} content={t(`colors.${COLOR_KEYS[color]}` as never)}>
+                        <button
+                          type="button"
+                          className={cn(
+                            'w-7 h-7 sm:w-5 sm:h-5 rounded-full',
+                            newTagColor === color && 'ring-2 ring-offset-1 ring-gray-400',
+                          )}
+                          style={{ backgroundColor: color }}
+                          onClick={() => {
+                            setNewTagColor(color);
+                          }}
+                        />
+                      </Tooltip>
                     ))}
                   </div>
                   <div className="flex gap-2">

@@ -68,5 +68,13 @@
     "minutesAgo": "{{count}}m ago",
     "hoursAgo": "{{count}}h ago",
     "daysAgo": "{{count}}d ago"
+  },
+  "tooltips": {
+    "selectLanguage": "Select language",
+    "languageEnglish": "English",
+    "languageHebrew": "Hebrew",
+    "noChanges": "No changes to save",
+    "signOut": "Sign out of your account",
+    "back": "Back"
   }
 }

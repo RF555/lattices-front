@@ -68,5 +68,13 @@
     "minutesAgo": "לפני {{count}} דק׳",
     "hoursAgo": "לפני {{count}} שע׳",
     "daysAgo": "לפני {{count}} ימים"
+  },
+  "tooltips": {
+    "selectLanguage": "בחירת שפה",
+    "languageEnglish": "אנגלית",
+    "languageHebrew": "עברית",
+    "noChanges": "אין שינויים לשמירה",
+    "signOut": "התנתקות מהחשבון",
+    "back": "חזרה"
   }
 }

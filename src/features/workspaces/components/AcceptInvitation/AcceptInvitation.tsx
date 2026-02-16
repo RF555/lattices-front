@@ -6,8 +6,8 @@ import { LatticesLogo } from '@components/brand';
 import { Button } from '@components/ui/Button';
 import { Spinner } from '@components/ui/Spinner';
 import { useIsAuthenticated } from '@features/auth/stores/authStore';
-import { useAcceptInvitation } from '../../hooks/useInvitations';
-import { useWorkspaceUiStore } from '../../stores/workspaceUiStore';
+import { useAcceptInvitation } from '@features/workspaces/hooks/useInvitations';
+import { useWorkspaceUiStore } from '@features/workspaces/stores/workspaceUiStore';
 
 type AcceptState = 'loading' | 'success' | 'error';
 

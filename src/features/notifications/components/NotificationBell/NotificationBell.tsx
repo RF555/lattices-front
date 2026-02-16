@@ -1,12 +1,15 @@
 import { useRef, useEffect, useCallback } from 'react';
 import { Bell } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
-import { useUnreadCount } from '../../hooks/useNotifications';
-import { useNotificationUiStore } from '../../stores/notificationUiStore';
-import { MAX_BADGE_COUNT } from '../../constants';
+import { Tooltip } from '@components/ui/Tooltip';
+import { useUnreadCount } from '@features/notifications/hooks/useNotifications';
+import { useNotificationUiStore } from '@features/notifications/stores/notificationUiStore';
+import { MAX_BADGE_COUNT } from '@features/notifications/constants';
 import { NotificationPanel } from '../NotificationPanel/NotificationPanel';
 
 export function NotificationBell() {
+  const { t } = useTranslation('notifications');
   const { data: unreadCount = 0 } = useUnreadCount();
   const panelOpen = useNotificationUiStore((s) => s.panelOpen);
   const togglePanel = useNotificationUiStore((s) => s.togglePanel);
@@ -59,23 +62,25 @@ export function NotificationBell() {
 
   return (
     <div ref={containerRef} className="relative">
-      <button
-        type="button"
-        onClick={togglePanel}
-        className={cn(
-          'relative rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700',
-          'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1',
-          'transition-colors',
-        )}
-        aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
-      >
-        <Bell className="h-5 w-5" />
-        {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
-            {unreadCount > MAX_BADGE_COUNT ? `${MAX_BADGE_COUNT}+` : unreadCount}
-          </span>
-        )}
-      </button>
+      <Tooltip content={t('tooltips.notifications')} enabled={!panelOpen}>
+        <button
+          type="button"
+          onClick={togglePanel}
+          className={cn(
+            'relative rounded-md p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700',
+            'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1',
+            'transition-colors',
+          )}
+          aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+        >
+          <Bell className="h-5 w-5" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+              {unreadCount > MAX_BADGE_COUNT ? `${MAX_BADGE_COUNT}+` : unreadCount}
+            </span>
+          )}
+        </button>
+      </Tooltip>
 
       {panelOpen && (
         <NotificationPanel

@@ -3,11 +3,11 @@ import { render, screen } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { NotificationPreferences } from '../NotificationPreferences/NotificationPreferences';
 import { createMockNotificationPreference } from '@/test/factories';
-import { useNotificationUiStore } from '../../stores/notificationUiStore';
+import { useNotificationUiStore } from '@features/notifications/stores/notificationUiStore';
 
 const mockUpdatePreferenceMutate = vi.fn();
 
-vi.mock('../../hooks/useNotifications', () => ({
+vi.mock('@features/notifications/hooks/useNotifications', () => ({
   useNotificationPreferences: vi.fn(() => ({
     data: [],
     isLoading: false,
@@ -20,7 +20,7 @@ vi.mock('../../hooks/useNotifications', () => ({
 import {
   useNotificationPreferences,
   useUpdateNotificationPreferences,
-} from '../../hooks/useNotifications';
+} from '@features/notifications/hooks/useNotifications';
 const mockUseNotificationPreferences = vi.mocked(useNotificationPreferences);
 const mockUseUpdateNotificationPreferences = vi.mocked(useUpdateNotificationPreferences);
 

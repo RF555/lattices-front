@@ -3,6 +3,7 @@ import { Check } from 'lucide-react';
 import { cn } from '@lib/utils/cn';
 import { Button } from '@components/ui/Button';
 import { Spinner } from '@components/ui/Spinner';
+import { Tooltip } from '@components/ui/Tooltip';
 import { useNotificationActions } from '../hooks/useNotificationActions';
 import { NotificationItem } from '../components/NotificationItem/NotificationItem';
 
@@ -66,13 +67,16 @@ export default function NotificationsPage() {
               {t('filterUnread')}
             </button>
             {/* Mark all read -- mobile only (desktop has it in the header) */}
-            <button
-              type="button"
-              onClick={handleMarkAllRead}
-              className="sm:hidden flex items-center gap-1 px-3 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              <Check className="h-3.5 w-3.5" />
-            </button>
+            <Tooltip content={t('markAllRead')}>
+              <button
+                type="button"
+                onClick={handleMarkAllRead}
+                className="sm:hidden flex items-center gap-1 px-3 py-3 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label={t('markAllRead')}
+              >
+                <Check className="h-3.5 w-3.5" />
+              </button>
+            </Tooltip>
           </div>
         </div>
 

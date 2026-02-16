@@ -1,8 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { queryKeys } from '@lib/api/queryKeys';
 import { toast } from '@stores/toastStore';
-import { groupApi } from '../api/groupApi';
-import type { Group, GroupMember, CreateGroupInput, UpdateGroupInput } from '../types/group';
+import { groupApi } from '@features/workspaces/api/groupApi';
+import type {
+  Group,
+  GroupMember,
+  CreateGroupInput,
+  UpdateGroupInput,
+} from '@features/workspaces/types/group';
 
 export function useGroups(workspaceId: string | undefined) {
   return useQuery({

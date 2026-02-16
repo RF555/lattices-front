@@ -8,7 +8,7 @@ const mockMutate = vi.fn();
 let mockInvitations = [createMockInvitation({ workspaceName: 'Team Alpha' })];
 let mockIsPending = false;
 
-vi.mock('../../hooks/useInvitations', () => ({
+vi.mock('@features/workspaces/hooks/useInvitations', () => ({
   usePendingInvitations: vi.fn(() => ({
     data: mockInvitations,
   })),

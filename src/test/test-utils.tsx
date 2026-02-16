@@ -14,6 +14,7 @@
 import { type ReactElement, type ReactNode } from 'react';
 import { render, type RenderOptions } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Provider as TooltipProvider } from '@radix-ui/react-tooltip';
 import { MemoryRouter, type MemoryRouterProps } from 'react-router';
 
 /**
@@ -54,7 +55,9 @@ function AllTheProviders({
 }: AllTheProvidersProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter {...routerProps}>{children}</MemoryRouter>
+      <TooltipProvider delayDuration={0}>
+        <MemoryRouter {...routerProps}>{children}</MemoryRouter>
+      </TooltipProvider>
     </QueryClientProvider>
   );
 }

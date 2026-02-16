@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import { TodoTree } from '../TodoTree';
-import type { Todo } from '../../../types/todo';
-import * as useTodosModule from '../../../hooks/useTodos';
-import * as todoUiStoreModule from '../../../stores/todoUiStore';
+import type { Todo } from '@features/todos/types/todo';
+import * as useTodosModule from '@features/todos/hooks/useTodos';
+import * as todoUiStoreModule from '@features/todos/stores/todoUiStore';
 
 // Mock hooks and stores
-vi.mock('../../../hooks/useTodos');
-vi.mock('../../../stores/todoUiStore');
+vi.mock('@features/todos/hooks/useTodos');
+vi.mock('@features/todos/stores/todoUiStore');
 vi.mock('@features/workspaces/stores/workspaceUiStore', () => ({
   useActiveWorkspaceId: () => 'workspace-1',
 }));

@@ -2,16 +2,27 @@ import { forwardRef, type ButtonHTMLAttributes } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
+import { Tooltip } from '@components/ui/Tooltip';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
+  tooltip?: string;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant = 'primary', size = 'md', isLoading, disabled, children, ...props },
+    {
+      className,
+      variant = 'primary',
+      size = 'md',
+      isLoading,
+      disabled,
+      tooltip,
+      children,
+      ...props
+    },
     ref,
   ) => {
     const { t } = useTranslation();
@@ -31,11 +42,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       lg: 'text-base px-6 py-3',
     };
 
-    return (
+    const isDisabled = disabled ?? isLoading;
+
+    const button = (
       <button
         ref={ref}
+        type="button"
         className={cn(baseStyles, variants[variant], sizes[size], className)}
-        disabled={disabled ?? isLoading}
+        disabled={isDisabled}
         {...props}
       >
         {isLoading ? (
@@ -48,6 +62,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         )}
       </button>
     );
+
+    if (!tooltip) {
+      return button;
+    }
+
+    if (isDisabled) {
+      return (
+        <Tooltip content={tooltip}>
+          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- span needs tabIndex for tooltip on disabled button */}
+          <span tabIndex={0} className="inline-flex">
+            {button}
+          </span>
+        </Tooltip>
+      );
+    }
+
+    return <Tooltip content={tooltip}>{button}</Tooltip>;
   },
 );
 

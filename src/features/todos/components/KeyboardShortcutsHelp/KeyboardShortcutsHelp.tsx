@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal } from '@components/ui/Modal';
+import { Tooltip } from '@components/ui/Tooltip';
 import { cn } from '@lib/utils/cn';
 
 export function KeyboardShortcutsHelp() {
@@ -22,16 +23,18 @@ export function KeyboardShortcutsHelp() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => {
-          setIsOpen(true);
-        }}
-        className="text-xs text-gray-500 hover:text-gray-700"
-        aria-label={t('shortcuts.triggerAriaLabel')}
-      >
-        {t('shortcuts.trigger')}
-      </button>
+      <Tooltip content={t('shortcuts.triggerAriaLabel')}>
+        <button
+          type="button"
+          onClick={() => {
+            setIsOpen(true);
+          }}
+          className="text-xs text-gray-500 hover:text-gray-700"
+          aria-label={t('shortcuts.triggerAriaLabel')}
+        >
+          {t('shortcuts.trigger')}
+        </button>
+      </Tooltip>
 
       <Modal
         isOpen={isOpen}
