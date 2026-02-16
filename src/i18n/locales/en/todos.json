@@ -103,6 +103,30 @@
     "complete": "Complete",
     "uncomplete": "Undo complete"
   },
+  "export": {
+    "button": "Export to Excel",
+    "modalTitle": "Export Tasks to Excel",
+    "workspaceLabel": "Workspace",
+    "allWorkspaces": "All Workspaces",
+    "statusLabel": "Status",
+    "statusAll": "All tasks",
+    "statusCompleted": "Completed only",
+    "statusUncompleted": "Uncompleted only",
+    "exportButton": "Export",
+    "sheetName": "Tasks",
+    "success": "Excel file downloaded successfully",
+    "error": "Failed to generate Excel file",
+    "columns": {
+      "title": "Title",
+      "workspace": "Workspace",
+      "completed": "Completed",
+      "parent": "Parent",
+      "description": "Description",
+      "tags": "Tags",
+      "createdAt": "Date Created",
+      "updatedAt": "Date Updated"
+    }
+  },
   "tooltips": {
     "markComplete": "Mark as complete",
     "markIncomplete": "Mark as incomplete",

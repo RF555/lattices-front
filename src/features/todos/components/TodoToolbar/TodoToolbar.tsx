@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { SquareMinus, SquarePlus, SlidersHorizontal, Search, X } from 'lucide-react';
+import { SquareMinus, SquarePlus, SlidersHorizontal, Search, X, FileDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { DEBOUNCE } from '@/constants';
 import { Tooltip } from '@components/ui/Tooltip';
@@ -8,6 +8,7 @@ import { useTodos } from '@features/todos/hooks/useTodos';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 import { countTodos } from '@features/todos/utils/treeUtils';
 import { TagFilter } from '../TagFilter';
+import { ExportModal } from '@features/todos/components/ExportModal';
 import type { Todo } from '@features/todos/types/todo';
 
 export function TodoToolbar() {
@@ -30,6 +31,8 @@ export function TodoToolbar() {
     toolbarExpanded,
     toggleToolbar,
   } = useTodoUiStore();
+
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
 
   // Fix M11: Debounce search input (300ms)
   const [localSearch, setLocalSearch] = useState(searchQuery);
@@ -170,6 +173,18 @@ export function TodoToolbar() {
               )}
             </button>
           </Tooltip>
+
+          <Tooltip content={t('export.button')}>
+            <button
+              onClick={() => {
+                setIsExportModalOpen(true);
+              }}
+              className="p-1.5 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+              aria-label={t('export.button')}
+            >
+              <FileDown className="w-4 h-4" />
+            </button>
+          </Tooltip>
         </div>
       </div>
 
@@ -303,12 +318,30 @@ export function TodoToolbar() {
                 )}
               </button>
             </Tooltip>
+            <Tooltip content={t('export.button')}>
+              <button
+                onClick={() => {
+                  setIsExportModalOpen(true);
+                }}
+                className="p-2 text-gray-500 hover:text-gray-700 rounded hover:bg-gray-100"
+                aria-label={t('export.button')}
+              >
+                <FileDown className="w-4 h-4" />
+              </button>
+            </Tooltip>
           </div>
 
           {/* Tag filter */}
           <TagFilter />
         </div>
       )}
+
+      <ExportModal
+        isOpen={isExportModalOpen}
+        onClose={() => {
+          setIsExportModalOpen(false);
+        }}
+      />
     </div>
   );
 }
