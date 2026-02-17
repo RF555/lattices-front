@@ -1,5 +1,5 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useIsMobile } from '@hooks/useIsMobile';
 import { VirtualizedTodoRow } from './VirtualizedTodoRow';
@@ -13,6 +13,27 @@ export function VirtualizedTodoList({ items }: VirtualizedTodoListProps) {
   const { t } = useTranslation('todos');
   const parentRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
+
+  // Compute sibling context: group flat items by parentId, assign index within each group
+  const siblingContextMap = useMemo(() => {
+    const context = new Map<string, { siblings: Todo[]; index: number }>();
+    const groups = new Map<string | null, Todo[]>();
+    for (const item of items) {
+      const key = item.parentId;
+      const group = groups.get(key);
+      if (group) {
+        group.push(item);
+      } else {
+        groups.set(key, [item]);
+      }
+    }
+    for (const group of groups.values()) {
+      for (let i = 0; i < group.length; i++) {
+        context.set(group[i].id, { siblings: group, index: i });
+      }
+    }
+    return context;
+  }, [items]);
 
   const virtualizer = useVirtualizer({
     count: items.length,
@@ -41,6 +62,7 @@ export function VirtualizedTodoList({ items }: VirtualizedTodoListProps) {
             <VirtualizedTodoRow
               key={todo.id}
               todo={todo}
+              siblingContext={siblingContextMap.get(todo.id)}
               style={{
                 position: 'absolute',
                 top: 0,

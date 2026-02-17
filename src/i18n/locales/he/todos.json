@@ -50,6 +50,8 @@
   "actions": {
     "editTask": "עריכת משימה",
     "deleteTask": "מחיקת משימה",
+    "moveUp": "הזזה למעלה",
+    "moveDown": "הזזה למטה",
     "collapse": "כיווץ",
     "expand": "הרחבה"
   },
@@ -130,6 +132,8 @@
   "tooltips": {
     "markComplete": "סימון כהושלם",
     "markIncomplete": "ביטול סימון כהושלם",
+    "moveUp": "הזזה למעלה בין אחים",
+    "moveDown": "הזזה למטה בין אחים",
     "hasDescription": "יש תיאור",
     "removeDescription": "הסרת תיאור",
     "removeTags": "הסרת תגיות",

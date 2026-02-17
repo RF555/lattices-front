@@ -181,11 +181,12 @@ Todos are stored flat on the server and assembled into a tree on the client usin
 - Virtual scrolling for large lists (@tanstack/react-virtual, threshold-based activation at 50+ items)
 - Keyboard navigation (arrow keys, vim bindings, Home/End)
 - Filtering by completion status, tags, and search query
-- Sorting by position, creation date, date updated, or alphabetical
+- Sorting by position, creation date, date updated, or alphabetical — date-based sorts use descendant-aware aggregation (bottom-up O(n) pass computes min/max dates across subtrees so parent nodes sort by their descendants' dates)
 - Detail panel (desktop: inline panel, mobile: bottom sheet via vaul) with workspace move, parent picker, tag picker, and description editing
 - Workspace move — Move a task (and subtree) between workspaces via a workspace picker in the detail panel, with confirmation dialog when subtasks or tags are affected
 - Inline title editing (double-click to edit, Enter to save, Escape to cancel)
 - Swipe-to-reveal actions on mobile (swipe left to delete, swipe right to complete, full-swipe auto-trigger at 60%, RTL-aware via CSS logical properties)
+- Excel export — Export todos to `.xlsx` via ExcelJS (lazy-loaded) with workspace and completion status filters, RTL support for Hebrew locale, and dynamic columns
 
 ### Tags
 
@@ -243,7 +244,7 @@ The project enforces strict code quality standards via automated tooling:
 
 ## Testing
 
-1314 tests across 79 test files using Vitest + React Testing Library + MSW.
+1348 tests across 81 test files using Vitest + React Testing Library + MSW.
 
 ```bash
 pnpm test          # Watch mode

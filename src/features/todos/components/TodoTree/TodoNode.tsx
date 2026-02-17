@@ -11,6 +11,8 @@ interface TodoNodeProps {
   depth: number;
   isExpanded: boolean;
   viewingTask?: Map<string, PresenceUser[]>;
+  siblings?: Todo[];
+  siblingIndex?: number;
 }
 
 export const TodoNode = memo(function TodoNode({
@@ -18,6 +20,8 @@ export const TodoNode = memo(function TodoNode({
   depth,
   isExpanded,
   viewingTask,
+  siblings,
+  siblingIndex,
 }: TodoNodeProps) {
   const expandedIds = useTodoUiStore((s) => s.expandedIds);
   const isMobile = useIsMobile();
@@ -37,6 +41,8 @@ export const TodoNode = memo(function TodoNode({
             depth={depth}
             isExpanded={isExpanded}
             hasChildren={hasChildren}
+            siblings={siblings}
+            siblingIndex={siblingIndex}
           />
         </div>
         {viewers.length > 0 && <ViewingIndicator viewers={viewers} className="shrink-0 mr-2" />}
@@ -59,6 +65,8 @@ export const TodoNode = memo(function TodoNode({
                 depth={depth + 1}
                 isExpanded={expandedIds.has(child.id)}
                 viewingTask={viewingTask}
+                siblings={todo.children}
+                siblingIndex={index}
               />
             </div>
           ))}

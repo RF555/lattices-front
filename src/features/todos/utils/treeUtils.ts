@@ -174,6 +174,11 @@ export function getAncestorPath(tree: Todo[], targetId: string): { id: string; t
 /**
  * Sorts a todo tree recursively by the given field and direction.
  * Creates new arrays (immutable) but reuses todo node references.
+ *
+ * - position / title: sort by the node's own value at every level.
+ * - createdAt / updatedAt: sort by the most relevant descendant value
+ *   (min for ascending, max for descending) so that a parent whose subtree
+ *   contains the earliest/latest date bubbles to the correct position.
  */
 export function sortTodoTree(
   todos: Todo[],
@@ -182,21 +187,56 @@ export function sortTodoTree(
 ): Todo[] {
   const direction = sortOrder === 'asc' ? 1 : -1;
 
-  const compareFn = (a: Todo, b: Todo): number => {
-    switch (sortBy) {
-      case 'position':
+  // Position and title: sort by node's own value (unchanged behaviour)
+  if (sortBy === 'position' || sortBy === 'title') {
+    const compareFn = (a: Todo, b: Todo): number => {
+      if (sortBy === 'position') {
         return (a.position - b.position) * direction;
-      case 'createdAt':
-        return a.createdAt.localeCompare(b.createdAt) * direction;
-      case 'updatedAt':
-        return a.updatedAt.localeCompare(b.updatedAt) * direction;
-      case 'title':
-        return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }) * direction;
+      }
+      return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }) * direction;
+    };
+
+    const sortNodes = (nodes: Todo[]): Todo[] => {
+      const sorted = [...nodes].sort(compareFn);
+      return sorted.map((node) =>
+        node.children?.length ? { ...node, children: sortNodes(node.children) } : node,
+      );
+    };
+
+    return sortNodes(todos);
+  }
+
+  // Date-based sorts: use aggregate descendant value
+  const dateField = sortBy; // 'createdAt' | 'updatedAt'
+  const useMin = sortOrder === 'asc';
+  const aggregateMap = new Map<string, string>();
+
+  // Phase 1: bottom-up O(n) pass – compute the extremum date for every node
+  const computeAggregate = (node: Todo): string => {
+    let agg = node[dateField];
+    if (node.children?.length) {
+      for (const child of node.children) {
+        const childAgg = computeAggregate(child);
+        if (useMin ? childAgg < agg : childAgg > agg) {
+          agg = childAgg;
+        }
+      }
     }
+    aggregateMap.set(node.id, agg);
+    return agg;
   };
 
+  for (const todo of todos) {
+    computeAggregate(todo);
+  }
+
+  // Phase 2: sort every level using the precomputed aggregates
   const sortNodes = (nodes: Todo[]): Todo[] => {
-    const sorted = [...nodes].sort(compareFn);
+    const sorted = [...nodes].sort((a, b) => {
+      const aggA = aggregateMap.get(a.id) ?? a[dateField];
+      const aggB = aggregateMap.get(b.id) ?? b[dateField];
+      return aggA.localeCompare(aggB) * direction;
+    });
     return sorted.map((node) =>
       node.children?.length ? { ...node, children: sortNodes(node.children) } : node,
     );
