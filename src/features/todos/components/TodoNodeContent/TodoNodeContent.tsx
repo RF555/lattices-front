@@ -6,11 +6,13 @@ import { Tooltip } from '@components/ui/Tooltip';
 import { useIsMobile } from '@hooks/useIsMobile';
 import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { useToggleTodo, useDeleteTodo, useUpdateTodo } from '@features/todos/hooks/useTodos';
+import { useReorderSibling } from '@features/todos/hooks/useReorderSibling';
 import { useIsAllWorkspaces } from '@features/workspaces/stores/workspaceUiStore';
 import { useWorkspaces } from '@features/workspaces/hooks/useWorkspaces';
 import { TodoCheckbox } from '../TodoTree/TodoCheckbox';
 import { TodoExpandButton } from '../TodoTree/TodoExpandButton';
 import { TodoActions } from '../TodoTree/TodoActions';
+import { ReorderButtons } from '../TodoTree/ReorderButtons';
 import { TodoInlineEdit } from '../TodoTree/TodoInlineEdit';
 import { TagBadge } from '@features/tags/components/TagBadge';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
@@ -30,6 +32,10 @@ interface TodoNodeContentProps {
   className?: string;
   /** Inline style for the row container */
   style?: React.CSSProperties;
+  /** Sibling array for reorder context (sorted by current sort) */
+  siblings?: Todo[];
+  /** Index of this todo within the siblings array */
+  siblingIndex?: number;
 }
 
 export function TodoNodeContent({
@@ -40,6 +46,8 @@ export function TodoNodeContent({
   leadingSlot,
   className,
   style,
+  siblings,
+  siblingIndex,
 }: TodoNodeContentProps) {
   const { t } = useTranslation('todos');
   const [isEditing, setIsEditing] = useState(false);
@@ -52,12 +60,40 @@ export function TodoNodeContent({
   const toggleMutation = useToggleTodo();
   const deleteMutation = useDeleteTodo();
   const updateMutation = useUpdateTodo();
+  const reorderMutation = useReorderSibling();
 
   const toggleMutate = toggleMutation.mutate;
   const deleteMutate = deleteMutation.mutate;
   const updateMutate = updateMutation.mutate;
 
   const isAllWorkspaces = useIsAllWorkspaces();
+
+  const isFirst = siblingIndex === 0;
+  const isLast = siblings ? siblingIndex === siblings.length - 1 : true;
+
+  const handleMoveUp = useCallback(() => {
+    if (siblings && siblingIndex !== undefined && siblingIndex > 0) {
+      const swapTarget = siblings[siblingIndex - 1];
+      reorderMutation.mutate({
+        itemId: todo.id,
+        swapWithId: swapTarget.id,
+        itemPosition: todo.position,
+        swapWithPosition: swapTarget.position,
+      });
+    }
+  }, [siblings, siblingIndex, todo.id, todo.position, reorderMutation]);
+
+  const handleMoveDown = useCallback(() => {
+    if (siblings && siblingIndex !== undefined && siblingIndex < siblings.length - 1) {
+      const swapTarget = siblings[siblingIndex + 1];
+      reorderMutation.mutate({
+        itemId: todo.id,
+        swapWithId: swapTarget.id,
+        itemPosition: todo.position,
+        swapWithPosition: swapTarget.position,
+      });
+    }
+  }, [siblings, siblingIndex, todo.id, todo.position, reorderMutation]);
   const { data: workspaces = [] } = useWorkspaces();
 
   const isSelected = selectedId === todo.id;
@@ -209,6 +245,13 @@ export function TodoNodeContent({
               </span>
             </Tooltip>
           )}
+
+          <ReorderButtons
+            isFirst={isFirst}
+            isLast={isLast}
+            onMoveUp={handleMoveUp}
+            onMoveDown={handleMoveDown}
+          />
 
           <TodoActions
             onEdit={() => {

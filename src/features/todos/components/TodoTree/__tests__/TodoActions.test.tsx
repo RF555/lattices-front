@@ -10,6 +10,12 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
+// Mock useIsMobile — default to desktop (false)
+let mockIsMobile = false;
+vi.mock('@hooks/useIsMobile', () => ({
+  useIsMobile: () => mockIsMobile,
+}));
+
 describe('TodoActions', () => {
   const mockOnEdit = vi.fn();
   const mockOnDelete = vi.fn();
@@ -17,6 +23,7 @@ describe('TodoActions', () => {
   beforeEach(() => {
     mockOnEdit.mockClear();
     mockOnDelete.mockClear();
+    mockIsMobile = false;
   });
 
   it('should render edit and delete buttons', () => {
@@ -80,5 +87,13 @@ describe('TodoActions', () => {
     // onEdit should be called, but parent click should not propagate
     expect(mockOnEdit).toHaveBeenCalledTimes(1);
     expect(mockContainerClick).not.toHaveBeenCalled();
+  });
+
+  it('should hide edit button on mobile', () => {
+    mockIsMobile = true;
+    render(<TodoActions onEdit={mockOnEdit} onDelete={mockOnDelete} />);
+
+    expect(screen.queryByLabelText('actions.editTask')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('actions.deleteTask')).toBeInTheDocument();
   });
 });

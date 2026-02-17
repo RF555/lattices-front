@@ -91,13 +91,15 @@ export function TodoTree({ viewingTask }: TodoTreeProps) {
         <VirtualizedTodoList items={flatItems} />
       ) : (
         <div className="space-y-1" role="tree" aria-label={t('tree.ariaLabel')}>
-          {filteredTodos.map((todo) => (
+          {filteredTodos.map((todo, index) => (
             <TodoNode
               key={todo.id}
               todo={todo}
               depth={0}
               isExpanded={expandedIds.has(todo.id)}
               viewingTask={viewingTask}
+              siblings={filteredTodos}
+              siblingIndex={index}
             />
           ))}
         </div>

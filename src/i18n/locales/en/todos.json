@@ -50,6 +50,8 @@
   "actions": {
     "editTask": "Edit task",
     "deleteTask": "Delete task",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
     "collapse": "Collapse",
     "expand": "Expand"
   },
@@ -130,6 +132,8 @@
   "tooltips": {
     "markComplete": "Mark as complete",
     "markIncomplete": "Mark as incomplete",
+    "moveUp": "Move up among siblings",
+    "moveDown": "Move down among siblings",
     "hasDescription": "Has description",
     "removeDescription": "Remove description",
     "removeTags": "Remove tags",
