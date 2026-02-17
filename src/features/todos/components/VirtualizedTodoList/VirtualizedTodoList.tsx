@@ -1,7 +1,7 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useIsMobile } from '@hooks/useIsMobile';
+import { useIsCoarsePointer } from '@hooks/useIsCoarsePointer';
 import { VirtualizedTodoRow } from './VirtualizedTodoRow';
 import type { Todo } from '@features/todos/types/todo';
 
@@ -12,7 +12,7 @@ interface VirtualizedTodoListProps {
 export function VirtualizedTodoList({ items }: VirtualizedTodoListProps) {
   const { t } = useTranslation('todos');
   const parentRef = useRef<HTMLDivElement>(null);
-  const isMobile = useIsMobile();
+  const isTouch = useIsCoarsePointer();
 
   // Compute sibling context: group flat items by parentId, assign index within each group
   const siblingContextMap = useMemo(() => {
@@ -38,8 +38,8 @@ export function VirtualizedTodoList({ items }: VirtualizedTodoListProps) {
   const virtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => (isMobile ? 48 : 40),
-    overscan: isMobile ? 5 : 10,
+    estimateSize: () => (isTouch ? 48 : 40),
+    overscan: isTouch ? 5 : 10,
   });
 
   return (

@@ -17,6 +17,12 @@ vi.mock('@features/todos/stores/todoUiStore', () => ({
     selector({ sortBy: mockSortBy }),
 }));
 
+// Mock useIsCoarsePointer — default to non-touch (false)
+let mockIsTouch = false;
+vi.mock('@hooks/useIsCoarsePointer', () => ({
+  useIsCoarsePointer: () => mockIsTouch,
+}));
+
 describe('ReorderButtons', () => {
   const mockOnMoveUp = vi.fn();
   const mockOnMoveDown = vi.fn();
@@ -25,6 +31,7 @@ describe('ReorderButtons', () => {
     mockOnMoveUp.mockClear();
     mockOnMoveDown.mockClear();
     mockSortBy = 'position';
+    mockIsTouch = false;
   });
 
   it('should render up and down buttons when sortBy is position', () => {
@@ -181,5 +188,38 @@ describe('ReorderButtons', () => {
     expect(upButton).toHaveClass('sm:p-1');
     expect(downButton).toHaveClass('p-2.5');
     expect(downButton).toHaveClass('sm:p-1');
+  });
+
+  it('should hide on touch devices even when sortBy is position', () => {
+    mockIsTouch = true;
+    mockSortBy = 'position';
+    const { container } = render(
+      <ReorderButtons
+        isFirst={false}
+        isLast={false}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />,
+    );
+
+    expect(container.innerHTML).toBe('');
+    expect(screen.queryByLabelText('actions.moveUp')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('actions.moveDown')).not.toBeInTheDocument();
+  });
+
+  it('should render on non-touch devices when sortBy is position', () => {
+    mockIsTouch = false;
+    mockSortBy = 'position';
+    render(
+      <ReorderButtons
+        isFirst={false}
+        isLast={false}
+        onMoveUp={mockOnMoveUp}
+        onMoveDown={mockOnMoveDown}
+      />,
+    );
+
+    expect(screen.getByLabelText('actions.moveUp')).toBeInTheDocument();
+    expect(screen.getByLabelText('actions.moveDown')).toBeInTheDocument();
   });
 });

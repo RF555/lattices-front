@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { useIsMobile } from '@hooks/useIsMobile';
+import { useIsSmallScreen } from '@hooks/useIsSmallScreen';
 import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { TodoNodeContent } from '../TodoNodeContent';
 import { ViewingIndicator } from '@features/workspaces/components/ViewingIndicator/ViewingIndicator';
@@ -24,12 +24,12 @@ export const TodoNode = memo(function TodoNode({
   siblingIndex,
 }: TodoNodeProps) {
   const expandedIds = useTodoUiStore((s) => s.expandedIds);
-  const isMobile = useIsMobile();
+  const isSmallScreen = useIsSmallScreen();
   const hasChildren = !!todo.children?.length;
   const viewers = viewingTask?.get(todo.id) ?? [];
 
   // Branch-x must match the child indentation formula in TodoNodeContent
-  const childIndent = isMobile ? Math.min((depth + 1) * 16, 80) : (depth + 1) * 24;
+  const childIndent = isSmallScreen ? Math.min((depth + 1) * 16, 80) : (depth + 1) * 24;
   const branchX = `${childIndent + 8}px`;
 
   return (

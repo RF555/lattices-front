@@ -2,6 +2,7 @@ import { ChevronUp, ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 import { Tooltip } from '@components/ui/Tooltip';
+import { useIsCoarsePointer } from '@hooks/useIsCoarsePointer';
 import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 
 interface ReorderButtonsProps {
@@ -14,8 +15,14 @@ interface ReorderButtonsProps {
 export function ReorderButtons({ isFirst, isLast, onMoveUp, onMoveDown }: ReorderButtonsProps) {
   const { t } = useTranslation('todos');
   const sortBy = useTodoUiStore((s) => s.sortBy);
+  const isTouch = useIsCoarsePointer();
 
   if (sortBy !== 'position') {
+    return null;
+  }
+
+  // Hide on touch devices — reorder available via detail panel
+  if (isTouch) {
     return null;
   }
 

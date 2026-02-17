@@ -1,30 +1,16 @@
-import { useState, useEffect } from 'react';
-import { BREAKPOINTS } from '@/constants';
+import { MEDIA_QUERIES } from '@/constants';
+import { useMediaQuery } from './useMediaQuery';
 
 /**
- * Detects whether the viewport is below the `sm` breakpoint (640px).
- * Uses `window.matchMedia` for efficient, event-driven detection.
+ * Returns `true` when the device is actually mobile: small screen AND touch input.
+ * A narrow desktop browser window returns `false` (no touch).
+ * A large tablet returns `false` (screen is not small).
+ *
+ * For pure screen-size checks, use `useIsSmallScreen()`.
+ * For pure touch detection, use `useIsCoarsePointer()`.
  */
 export function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== 'undefined' ? window.innerWidth < BREAKPOINTS.sm : false,
-  );
-
-  useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${BREAKPOINTS.sm - 1}px)`);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsMobile(e.matches);
-    };
-
-    // Sync initial state
-    setIsMobile(mql.matches);
-
-    mql.addEventListener('change', handleChange);
-    return () => {
-      mql.removeEventListener('change', handleChange);
-    };
-  }, []);
-
-  return isMobile;
+  const isSmallScreen = useMediaQuery(MEDIA_QUERIES.MOBILE);
+  const isCoarsePointer = useMediaQuery(MEDIA_QUERIES.COARSE_POINTER);
+  return isSmallScreen && isCoarsePointer;
 }

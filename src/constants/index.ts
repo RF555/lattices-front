@@ -4,3 +4,4 @@ export { STORAGE_KEYS, type StorageKey } from './storage-keys';
 export { HTTP_STATUS, HTTP_HEADERS, API_PATHS } from './api';
 export { KEYS, ELEMENT_IDS } from './keyboard';
 export { BREAKPOINTS } from './breakpoints';
+export { MEDIA_QUERIES } from './media-queries';
