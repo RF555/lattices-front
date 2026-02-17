@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import { TodoNode } from '../TodoNode';
-import * as useIsMobileModule from '@hooks/useIsMobile';
+import * as useIsSmallScreenModule from '@hooks/useIsSmallScreen';
 import * as todoUiStoreModule from '@features/todos/stores/todoUiStore';
 import type { Todo } from '@features/todos/types/todo';
 
-// Mock useIsMobile
-vi.mock('@hooks/useIsMobile', () => ({
-  useIsMobile: vi.fn(),
+// Mock useIsSmallScreen
+vi.mock('@hooks/useIsSmallScreen', () => ({
+  useIsSmallScreen: vi.fn(),
 }));
 
 // Mock todoUiStore
@@ -52,7 +52,7 @@ describe('TodoNode', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+    vi.mocked(useIsSmallScreenModule.useIsSmallScreen).mockReturnValue(false);
     vi.mocked(todoUiStoreModule.useTodoUiStore).mockReturnValue(new Set());
   });
 
@@ -95,7 +95,7 @@ describe('TodoNode', () => {
   });
 
   it('should calculate branch-x for desktop: (depth + 1) * 24 + 8', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+    vi.mocked(useIsSmallScreenModule.useIsSmallScreen).mockReturnValue(false);
 
     const todo = createMockTodo('1', 'Parent Task', {
       children: [createMockTodo('2', 'Child Task', { parentId: '1' })],
@@ -109,7 +109,7 @@ describe('TodoNode', () => {
   });
 
   it('should calculate branch-x for desktop at depth 2: (depth + 1) * 24 + 8', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+    vi.mocked(useIsSmallScreenModule.useIsSmallScreen).mockReturnValue(false);
 
     const todo = createMockTodo('1', 'Parent Task', {
       children: [createMockTodo('2', 'Child Task', { parentId: '1' })],
@@ -123,7 +123,7 @@ describe('TodoNode', () => {
   });
 
   it('should calculate branch-x for mobile: min((depth + 1) * 16, 80) + 8', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(true);
+    vi.mocked(useIsSmallScreenModule.useIsSmallScreen).mockReturnValue(true);
 
     const todo = createMockTodo('1', 'Parent Task', {
       children: [createMockTodo('2', 'Child Task', { parentId: '1' })],
@@ -137,7 +137,7 @@ describe('TodoNode', () => {
   });
 
   it('should cap mobile branch-x at 88px (80 + 8)', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(true);
+    vi.mocked(useIsSmallScreenModule.useIsSmallScreen).mockReturnValue(true);
 
     const todo = createMockTodo('1', 'Parent Task', {
       children: [createMockTodo('2', 'Child Task', { parentId: '1' })],
@@ -151,7 +151,7 @@ describe('TodoNode', () => {
   });
 
   it('should not exceed 88px on mobile even at very deep levels', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(true);
+    vi.mocked(useIsSmallScreenModule.useIsSmallScreen).mockReturnValue(true);
 
     const todo = createMockTodo('1', 'Parent Task', {
       children: [createMockTodo('2', 'Child Task', { parentId: '1' })],
@@ -290,7 +290,7 @@ describe('TodoNode', () => {
   });
 
   it('should correctly calculate branch-x for nested mobile hierarchy', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(true);
+    vi.mocked(useIsSmallScreenModule.useIsSmallScreen).mockReturnValue(true);
 
     const grandchild = createMockTodo('3', 'Grandchild', { parentId: '2' });
     const child = createMockTodo('2', 'Child', { parentId: '1', children: [grandchild] });
@@ -306,7 +306,7 @@ describe('TodoNode', () => {
   });
 
   it('should correctly calculate branch-x for nested desktop hierarchy', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+    vi.mocked(useIsSmallScreenModule.useIsSmallScreen).mockReturnValue(false);
 
     const grandchild = createMockTodo('3', 'Grandchild', { parentId: '2' });
     const child = createMockTodo('2', 'Child', { parentId: '1', children: [grandchild] });

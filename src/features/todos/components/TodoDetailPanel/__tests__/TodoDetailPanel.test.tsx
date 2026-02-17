@@ -31,8 +31,8 @@ vi.mock('@features/todos/stores/todoUiStore', () => ({
   useTodoUiStore: vi.fn(),
 }));
 
-vi.mock('@hooks/useIsMobile', () => ({
-  useIsMobile: () => false,
+vi.mock('@hooks/useIsSmallScreen', () => ({
+  useIsSmallScreen: () => false,
 }));
 
 vi.mock('react-i18next', () => ({

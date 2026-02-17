@@ -3,7 +3,7 @@ import { useSwipeable } from 'react-swipeable';
 import { Trash2, Check, Undo2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
-import { useIsMobile } from '@hooks/useIsMobile';
+import { useIsCoarsePointer } from '@hooks/useIsCoarsePointer';
 
 const REVEAL_THRESHOLD = 140;
 const AUTO_TRIGGER_RATIO = 0.6;
@@ -26,7 +26,7 @@ export function SwipeableTodoRow({
   isCompleted,
   todoId,
 }: SwipeableTodoRowProps) {
-  const isMobile = useIsMobile();
+  const isTouch = useIsCoarsePointer();
   const { t, i18n } = useTranslation('todos');
   const isRtl = i18n.dir() === 'rtl';
 
@@ -133,8 +133,8 @@ export function SwipeableTodoRow({
     preventScrollOnSwipe: true,
   });
 
-  // On desktop, just render children directly
-  if (!isMobile) {
+  // On non-touch devices, just render children directly
+  if (!isTouch) {
     return <>{children}</>;
   }
 

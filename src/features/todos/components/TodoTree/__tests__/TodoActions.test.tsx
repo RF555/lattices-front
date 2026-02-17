@@ -10,10 +10,10 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-// Mock useIsMobile — default to desktop (false)
-let mockIsMobile = false;
-vi.mock('@hooks/useIsMobile', () => ({
-  useIsMobile: () => mockIsMobile,
+// Mock useIsCoarsePointer — default to non-touch (false)
+let mockIsTouch = false;
+vi.mock('@hooks/useIsCoarsePointer', () => ({
+  useIsCoarsePointer: () => mockIsTouch,
 }));
 
 describe('TodoActions', () => {
@@ -23,7 +23,7 @@ describe('TodoActions', () => {
   beforeEach(() => {
     mockOnEdit.mockClear();
     mockOnDelete.mockClear();
-    mockIsMobile = false;
+    mockIsTouch = false;
   });
 
   it('should render edit and delete buttons', () => {
@@ -89,11 +89,12 @@ describe('TodoActions', () => {
     expect(mockContainerClick).not.toHaveBeenCalled();
   });
 
-  it('should hide edit button on mobile', () => {
-    mockIsMobile = true;
-    render(<TodoActions onEdit={mockOnEdit} onDelete={mockOnDelete} />);
+  it('should hide entire component on touch devices', () => {
+    mockIsTouch = true;
+    const { container } = render(<TodoActions onEdit={mockOnEdit} onDelete={mockOnDelete} />);
 
+    expect(container.innerHTML).toBe('');
     expect(screen.queryByLabelText('actions.editTask')).not.toBeInTheDocument();
-    expect(screen.getByLabelText('actions.deleteTask')).toBeInTheDocument();
+    expect(screen.queryByLabelText('actions.deleteTask')).not.toBeInTheDocument();
   });
 });

@@ -5,7 +5,7 @@ import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
 import { Tooltip } from '@components/ui/Tooltip';
 import { ConfirmationDialog } from '@components/feedback/ConfirmationDialog';
-import { useIsMobile } from '@hooks/useIsMobile';
+import { useIsSmallScreen } from '@hooks/useIsSmallScreen';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
 import { useUpdateTodo, useMoveTodo } from '@features/todos/hooks/useTodos';
 import { TagPicker } from '@features/tags/components/TagPicker';
@@ -24,7 +24,7 @@ interface TodoDetailPanelProps {
 
 export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
   const { t } = useTranslation('todos');
-  const isMobile = useIsMobile();
+  const isSmallScreen = useIsSmallScreen();
   const [description, setDescription] = useState(todo.description ?? '');
   const [localTagIds, setLocalTagIds] = useState<string[]>(todo.tags.map((t) => t.id));
   const [localParentId, setLocalParentId] = useState<string | null>(todo.parentId);
@@ -173,7 +173,7 @@ export function TodoDetailPanel({ todo, indentPx }: TodoDetailPanelProps) {
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- click handler only stops event propagation to parent row
     <div
       className="border-t border-gray-100 bg-gray-50/50 shadow-panel animate-in slide-in-from-top-1 fade-in duration-200"
-      style={{ paddingInlineStart: `${(isMobile ? Math.min(indentPx, 80) : indentPx) + 8}px` }}
+      style={{ paddingInlineStart: `${(isSmallScreen ? Math.min(indentPx, 80) : indentPx) + 8}px` }}
       onClick={handleContainerClick}
     >
       <div className="py-3 pe-3 sm:pe-4 space-y-3">

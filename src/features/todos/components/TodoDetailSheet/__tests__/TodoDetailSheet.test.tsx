@@ -19,6 +19,17 @@ vi.mock('@features/todos/hooks/useTodos', () => ({
   useMoveTodo: vi.fn(),
 }));
 
+vi.mock('@features/todos/hooks/useReorderSibling', () => ({
+  useReorderSibling: vi.fn(),
+}));
+
+// Mock todoUiStore with a controllable sortBy value
+let mockSortBy = 'position';
+vi.mock('@features/todos/stores/todoUiStore', () => ({
+  useTodoUiStore: (selector: (state: { sortBy: string }) => unknown) =>
+    selector({ sortBy: mockSortBy }),
+}));
+
 vi.mock('@features/tags/hooks/useTags', () => ({
   useAddTagToTodo: vi.fn(),
   useRemoveTagFromTodo: vi.fn(),
@@ -210,12 +221,14 @@ vi.mock('@lib/utils/formatDate', () => ({
 }));
 
 import { useUpdateTodo, useToggleTodo, useMoveTodo } from '@features/todos/hooks/useTodos';
+import { useReorderSibling } from '@features/todos/hooks/useReorderSibling';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
 
 const mockUseUpdateTodo = vi.mocked(useUpdateTodo);
 const mockUseToggleTodo = vi.mocked(useToggleTodo);
 const mockUseMoveTodo = vi.mocked(useMoveTodo);
+const mockUseReorderSibling = vi.mocked(useReorderSibling);
 const mockUseAddTagToTodo = vi.mocked(useAddTagToTodo);
 const mockUseRemoveTagFromTodo = vi.mocked(useRemoveTagFromTodo);
 const mockUseActiveWorkspaceId = vi.mocked(useActiveWorkspaceId);
@@ -224,6 +237,7 @@ describe('TodoDetailSheet', () => {
   const mockUpdateMutate = vi.fn();
   const mockToggleMutate = vi.fn();
   const mockMoveMutate = vi.fn();
+  const mockReorderMutate = vi.fn();
   const mockAddTagMutate = vi.fn();
   const mockRemoveTagMutate = vi.fn();
   const mockOnOpenChange = vi.fn();
@@ -258,9 +272,13 @@ describe('TodoDetailSheet', () => {
     mockUpdateMutate.mockClear();
     mockToggleMutate.mockClear();
     mockMoveMutate.mockClear();
+    mockReorderMutate.mockClear();
     mockAddTagMutate.mockClear();
     mockRemoveTagMutate.mockClear();
     mockOnOpenChange.mockClear();
+
+    // Reset sortBy to default
+    mockSortBy = 'position';
 
     // Default mock implementations
     mockUseUpdateTodo.mockReturnValue({
@@ -275,6 +293,11 @@ describe('TodoDetailSheet', () => {
 
     mockUseMoveTodo.mockReturnValue({
       mutate: mockMoveMutate,
+      isPending: false,
+    } as any);
+
+    mockUseReorderSibling.mockReturnValue({
+      mutate: mockReorderMutate,
       isPending: false,
     } as any);
 
@@ -1320,6 +1343,243 @@ describe('TodoDetailSheet', () => {
       await user.click(cancelButton);
 
       expect(mockMoveMutate).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Reorder Buttons', () => {
+    const mockSiblings: Todo[] = [
+      {
+        ...mockTodo,
+        id: 'sib-1',
+        title: 'First',
+        position: 0,
+        parentId: 'parent-1',
+      },
+      {
+        ...mockTodo,
+        id: 'sib-2',
+        title: 'Second',
+        position: 1,
+        parentId: 'parent-1',
+      },
+      {
+        ...mockTodo,
+        id: 'sib-3',
+        title: 'Third',
+        position: 2,
+        parentId: 'parent-1',
+      },
+    ];
+
+    it('should not show reorder buttons when siblings are not provided', () => {
+      render(<TodoDetailSheet todo={mockTodo} open={true} onOpenChange={mockOnOpenChange} />);
+
+      expect(screen.queryByLabelText('actions.moveUp')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('actions.moveDown')).not.toBeInTheDocument();
+    });
+
+    it('should not show reorder buttons when siblingIndex is not provided', () => {
+      render(
+        <TodoDetailSheet
+          todo={mockSiblings[1]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={mockSiblings}
+        />,
+      );
+
+      expect(screen.queryByLabelText('actions.moveUp')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('actions.moveDown')).not.toBeInTheDocument();
+    });
+
+    it('should not show reorder buttons when sortBy is not position', () => {
+      mockSortBy = 'createdAt';
+      render(
+        <TodoDetailSheet
+          todo={mockSiblings[1]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={mockSiblings}
+          siblingIndex={1}
+        />,
+      );
+
+      expect(screen.queryByLabelText('actions.moveUp')).not.toBeInTheDocument();
+      expect(screen.queryByLabelText('actions.moveDown')).not.toBeInTheDocument();
+    });
+
+    it('should show reorder buttons when sortBy is position and siblings are provided', () => {
+      render(
+        <TodoDetailSheet
+          todo={mockSiblings[1]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={mockSiblings}
+          siblingIndex={1}
+        />,
+      );
+
+      expect(screen.getByLabelText('actions.moveUp')).toBeInTheDocument();
+      expect(screen.getByLabelText('actions.moveDown')).toBeInTheDocument();
+    });
+
+    it('should disable up button when at first position', () => {
+      render(
+        <TodoDetailSheet
+          todo={mockSiblings[0]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={mockSiblings}
+          siblingIndex={0}
+        />,
+      );
+
+      expect(screen.getByLabelText('actions.moveUp')).toBeDisabled();
+      expect(screen.getByLabelText('actions.moveDown')).not.toBeDisabled();
+    });
+
+    it('should disable down button when at last position', () => {
+      render(
+        <TodoDetailSheet
+          todo={mockSiblings[2]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={mockSiblings}
+          siblingIndex={2}
+        />,
+      );
+
+      expect(screen.getByLabelText('actions.moveUp')).not.toBeDisabled();
+      expect(screen.getByLabelText('actions.moveDown')).toBeDisabled();
+    });
+
+    it('should disable both buttons when there is only one sibling', () => {
+      const singleSibling = [mockSiblings[0]];
+      render(
+        <TodoDetailSheet
+          todo={singleSibling[0]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={singleSibling}
+          siblingIndex={0}
+        />,
+      );
+
+      expect(screen.getByLabelText('actions.moveUp')).toBeDisabled();
+      expect(screen.getByLabelText('actions.moveDown')).toBeDisabled();
+    });
+
+    it('should call reorder mutation with correct params when moving up', async () => {
+      const user = userEvent.setup();
+      render(
+        <TodoDetailSheet
+          todo={mockSiblings[1]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={mockSiblings}
+          siblingIndex={1}
+        />,
+      );
+
+      const upButton = screen.getByLabelText('actions.moveUp');
+      await user.click(upButton);
+
+      expect(mockReorderMutate).toHaveBeenCalledTimes(1);
+      expect(mockReorderMutate).toHaveBeenCalledWith({
+        itemId: 'sib-2',
+        swapWithId: 'sib-1',
+        itemPosition: 1,
+        swapWithPosition: 0,
+      });
+    });
+
+    it('should call reorder mutation with correct params when moving down', async () => {
+      const user = userEvent.setup();
+      render(
+        <TodoDetailSheet
+          todo={mockSiblings[1]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={mockSiblings}
+          siblingIndex={1}
+        />,
+      );
+
+      const downButton = screen.getByLabelText('actions.moveDown');
+      await user.click(downButton);
+
+      expect(mockReorderMutate).toHaveBeenCalledTimes(1);
+      expect(mockReorderMutate).toHaveBeenCalledWith({
+        itemId: 'sib-2',
+        swapWithId: 'sib-3',
+        itemPosition: 1,
+        swapWithPosition: 2,
+      });
+    });
+
+    it('should show reorder buttons in view mode', () => {
+      render(
+        <TodoDetailSheet
+          todo={mockSiblings[1]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={mockSiblings}
+          siblingIndex={1}
+        />,
+      );
+
+      // In view mode by default
+      expect(screen.getByLabelText('actions.moveUp')).toBeInTheDocument();
+      expect(screen.getByLabelText('actions.moveDown')).toBeInTheDocument();
+    });
+
+    it('should show reorder buttons in edit mode', async () => {
+      const user = userEvent.setup();
+      render(
+        <TodoDetailSheet
+          todo={mockSiblings[1]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={mockSiblings}
+          siblingIndex={1}
+        />,
+      );
+
+      // Enter edit mode
+      await enterEditMode(user);
+
+      // Reorder buttons should still be visible
+      expect(screen.getByLabelText('actions.moveUp')).toBeInTheDocument();
+      expect(screen.getByLabelText('actions.moveDown')).toBeInTheDocument();
+    });
+
+    it('should not affect dirty flag when reordering (immediate apply)', async () => {
+      const user = userEvent.setup();
+      render(
+        <TodoDetailSheet
+          todo={mockSiblings[1]}
+          open={true}
+          onOpenChange={mockOnOpenChange}
+          siblings={mockSiblings}
+          siblingIndex={1}
+        />,
+      );
+
+      await enterEditMode(user);
+
+      // Save button should be disabled (no changes)
+      const saveButton = screen.getByRole('button', { name: 'actions.save' });
+      expect(saveButton).toBeDisabled();
+
+      // Click reorder button
+      const upButton = screen.getByLabelText('actions.moveUp');
+      await user.click(upButton);
+
+      // Reorder mutation should be called
+      expect(mockReorderMutate).toHaveBeenCalledTimes(1);
+
+      // Save button should still be disabled (reorder doesn't set dirty flag)
+      expect(saveButton).toBeDisabled();
     });
   });
 });

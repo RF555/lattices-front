@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@/test/test-utils';
 import { VirtualizedTodoList } from '../VirtualizedTodoList';
-import * as useIsMobileModule from '@hooks/useIsMobile';
+import * as useIsCoarsePointerModule from '@hooks/useIsCoarsePointer';
 import type { Todo } from '@features/todos/types/todo';
 
-// Mock useIsMobile
-vi.mock('@hooks/useIsMobile', () => ({
-  useIsMobile: vi.fn(),
+// Mock useIsCoarsePointer
+vi.mock('@hooks/useIsCoarsePointer', () => ({
+  useIsCoarsePointer: vi.fn(),
 }));
 
 // Mock react-i18next
@@ -64,7 +64,7 @@ describe('VirtualizedTodoList', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+    vi.mocked(useIsCoarsePointerModule.useIsCoarsePointer).mockReturnValue(false);
   });
 
   it('should render container with tree role and aria-label', () => {
@@ -91,34 +91,34 @@ describe('VirtualizedTodoList', () => {
     expect(screen.getByTestId('virtualized-row-3')).toBeInTheDocument();
   });
 
-  it('should use 48px estimateSize on mobile', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(true);
+  it('should use 48px estimateSize on touch devices', () => {
+    vi.mocked(useIsCoarsePointerModule.useIsCoarsePointer).mockReturnValue(true);
 
     const items = [createMockTodo('1', 'Task 1')];
 
     const { container } = render(<VirtualizedTodoList items={items} />);
 
     // Check that the virtualized container has correct height calculation
-    // On mobile: 1 item * 48px = 48px
+    // On touch: 1 item * 48px = 48px
     const virtualizedContainer = container.querySelector('div[role="tree"] > div');
     expect(virtualizedContainer).toHaveStyle({ height: '48px' });
   });
 
-  it('should use 40px estimateSize on desktop', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+  it('should use 40px estimateSize on non-touch devices', () => {
+    vi.mocked(useIsCoarsePointerModule.useIsCoarsePointer).mockReturnValue(false);
 
     const items = [createMockTodo('1', 'Task 1')];
 
     const { container } = render(<VirtualizedTodoList items={items} />);
 
     // Check that the virtualized container has correct height calculation
-    // On desktop: 1 item * 40px = 40px
+    // On non-touch: 1 item * 40px = 40px
     const virtualizedContainer = container.querySelector('div[role="tree"] > div');
     expect(virtualizedContainer).toHaveStyle({ height: '40px' });
   });
 
-  it('should use overscan of 5 on mobile', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(true);
+  it('should use overscan of 5 on touch devices', () => {
+    vi.mocked(useIsCoarsePointerModule.useIsCoarsePointer).mockReturnValue(true);
 
     const items = Array.from({ length: 20 }, (_, i) => createMockTodo(`${i + 1}`, `Task ${i + 1}`));
 
@@ -130,8 +130,8 @@ describe('VirtualizedTodoList', () => {
     expect(screen.getByRole('tree')).toBeInTheDocument();
   });
 
-  it('should use overscan of 10 on desktop', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+  it('should use overscan of 10 on non-touch devices', () => {
+    vi.mocked(useIsCoarsePointerModule.useIsCoarsePointer).mockReturnValue(false);
 
     const items = Array.from({ length: 20 }, (_, i) => createMockTodo(`${i + 1}`, `Task ${i + 1}`));
 
@@ -202,7 +202,7 @@ describe('VirtualizedTodoList', () => {
   });
 
   it('should calculate total size based on items count and estimateSize', () => {
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+    vi.mocked(useIsCoarsePointerModule.useIsCoarsePointer).mockReturnValue(false);
 
     const items = Array.from({ length: 5 }, (_, i) => createMockTodo(`${i + 1}`, `Task ${i + 1}`));
 

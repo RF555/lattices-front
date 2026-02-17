@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Pencil } from 'lucide-react';
+import { ChevronUp, ChevronDown, Pencil } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { cn } from '@lib/utils/cn';
 import { BottomSheet } from '@components/ui/BottomSheet';
 import { Textarea } from '@components/ui/Textarea';
 import { Button } from '@components/ui/Button';
@@ -13,8 +14,10 @@ import { WorkspacePicker } from '../WorkspacePicker/WorkspacePicker';
 import { TodoBreadcrumb } from '../TodoBreadcrumb';
 import { TodoCheckbox } from '../TodoTree/TodoCheckbox';
 import { useUpdateTodo, useToggleTodo, useMoveTodo } from '@features/todos/hooks/useTodos';
+import { useReorderSibling } from '@features/todos/hooks/useReorderSibling';
 import { useAddTagToTodo, useRemoveTagFromTodo } from '@features/tags/hooks/useTags';
 import { useActiveWorkspaceId } from '@features/workspaces/stores/workspaceUiStore';
+import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { formatDate, formatDateFull } from '@lib/utils/formatDate';
 import type { Todo } from '@features/todos/types/todo';
 
@@ -22,9 +25,17 @@ interface TodoDetailSheetProps {
   todo: Todo;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  siblings?: Todo[];
+  siblingIndex?: number;
 }
 
-export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetProps) {
+export function TodoDetailSheet({
+  todo,
+  open,
+  onOpenChange,
+  siblings,
+  siblingIndex,
+}: TodoDetailSheetProps) {
   const { t } = useTranslation('todos');
   const [isEditing, setIsEditing] = useState(false);
   const [description, setDescription] = useState(todo.description ?? '');
@@ -41,8 +52,14 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
   const toggleMutation = useToggleTodo();
   const toggleMutate = toggleMutation.mutate;
   const moveMutation = useMoveTodo();
+  const reorderMutation = useReorderSibling();
   const addTagMutation = useAddTagToTodo();
   const removeTagMutation = useRemoveTagFromTodo();
+
+  const sortBy = useTodoUiStore((s) => s.sortBy);
+  const isFirst = siblingIndex === 0;
+  const isLast = siblings ? siblingIndex === siblings.length - 1 : true;
+  const showReorder = sortBy === 'position' && siblings && siblingIndex !== undefined;
 
   const workspaceChanged = localWorkspaceId !== (todo.workspaceId ?? null);
 
@@ -157,6 +174,30 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
     toggleMutate({ id: todo.id, isCompleted: !todo.isCompleted });
   }, [toggleMutate, todo.id, todo.isCompleted]);
 
+  const handleMoveUp = useCallback(() => {
+    if (siblings && siblingIndex !== undefined && siblingIndex > 0) {
+      const swapTarget = siblings[siblingIndex - 1];
+      reorderMutation.mutate({
+        itemId: todo.id,
+        swapWithId: swapTarget.id,
+        itemPosition: todo.position,
+        swapWithPosition: swapTarget.position,
+      });
+    }
+  }, [siblings, siblingIndex, todo.id, todo.position, reorderMutation]);
+
+  const handleMoveDown = useCallback(() => {
+    if (siblings && siblingIndex !== undefined && siblingIndex < siblings.length - 1) {
+      const swapTarget = siblings[siblingIndex + 1];
+      reorderMutation.mutate({
+        itemId: todo.id,
+        swapWithId: swapTarget.id,
+        itemPosition: todo.position,
+        swapWithPosition: swapTarget.position,
+      });
+    }
+  }, [siblings, siblingIndex, todo.id, todo.position, reorderMutation]);
+
   return (
     <BottomSheet
       open={open}
@@ -175,7 +216,7 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
       title={todo.title}
     >
       <div className="px-4 pb-4 space-y-4">
-        {/* Header: title + checkbox */}
+        {/* Header: title + checkbox + reorder */}
         <div className="flex items-start gap-3">
           <TodoCheckbox checked={todo.isCompleted} onChange={handleToggle} />
           <div className="flex-1 min-w-0">
@@ -186,6 +227,40 @@ export function TodoDetailSheet({ todo, open, onOpenChange }: TodoDetailSheetPro
               </div>
             )}
           </div>
+          {showReorder && (
+            <div className="flex items-center gap-0.5 shrink-0">
+              <Tooltip content={t('tooltips.moveUp')}>
+                <button
+                  type="button"
+                  disabled={isFirst}
+                  onClick={handleMoveUp}
+                  className={cn(
+                    'p-2.5 text-gray-400 hover:text-gray-600 rounded',
+                    'focus:outline-none focus:ring-2 focus:ring-primary',
+                    'disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-gray-400',
+                  )}
+                  aria-label={t('actions.moveUp')}
+                >
+                  <ChevronUp className="w-4 h-4" />
+                </button>
+              </Tooltip>
+              <Tooltip content={t('tooltips.moveDown')}>
+                <button
+                  type="button"
+                  disabled={isLast}
+                  onClick={handleMoveDown}
+                  className={cn(
+                    'p-2.5 text-gray-400 hover:text-gray-600 rounded',
+                    'focus:outline-none focus:ring-2 focus:ring-primary',
+                    'disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-gray-400',
+                  )}
+                  aria-label={t('actions.moveDown')}
+                >
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+              </Tooltip>
+            </div>
+          )}
         </div>
 
         {isEditing ? (

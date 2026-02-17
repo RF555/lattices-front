@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@lib/utils/cn';
 import { Tooltip } from '@components/ui/Tooltip';
 import { useIsMobile } from '@hooks/useIsMobile';
+import { useIsSmallScreen } from '@hooks/useIsSmallScreen';
 import { useTodoUiStore } from '@features/todos/stores/todoUiStore';
 import { useToggleTodo, useDeleteTodo, useUpdateTodo } from '@features/todos/hooks/useTodos';
 import { useReorderSibling } from '@features/todos/hooks/useReorderSibling';
@@ -52,6 +53,7 @@ export function TodoNodeContent({
   const { t } = useTranslation('todos');
   const [isEditing, setIsEditing] = useState(false);
   const isMobile = useIsMobile();
+  const isSmallScreen = useIsSmallScreen();
   const toggleExpanded = useTodoUiStore((s) => s.toggleExpanded);
   const setSelectedId = useTodoUiStore((s) => s.setSelectedId);
   const setDetailEditing = useTodoUiStore((s) => s.setDetailEditing);
@@ -136,7 +138,7 @@ export function TodoNodeContent({
     toggleExpanded(todo.id);
   }, [toggleExpanded, todo.id]);
 
-  const indentPx = isMobile ? Math.min(depth * 16, 80) : depth * 24;
+  const indentPx = isSmallScreen ? Math.min(depth * 16, 80) : depth * 24;
 
   return (
     <>
@@ -275,6 +277,8 @@ export function TodoNodeContent({
                 setSelectedId(null);
               }
             }}
+            siblings={siblings}
+            siblingIndex={siblingIndex}
           />
         ) : (
           <TodoDetailPanel todo={todo} indentPx={indentPx} />

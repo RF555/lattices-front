@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@/test/test-utils';
 import { SwipeableTodoRow } from '../SwipeableTodoRow';
-import * as useIsMobileModule from '@hooks/useIsMobile';
+import * as useIsCoarsePointerModule from '@hooks/useIsCoarsePointer';
 import * as reactSwipeableModule from 'react-swipeable';
 import * as reactI18nextModule from 'react-i18next';
 
-// Mock useIsMobile
-vi.mock('@hooks/useIsMobile', () => ({
-  useIsMobile: vi.fn(),
+// Mock useIsCoarsePointer
+vi.mock('@hooks/useIsCoarsePointer', () => ({
+  useIsCoarsePointer: vi.fn(),
 }));
 
 // Capture useSwipeable config so tests can trigger callbacks
@@ -47,7 +47,7 @@ describe('SwipeableTodoRow', () => {
     vi.clearAllMocks();
 
     // Default mocks
-    vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+    vi.mocked(useIsCoarsePointerModule.useIsCoarsePointer).mockReturnValue(false);
     vi.mocked(reactSwipeableModule.useSwipeable).mockImplementation(((config: any) => {
       capturedSwipeConfig = config;
       return { ref: vi.fn() };
@@ -58,9 +58,9 @@ describe('SwipeableTodoRow', () => {
     } as unknown as ReturnType<typeof reactI18nextModule.useTranslation>);
   });
 
-  describe('Desktop rendering', () => {
-    it('should render children directly without wrapper div when on desktop', () => {
-      vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(false);
+  describe('Non-touch rendering', () => {
+    it('should render children directly without wrapper div on non-touch devices', () => {
+      vi.mocked(useIsCoarsePointerModule.useIsCoarsePointer).mockReturnValue(false);
 
       const { container } = render(
         <SwipeableTodoRow
@@ -81,12 +81,12 @@ describe('SwipeableTodoRow', () => {
     });
   });
 
-  describe('Mobile rendering', () => {
+  describe('Touch device rendering', () => {
     beforeEach(() => {
-      vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(true);
+      vi.mocked(useIsCoarsePointerModule.useIsCoarsePointer).mockReturnValue(true);
     });
 
-    it('should render wrapper with overflow-hidden class on mobile', () => {
+    it('should render wrapper with overflow-hidden class on touch devices', () => {
       const { container } = render(
         <SwipeableTodoRow
           todoId={testTodoId}
@@ -392,7 +392,7 @@ describe('SwipeableTodoRow', () => {
 
   describe('RTL support', () => {
     beforeEach(() => {
-      vi.mocked(useIsMobileModule.useIsMobile).mockReturnValue(true);
+      vi.mocked(useIsCoarsePointerModule.useIsCoarsePointer).mockReturnValue(true);
       vi.mocked(reactI18nextModule.useTranslation).mockReturnValue({
         t: (key: string) => key,
         i18n: { dir: () => 'rtl' },
