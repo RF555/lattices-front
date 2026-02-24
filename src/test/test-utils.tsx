@@ -12,7 +12,7 @@
  */
 
 import { type ReactElement, type ReactNode } from 'react';
-import { render, type RenderOptions } from '@testing-library/react';
+import { render, type RenderOptions, getDefaultNormalizer } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider as TooltipProvider } from '@radix-ui/react-tooltip';
 import { MemoryRouter, type MemoryRouterProps } from 'react-router';
@@ -96,6 +96,19 @@ function customRender(
     ...options,
   });
 }
+
+/**
+ * Normalizer that converts smart/curly quotes to straight quotes.
+ * Use with RTL queries to match text containing typographic quotes
+ * from locale files using plain straight quotes in tests.
+ *
+ * @example
+ * screen.getByText(/completed "Fix bug"/, { normalizer: normalizeQuotes })
+ */
+export const normalizeQuotes = (str: string) =>
+  getDefaultNormalizer()(str)
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2018\u2019]/g, "'");
 
 // Re-export everything from @testing-library/react
 export * from '@testing-library/react';

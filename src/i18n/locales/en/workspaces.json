@@ -7,7 +7,6 @@
   "switcher": {
     "manage": "Manage Workspace"
   },
-
   "form": {
     "name": "Name",
     "namePlaceholder": "My Workspace",
@@ -16,13 +15,11 @@
     "cancel": "Cancel",
     "create": "Create"
   },
-
   "validation": {
     "nameRequired": "Workspace name is required",
     "nameMaxLength": "Name must be 50 characters or less",
     "descriptionMaxLength": "Description must be 200 characters or less"
   },
-
   "settings": {
     "title": "Workspace Settings",
     "general": "General",
@@ -31,10 +28,9 @@
     "deleteWarning": "Deleting a workspace is permanent and cannot be undone. All tasks, tags, and member associations will be removed.",
     "deleteWorkspace": "Delete Workspace",
     "confirmDelete": "Delete Workspace?",
-    "confirmDeleteMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+    "confirmDeleteMessage": "Are you sure you want to delete “{{name}}”? This action cannot be undone.",
     "tags": "Tags"
   },
-
   "sidebar": {
     "navigation": "Workspace",
     "close": "Close sidebar",
@@ -45,7 +41,6 @@
     "groups": "Groups",
     "settings": "Settings"
   },
-
   "members": {
     "title": "Members",
     "invite": "Invite Member",
@@ -66,14 +61,12 @@
     "transferConfirm": "Transfer ownership to {{name}}? You will become an Admin.",
     "noMembers": "No members yet"
   },
-
   "roles": {
     "owner": "Owner",
     "admin": "Admin",
     "member": "Member",
     "viewer": "Viewer"
   },
-
   "invitation": {
     "send": "Send Invitation",
     "email": "Email address",
@@ -94,7 +87,6 @@
     "invalid": "Invalid invitation link.",
     "banner": "You've been invited to {{workspace}}."
   },
-
   "activity": {
     "title": "Activity",
     "empty": "No activity yet",
@@ -102,25 +94,22 @@
     "filter": "Filter",
     "allTypes": "All activity"
   },
-
   "emptyState": {
     "title": "Welcome to Lattices",
     "description": "Workspaces help you organize tasks and collaborate with your team. Create your first workspace to get started.",
     "createFirst": "Create your first workspace"
   },
-
   "permissions": {
     "viewOnly": "View Only",
     "canEdit": "Can Edit",
     "insufficientPermissions": "You don't have permission to perform this action"
   },
-
   "groups": {
     "title": "Groups",
     "create": "Create Group",
     "edit": "Edit Group",
     "delete": "Delete Group",
-    "deleteConfirm": "Delete group \"{{name}}\"? Members will not be removed from the workspace.",
+    "deleteConfirm": "Delete group “{{name}}”? Members will not be removed from the workspace.",
     "name": "Group Name",
     "namePlaceholder": "e.g. Engineering Team",
     "description": "Description",
@@ -131,7 +120,6 @@
     "noGroups": "No groups yet",
     "noMembers": "No members in this group"
   },
-
   "realtime": {
     "onlineCount_one": "{{count}} online",
     "onlineCount_other": "{{count}} online",

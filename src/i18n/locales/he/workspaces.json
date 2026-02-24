@@ -1,149 +1,137 @@
 {
-  "selectWorkspace": "\u05d1\u05d7\u05e8 \u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4",
-  "switchWorkspace": "\u05d4\u05d7\u05dc\u05e3 \u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4",
-  "createWorkspace": "\u05e6\u05d5\u05e8 \u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4",
-  "allWorkspaces": "\u05db\u05dc \u05e1\u05d1\u05d9\u05d1\u05d5\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4",
-  "allWorkspacesDescription": "\u05d4\u05e6\u05d2 \u05de\u05e9\u05d9\u05de\u05d5\u05ea \u05de\u05db\u05dc \u05e1\u05d1\u05d9\u05d1\u05d5\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4",
+  "selectWorkspace": "בחר סביבת עבודה",
+  "switchWorkspace": "החלף סביבת עבודה",
+  "createWorkspace": "צור סביבת עבודה",
+  "allWorkspaces": "כל סביבות העבודה",
+  "allWorkspacesDescription": "הצג משימות מכל סביבות העבודה",
   "switcher": {
-    "manage": "\u05e0\u05d9\u05d4\u05d5\u05dc \u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4"
+    "manage": "ניהול סביבת עבודה"
   },
-
   "form": {
-    "name": "\u05e9\u05dd",
-    "namePlaceholder": "\u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4 \u05e9\u05dc\u05d9",
-    "description": "\u05ea\u05d9\u05d0\u05d5\u05e8",
-    "descriptionPlaceholder": "\u05dc\u05de\u05d4 \u05de\u05d9\u05d5\u05e2\u05d3\u05ea \u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4?",
-    "cancel": "\u05d1\u05d9\u05d8\u05d5\u05dc",
-    "create": "\u05e6\u05d5\u05e8"
+    "name": "שם",
+    "namePlaceholder": "סביבת העבודה שלי",
+    "description": "תיאור",
+    "descriptionPlaceholder": "למה מיועדת סביבת העבודה?",
+    "cancel": "ביטול",
+    "create": "צור"
   },
-
   "validation": {
-    "nameRequired": "\u05e9\u05dd \u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4 \u05e0\u05d3\u05e8\u05e9",
-    "nameMaxLength": "\u05d4\u05e9\u05dd \u05d7\u05d9\u05d9\u05d1 \u05dc\u05d4\u05d9\u05d5\u05ea \u05e2\u05d3 50 \u05ea\u05d5\u05d5\u05d9\u05dd",
-    "descriptionMaxLength": "\u05d4\u05ea\u05d9\u05d0\u05d5\u05e8 \u05d7\u05d9\u05d9\u05d1 \u05dc\u05d4\u05d9\u05d5\u05ea \u05e2\u05d3 200 \u05ea\u05d5\u05d5\u05d9\u05dd"
+    "nameRequired": "שם סביבת העבודה נדרש",
+    "nameMaxLength": "השם חייב להיות עד 50 תווים",
+    "descriptionMaxLength": "התיאור חייב להיות עד 200 תווים"
   },
-
   "settings": {
-    "title": "\u05d4\u05d2\u05d3\u05e8\u05d5\u05ea \u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4",
-    "general": "\u05db\u05dc\u05dc\u05d9",
-    "saveChanges": "\u05e9\u05de\u05d5\u05e8 \u05e9\u05d9\u05e0\u05d5\u05d9\u05d9\u05dd",
-    "dangerZone": "\u05d0\u05d6\u05d5\u05e8 \u05de\u05e1\u05d5\u05db\u05df",
-    "deleteWarning": "\u05de\u05d7\u05d9\u05e7\u05ea \u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4 \u05d4\u05d9\u05d0 \u05e7\u05d1\u05d5\u05e2\u05d4 \u05d5\u05dc\u05d0 \u05e0\u05d9\u05ea\u05e0\u05ea \u05dc\u05d1\u05d9\u05d8\u05d5\u05dc. \u05db\u05dc \u05d4\u05de\u05e9\u05d9\u05de\u05d5\u05ea, \u05d4\u05ea\u05d2\u05d9\u05d5\u05ea \u05d5\u05e9\u05d9\u05d5\u05da \u05d4\u05d7\u05d1\u05e8\u05d9\u05dd \u05d9\u05d5\u05e1\u05e8\u05d5.",
-    "deleteWorkspace": "\u05de\u05d7\u05e7 \u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4",
-    "confirmDelete": "\u05dc\u05de\u05d7\u05d5\u05e7 \u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4?",
-    "confirmDeleteMessage": "\u05d4\u05d0\u05dd \u05d0\u05ea\u05d4 \u05d1\u05d8\u05d5\u05d7 \u05e9\u05d1\u05e8\u05e6\u05d5\u05e0\u05da \u05dc\u05de\u05d7\u05d5\u05e7 \u05d0\u05ea \"{{name}}\"? \u05e4\u05e2\u05d5\u05dc\u05d4 \u05d6\u05d5 \u05dc\u05d0 \u05e0\u05d9\u05ea\u05e0\u05ea \u05dc\u05d1\u05d9\u05d8\u05d5\u05dc.",
-    "tags": "\u05ea\u05d2\u05d9\u05d5\u05ea"
+    "title": "הגדרות סביבת עבודה",
+    "general": "כללי",
+    "saveChanges": "שמור שינויים",
+    "dangerZone": "אזור מסוכן",
+    "deleteWarning": "מחיקת סביבת עבודה היא קבועה ולא ניתנת לביטול. כל המשימות, התגיות ושיוך החברים יוסרו.",
+    "deleteWorkspace": "מחק סביבת עבודה",
+    "confirmDelete": "למחוק סביבת עבודה?",
+    "confirmDeleteMessage": "האם אתה בטוח שברצונך למחוק את “{{name}}”? פעולה זו לא ניתנת לביטול.",
+    "tags": "תגיות"
   },
-
   "sidebar": {
-    "navigation": "\u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4",
-    "close": "\u05e1\u05d2\u05d5\u05e8 \u05e1\u05e8\u05d2\u05dc \u05e6\u05d3",
-    "todos": "\u05de\u05e9\u05d9\u05de\u05d5\u05ea",
-    "tags": "\u05ea\u05d2\u05d9\u05d5\u05ea",
-    "members": "\u05d7\u05d1\u05e8\u05d9\u05dd",
-    "activity": "\u05e4\u05e2\u05d9\u05dc\u05d5\u05ea",
-    "groups": "\u05e7\u05d1\u05d5\u05e6\u05d5\u05ea",
-    "settings": "\u05d4\u05d2\u05d3\u05e8\u05d5\u05ea"
+    "navigation": "סביבת עבודה",
+    "close": "סגור סרגל צד",
+    "todos": "משימות",
+    "tags": "תגיות",
+    "members": "חברים",
+    "activity": "פעילות",
+    "groups": "קבוצות",
+    "settings": "הגדרות"
   },
-
   "members": {
-    "title": "\u05d7\u05d1\u05e8\u05d9\u05dd",
-    "invite": "\u05d4\u05d6\u05de\u05df \u05d7\u05d1\u05e8",
-    "search": "\u05d7\u05e4\u05e9 \u05d7\u05d1\u05e8\u05d9\u05dd...",
-    "role": "\u05ea\u05e4\u05e7\u05d9\u05d3",
-    "joined": "\u05d4\u05e6\u05d8\u05e8\u05e3",
-    "actions": "\u05e4\u05e2\u05d5\u05dc\u05d5\u05ea",
-    "changeRole": "\u05e9\u05e0\u05d4 \u05ea\u05e4\u05e7\u05d9\u05d3",
-    "remove": "\u05d4\u05e1\u05e8",
-    "removeMember": "\u05d4\u05e1\u05e8 \u05d7\u05d1\u05e8",
-    "removeConfirm": "\u05dc\u05d4\u05e1\u05d9\u05e8 \u05d0\u05ea {{name}} \u05de\u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4?",
-    "removeWarning": "\u05d4\u05dd \u05d9\u05d0\u05d1\u05d3\u05d5 \u05d2\u05d9\u05e9\u05d4 \u05dc\u05db\u05dc \u05d4\u05de\u05e9\u05d9\u05de\u05d5\u05ea \u05d1\u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4 \u05d6\u05d5.",
-    "leaveWorkspace": "\u05e2\u05d6\u05d5\u05d1 \u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4",
-    "leaveConfirm": "\u05d4\u05d0\u05dd \u05d0\u05ea\u05d4 \u05d1\u05d8\u05d5\u05d7 \u05e9\u05d1\u05e8\u05e6\u05d5\u05e0\u05da \u05dc\u05e2\u05d6\u05d5\u05d1 \u05d0\u05ea \u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4?",
-    "leaveWarning": "\u05ea\u05d0\u05d1\u05d3 \u05d2\u05d9\u05e9\u05d4 \u05dc\u05db\u05dc \u05d4\u05de\u05e9\u05d9\u05de\u05d5\u05ea \u05d1\u05e1\u05d1\u05d9\u05d1\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4 \u05d6\u05d5.",
-    "changeRoleConfirm": "\u05dc\u05e9\u05e0\u05d5\u05ea \u05d0\u05ea \u05ea\u05e4\u05e7\u05d9\u05d3 {{name}} \u05de-{{oldRole}} \u05dc-{{newRole}}?",
-    "transferOwnership": "\u05d4\u05e2\u05d1\u05e8 \u05d1\u05e2\u05dc\u05d5\u05ea",
-    "transferConfirm": "\u05dc\u05d4\u05e2\u05d1\u05d9\u05e8 \u05d1\u05e2\u05dc\u05d5\u05ea \u05dc-{{name}}? \u05ea\u05d4\u05e4\u05d5\u05da \u05dc\u05de\u05e0\u05d4\u05dc.",
-    "noMembers": "\u05d0\u05d9\u05df \u05d7\u05d1\u05e8\u05d9\u05dd \u05e2\u05d3\u05d9\u05d9\u05df"
+    "title": "חברים",
+    "invite": "הזמן חבר",
+    "search": "חפש חברים...",
+    "role": "תפקיד",
+    "joined": "הצטרף",
+    "actions": "פעולות",
+    "changeRole": "שנה תפקיד",
+    "remove": "הסר",
+    "removeMember": "הסר חבר",
+    "removeConfirm": "להסיר את {{name}} מסביבת העבודה?",
+    "removeWarning": "הם יאבדו גישה לכל המשימות בסביבת עבודה זו.",
+    "leaveWorkspace": "עזוב סביבת עבודה",
+    "leaveConfirm": "האם אתה בטוח שברצונך לעזוב את סביבת העבודה?",
+    "leaveWarning": "תאבד גישה לכל המשימות בסביבת עבודה זו.",
+    "changeRoleConfirm": "לשנות את תפקיד {{name}} מ-{{oldRole}} ל-{{newRole}}?",
+    "transferOwnership": "העבר בעלות",
+    "transferConfirm": "להעביר בעלות ל-{{name}}? תהפוך למנהל.",
+    "noMembers": "אין חברים עדיין"
   },
-
   "roles": {
-    "owner": "\u05d1\u05e2\u05dc\u05d9\u05dd",
-    "admin": "\u05de\u05e0\u05d4\u05dc",
-    "member": "\u05d7\u05d1\u05e8",
-    "viewer": "\u05e6\u05d5\u05e4\u05d4"
+    "owner": "בעלים",
+    "admin": "מנהל",
+    "member": "חבר",
+    "viewer": "צופה"
   },
-
   "invitation": {
-    "send": "\u05e9\u05dc\u05d7 \u05d4\u05d6\u05de\u05e0\u05d4",
-    "email": "\u05db\u05ea\u05d5\u05d1\u05ea \u05d0\u05d9\u05de\u05d9\u05d9\u05dc",
+    "send": "שלח הזמנה",
+    "email": "כתובת אימייל",
     "emailPlaceholder": "colleague@example.com",
-    "role": "\u05ea\u05e4\u05e7\u05d9\u05d3",
-    "pending": "\u05d4\u05d6\u05de\u05e0\u05d5\u05ea \u05de\u05de\u05ea\u05d9\u05e0\u05d5\u05ea",
-    "noPending": "\u05d0\u05d9\u05df \u05d4\u05d6\u05de\u05e0\u05d5\u05ea \u05de\u05de\u05ea\u05d9\u05e0\u05d5\u05ea",
-    "revoke": "\u05d1\u05d8\u05dc",
-    "revokeConfirm": "\u05dc\u05d1\u05d8\u05dc \u05d4\u05d6\u05de\u05e0\u05d4 \u05dc-{{email}}?",
-    "invitedBy": "\u05d4\u05d5\u05d6\u05de\u05df \u05e2\u05dc \u05d9\u05d3\u05d9 {{name}}",
-    "expires": "\u05e4\u05d2 \u05ea\u05d5\u05e7\u05e3 {{date}}",
-    "accept": "\u05e7\u05d1\u05dc",
-    "decline": "\u05d3\u05d7\u05d4",
-    "accepting": "\u05de\u05e7\u05d1\u05dc \u05d4\u05d6\u05de\u05e0\u05d4...",
-    "accepted": "\u05d4\u05e6\u05d8\u05e8\u05e4\u05ea \u05dc-{{workspace}}!",
-    "goToWorkspace": "\u05e2\u05d1\u05d5\u05e8 \u05dc\u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4",
-    "expired": "\u05d4\u05d6\u05de\u05e0\u05d4 \u05d6\u05d5 \u05e4\u05d2\u05d4 \u05ea\u05d5\u05e7\u05e3. \u05d1\u05e7\u05e9 \u05de\u05de\u05e0\u05d4\u05dc \u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4 \u05d4\u05d6\u05de\u05e0\u05d4 \u05d7\u05d3\u05e9\u05d4.",
-    "invalid": "\u05e7\u05d9\u05e9\u05d5\u05e8 \u05d4\u05d6\u05de\u05e0\u05d4 \u05dc\u05d0 \u05ea\u05e7\u05d9\u05df.",
-    "banner": "\u05d4\u05d5\u05d6\u05de\u05e0\u05ea \u05dc-{{workspace}}."
+    "role": "תפקיד",
+    "pending": "הזמנות ממתינות",
+    "noPending": "אין הזמנות ממתינות",
+    "revoke": "בטל",
+    "revokeConfirm": "לבטל הזמנה ל-{{email}}?",
+    "invitedBy": "הוזמן על ידי {{name}}",
+    "expires": "פג תוקף {{date}}",
+    "accept": "קבל",
+    "decline": "דחה",
+    "accepting": "מקבל הזמנה...",
+    "accepted": "הצטרפת ל-{{workspace}}!",
+    "goToWorkspace": "עבור לסביבת העבודה",
+    "expired": "הזמנה זו פגה תוקף. בקש ממנהל סביבת העבודה הזמנה חדשה.",
+    "invalid": "קישור הזמנה לא תקין.",
+    "banner": "הוזמנת ל-{{workspace}}."
   },
-
   "activity": {
-    "title": "\u05e4\u05e2\u05d9\u05dc\u05d5\u05ea",
-    "empty": "\u05d0\u05d9\u05df \u05e4\u05e2\u05d9\u05dc\u05d5\u05ea \u05e2\u05d3\u05d9\u05d9\u05df",
-    "loadMore": "\u05d8\u05e2\u05df \u05e2\u05d5\u05d3",
-    "filter": "\u05e1\u05e0\u05df",
-    "allTypes": "\u05db\u05dc \u05d4\u05e4\u05e2\u05d9\u05dc\u05d5\u05ea"
+    "title": "פעילות",
+    "empty": "אין פעילות עדיין",
+    "loadMore": "טען עוד",
+    "filter": "סנן",
+    "allTypes": "כל הפעילות"
   },
-
   "emptyState": {
-    "title": "\u05d1\u05e8\u05d5\u05db\u05d9\u05dd \u05d4\u05d1\u05d0\u05d9\u05dd \u05dc-Lattices",
-    "description": "\u05e1\u05d1\u05d9\u05d1\u05d5\u05ea \u05e2\u05d1\u05d5\u05d3\u05d4 \u05e2\u05d5\u05d6\u05e8\u05d5\u05ea \u05dc\u05da \u05dc\u05d0\u05e8\u05d2\u05df \u05de\u05e9\u05d9\u05de\u05d5\u05ea \u05d5\u05dc\u05e9\u05ea\u05e3 \u05e4\u05e2\u05d5\u05dc\u05d4 \u05e2\u05dd \u05d4\u05e6\u05d5\u05d5\u05ea \u05e9\u05dc\u05da. \u05e6\u05d5\u05e8 \u05d0\u05ea \u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4 \u05d4\u05e8\u05d0\u05e9\u05d5\u05e0\u05d4 \u05e9\u05dc\u05da \u05db\u05d3\u05d9 \u05dc\u05d4\u05ea\u05d7\u05d9\u05dc.",
-    "createFirst": "\u05e6\u05d5\u05e8 \u05d0\u05ea \u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4 \u05d4\u05e8\u05d0\u05e9\u05d5\u05e0\u05d4"
+    "title": "ברוכים הבאים ל-Lattices",
+    "description": "סביבות עבודה עוזרות לך לארגן משימות ולשתף פעולה עם הצוות שלך. צור את סביבת העבודה הראשונה שלך כדי להתחיל.",
+    "createFirst": "צור את סביבת העבודה הראשונה"
   },
-
   "permissions": {
-    "viewOnly": "\u05e6\u05e4\u05d9\u05d9\u05d4 \u05d1\u05dc\u05d1\u05d3",
-    "canEdit": "\u05d9\u05db\u05d5\u05dc \u05dc\u05e2\u05e8\u05d5\u05da",
-    "insufficientPermissions": "\u05d0\u05d9\u05df \u05dc\u05da \u05d4\u05e8\u05e9\u05d0\u05d4 \u05dc\u05d1\u05e6\u05e2 \u05e4\u05e2\u05d5\u05dc\u05d4 \u05d6\u05d5"
+    "viewOnly": "צפייה בלבד",
+    "canEdit": "יכול לערוך",
+    "insufficientPermissions": "אין לך הרשאה לבצע פעולה זו"
   },
-
   "groups": {
-    "title": "\u05e7\u05d1\u05d5\u05e6\u05d5\u05ea",
-    "create": "\u05e6\u05d5\u05e8 \u05e7\u05d1\u05d5\u05e6\u05d4",
-    "edit": "\u05e2\u05e8\u05d5\u05da \u05e7\u05d1\u05d5\u05e6\u05d4",
-    "delete": "\u05de\u05d7\u05e7 \u05e7\u05d1\u05d5\u05e6\u05d4",
-    "deleteConfirm": "\u05dc\u05de\u05d7\u05d5\u05e7 \u05d0\u05ea \u05d4\u05e7\u05d1\u05d5\u05e6\u05d4 \"{{name}}\"? \u05d4\u05d7\u05d1\u05e8\u05d9\u05dd \u05dc\u05d0 \u05d9\u05d5\u05e1\u05e8\u05d5 \u05de\u05e1\u05d1\u05d9\u05d1\u05ea \u05d4\u05e2\u05d1\u05d5\u05d3\u05d4.",
-    "name": "\u05e9\u05dd \u05d4\u05e7\u05d1\u05d5\u05e6\u05d4",
-    "namePlaceholder": "\u05dc\u05de\u05e9\u05dc: \u05e6\u05d5\u05d5\u05ea \u05e4\u05d9\u05ea\u05d5\u05d7",
-    "description": "\u05ea\u05d9\u05d0\u05d5\u05e8",
-    "descriptionPlaceholder": "\u05dc\u05de\u05d4 \u05de\u05d9\u05d5\u05e2\u05d3\u05ea \u05d4\u05e7\u05d1\u05d5\u05e6\u05d4?",
-    "members": "\u05d7\u05d1\u05e8\u05d9 \u05d4\u05e7\u05d1\u05d5\u05e6\u05d4",
-    "addMember": "\u05d4\u05d5\u05e1\u05e3 \u05d7\u05d1\u05e8",
-    "removeMember": "\u05d4\u05e1\u05e8 \u05de\u05d4\u05e7\u05d1\u05d5\u05e6\u05d4",
-    "noGroups": "\u05d0\u05d9\u05df \u05e7\u05d1\u05d5\u05e6\u05d5\u05ea \u05e2\u05d3\u05d9\u05d9\u05df",
-    "noMembers": "\u05d0\u05d9\u05df \u05d7\u05d1\u05e8\u05d9\u05dd \u05d1\u05e7\u05d1\u05d5\u05e6\u05d4 \u05d6\u05d5"
+    "title": "קבוצות",
+    "create": "צור קבוצה",
+    "edit": "ערוך קבוצה",
+    "delete": "מחק קבוצה",
+    "deleteConfirm": "למחוק את הקבוצה “{{name}}”? החברים לא יוסרו מסביבת העבודה.",
+    "name": "שם הקבוצה",
+    "namePlaceholder": "למשל: צוות פיתוח",
+    "description": "תיאור",
+    "descriptionPlaceholder": "למה מיועדת הקבוצה?",
+    "members": "חברי הקבוצה",
+    "addMember": "הוסף חבר",
+    "removeMember": "הסר מהקבוצה",
+    "noGroups": "אין קבוצות עדיין",
+    "noMembers": "אין חברים בקבוצה זו"
   },
-
   "realtime": {
-    "onlineCount_one": "{{count}} \u05de\u05d7\u05d5\u05d1\u05e8",
-    "onlineCount_other": "{{count}} \u05de\u05d7\u05d5\u05d1\u05e8\u05d9\u05dd",
-    "more": "\u05e2\u05d5\u05d3",
-    "viewingTooltip": "\u05e0\u05e6\u05e4\u05d4 \u05e2\u05dc \u05d9\u05d3\u05d9 {{names}}",
-    "conflictMessage": "\u05de\u05e9\u05d9\u05de\u05d4 \u05d6\u05d5 \u05e2\u05d5\u05d3\u05db\u05e0\u05d4 \u05e2\u05dc \u05d9\u05d3\u05d9 {{name}}. \u05d8\u05e2\u05df \u05de\u05d7\u05d3\u05e9 \u05dc\u05e6\u05e4\u05d9\u05d9\u05d4 \u05d1\u05e9\u05d9\u05e0\u05d5\u05d9\u05d9\u05dd.",
-    "reload": "\u05d8\u05e2\u05df \u05de\u05d7\u05d3\u05e9",
-    "dismiss": "\u05d4\u05ea\u05e2\u05dc\u05dd",
+    "onlineCount_one": "{{count}} מחובר",
+    "onlineCount_other": "{{count}} מחוברים",
+    "more": "עוד",
+    "viewingTooltip": "נצפה על ידי {{names}}",
+    "conflictMessage": "משימה זו עודכנה על ידי {{name}}. טען מחדש לצפייה בשינויים.",
+    "reload": "טען מחדש",
+    "dismiss": "התעלם",
     "status": {
-      "connected": "\u05de\u05d7\u05d5\u05d1\u05e8",
-      "connecting": "\u05de\u05ea\u05d7\u05d1\u05e8 \u05de\u05d7\u05d3\u05e9...",
-      "disconnected": "\u05de\u05e0\u05d5\u05ea\u05e7"
+      "connected": "מחובר",
+      "connecting": "מתחבר מחדש...",
+      "disconnected": "מנותק"
     }
   },
   "tooltips": {
