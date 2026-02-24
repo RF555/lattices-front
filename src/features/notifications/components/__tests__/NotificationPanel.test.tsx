@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@/test/test-utils';
+import { render, screen, normalizeQuotes } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { NotificationPanel } from '../NotificationPanel/NotificationPanel';
 import { createMockNotification } from '@/test/factories';
@@ -113,8 +113,12 @@ describe('NotificationPanel', () => {
     render(<NotificationPanel onClose={mockOnClose} />);
 
     // Check that notification messages are rendered (using i18n templates)
-    expect(screen.getByText(/John Doe completed "Test Task 1"/i)).toBeInTheDocument();
-    expect(screen.getByText(/Jane Smith updated "Test Task 2"/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/John Doe completed "Test Task 1"/i, { normalizer: normalizeQuotes }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Jane Smith updated "Test Task 2"/i, { normalizer: normalizeQuotes }),
+    ).toBeInTheDocument();
   });
 
   it('should show initials when no avatar URL', () => {
@@ -226,7 +230,9 @@ describe('NotificationPanel', () => {
 
     render(<NotificationPanel onClose={mockOnClose} />);
 
-    await user.click(screen.getByText(/John completed "Click me"/i));
+    await user.click(
+      screen.getByText(/John completed "Click me"/i, { normalizer: normalizeQuotes }),
+    );
 
     expect(mockMarkAsReadMutate).toHaveBeenCalledWith({
       workspaceId: 'ws-1',
@@ -263,7 +269,9 @@ describe('NotificationPanel', () => {
 
     render(<NotificationPanel onClose={mockOnClose} />);
 
-    await user.click(screen.getByText(/John completed "Click me"/i));
+    await user.click(
+      screen.getByText(/John completed "Click me"/i, { normalizer: normalizeQuotes }),
+    );
 
     // Should NOT call markAsRead for already-read notification
     expect(mockMarkAsReadMutate).not.toHaveBeenCalled();

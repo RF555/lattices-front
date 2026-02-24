@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@/test/test-utils';
+import { render, screen, normalizeQuotes } from '@/test/test-utils';
 import userEvent from '@testing-library/user-event';
 import { NotificationItem } from '../NotificationItem/NotificationItem';
 import { createMockNotification } from '@/test/factories';
@@ -31,7 +31,9 @@ describe('NotificationItem', () => {
       />,
     );
 
-    expect(screen.getByText(/John Doe completed "Fix bug"/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/John Doe completed "Fix bug"/i, { normalizer: normalizeQuotes }),
+    ).toBeInTheDocument();
   });
 
   it('should show unread indicator for unread notifications', () => {
@@ -172,7 +174,7 @@ describe('NotificationItem', () => {
     );
 
     // Click the notification
-    await user.click(screen.getByText(/John completed "Test"/i));
+    await user.click(screen.getByText(/John completed "Test"/i, { normalizer: normalizeQuotes }));
 
     expect(mockOnRead).toHaveBeenCalledWith(notification);
     expect(mockOnClick).toHaveBeenCalledWith(notification);
@@ -199,7 +201,7 @@ describe('NotificationItem', () => {
       />,
     );
 
-    await user.click(screen.getByText(/John completed "Test"/i));
+    await user.click(screen.getByText(/John completed "Test"/i, { normalizer: normalizeQuotes }));
 
     expect(mockOnRead).not.toHaveBeenCalled();
     expect(mockOnClick).toHaveBeenCalledWith(notification);
@@ -276,7 +278,7 @@ describe('NotificationItem', () => {
         />,
       );
 
-      expect(screen.getByText(expectedText)).toBeInTheDocument();
+      expect(screen.getByText(expectedText, { normalizer: normalizeQuotes })).toBeInTheDocument();
       unmount();
     });
   });

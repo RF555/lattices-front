@@ -13,20 +13,18 @@
   "unknownActor": "Someone",
   "unknownEntity": "an item",
   "unknownWorkspace": "a workspace",
-
   "type": {
-    "task.completed": "{{actorName}} completed \"{{entityTitle}}\"",
-    "task.updated": "{{actorName}} updated \"{{entityTitle}}\"",
-    "task.created": "{{actorName}} created \"{{entityTitle}}\"",
-    "task.deleted": "{{actorName}} deleted \"{{entityTitle}}\"",
-    "member.added": "{{actorName}} added you to \"{{workspaceName}}\"",
-    "member.removed": "You were removed from \"{{workspaceName}}\"",
-    "member.role_changed": "Your role in \"{{workspaceName}}\" was changed to {{newRole}}",
-    "invitation.received": "{{actorName}} invited you to join \"{{workspaceName}}\"",
-    "invitation.accepted": "{{actorName}} accepted your invitation to \"{{workspaceName}}\"",
-    "group.member_added": "{{actorName}} added you to group \"{{groupName}}\""
+    "task.completed": "{{actorName}} completed “{{entityTitle}}”",
+    "task.updated": "{{actorName}} updated “{{entityTitle}}”",
+    "task.created": "{{actorName}} created “{{entityTitle}}”",
+    "task.deleted": "{{actorName}} deleted “{{entityTitle}}”",
+    "member.added": "{{actorName}} added you to “{{workspaceName}}”",
+    "member.removed": "You were removed from “{{workspaceName}}”",
+    "member.role_changed": "Your role in “{{workspaceName}}” was changed to {{newRole}}",
+    "invitation.received": "{{actorName}} invited you to join “{{workspaceName}}”",
+    "invitation.accepted": "{{actorName}} accepted your invitation to “{{workspaceName}}”",
+    "group.member_added": "{{actorName}} added you to group “{{groupName}}”"
   },
-
   "preferences": {
     "title": "Notification Preferences",
     "type": "Notification Type",
@@ -43,7 +41,6 @@
     "showToast": "Show toast notifications",
     "showToastDescription": "Display a brief toast when new notifications arrive"
   },
-
   "typeLabel": {
     "task.completed": "Task completed",
     "task.updated": "Task updated",

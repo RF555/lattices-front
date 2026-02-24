@@ -13,20 +13,18 @@
   "unknownActor": "מישהו",
   "unknownEntity": "פריט",
   "unknownWorkspace": "סביבת עבודה",
-
   "type": {
-    "task.completed": "{{actorName}} השלים/ה את \"{{entityTitle}}\"",
-    "task.updated": "{{actorName}} עדכן/ה את \"{{entityTitle}}\"",
-    "task.created": "{{actorName}} יצר/ה את \"{{entityTitle}}\"",
-    "task.deleted": "{{actorName}} מחק/ה את \"{{entityTitle}}\"",
-    "member.added": "{{actorName}} הוסיף/ה אותך ל\"{{workspaceName}}\"",
-    "member.removed": "הוסרת מ\"{{workspaceName}}\"",
-    "member.role_changed": "התפקיד שלך ב\"{{workspaceName}}\" שונה ל{{newRole}}",
-    "invitation.received": "{{actorName}} הזמין/ה אותך להצטרף ל\"{{workspaceName}}\"",
-    "invitation.accepted": "{{actorName}} קיבל/ה את ההזמנה שלך ל\"{{workspaceName}}\"",
-    "group.member_added": "{{actorName}} הוסיף/ה אותך לקבוצה \"{{groupName}}\""
+    "task.completed": "{{actorName}} השלים/ה את “{{entityTitle}}”",
+    "task.updated": "{{actorName}} עדכן/ה את “{{entityTitle}}”",
+    "task.created": "{{actorName}} יצר/ה את “{{entityTitle}}”",
+    "task.deleted": "{{actorName}} מחק/ה את “{{entityTitle}}”",
+    "member.added": "{{actorName}} הוסיף/ה אותך ל“{{workspaceName}}”",
+    "member.removed": "הוסרת מ“{{workspaceName}}”",
+    "member.role_changed": "התפקיד שלך ב“{{workspaceName}}” שונה ל{{newRole}}",
+    "invitation.received": "{{actorName}} הזמין/ה אותך להצטרף ל“{{workspaceName}}”",
+    "invitation.accepted": "{{actorName}} קיבל/ה את ההזמנה שלך ל“{{workspaceName}}”",
+    "group.member_added": "{{actorName}} הוסיף/ה אותך לקבוצה “{{groupName}}”"
   },
-
   "preferences": {
     "title": "העדפות התראות",
     "type": "סוג התראה",
@@ -43,7 +41,6 @@
     "showToast": "הצג התראות מוקפצות",
     "showToastDescription": "הצג הודעה קצרה כשמגיעות התראות חדשות"
   },
-
   "typeLabel": {
     "task.completed": "משימה הושלמה",
     "task.updated": "משימה עודכנה",
